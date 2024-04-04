@@ -19,6 +19,7 @@ namespace Ginnis.Repos.Repositories
     {
         private readonly JwtContext _context;
         private readonly IConfiguration _configuration;
+
         public UserAuthRepo(JwtContext context, IConfiguration configuration)
         {
             _context = context;

@@ -21,5 +21,15 @@ namespace Ginnis.Domains.Entities
         public string Role { get; set; }
 
         public string Token { get; set; }
+
+        //public bool EmailConfirmed { get; set; }
+
+        //public bool PhoneConfirmed { get; set; }
+
+        //public bool Status { get; set; }
+
+        public string ResetPasswordToken { get; set; }
+
+        public DateTime ResetPasswordExpiry { get; set; }
     }
 }
