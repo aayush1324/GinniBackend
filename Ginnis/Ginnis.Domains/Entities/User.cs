@@ -31,5 +31,11 @@ namespace Ginnis.Domains.Entities
         public string ResetPasswordToken { get; set; }
 
         public DateTime ResetPasswordExpiry { get; set; }
+
+        public string ConfirmationToken { get; set; }
+
+        public DateTime ConfirmationExpiry { get; set; }
+
+        public bool IsEmailConfirmed { get; set; }
     }
 }

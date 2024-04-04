@@ -1,3 +1,4 @@
+using Ginnis.Domains.DTOs;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Repos.Repositories;
 using Ginnis.Services.Context;
@@ -27,7 +28,13 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnectionStrings")));
+
+var emailSettingss = builder.Configuration.GetSection("EmailSettings").Get<ConfirmationEmailDto>();
+builder.Services.AddSingleton(emailSettingss);
+
 builder.Services.AddScoped<IEmailRepo, EmailRepo>();
+builder.Services.AddScoped<IConfirmEmailRepo, ConfirmEmailRepo>();
+
 
 builder.Services.AddControllers();
 

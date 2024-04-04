@@ -23,7 +23,9 @@ namespace Ginnis.Services.Migrations
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ConfirmationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConfirmationExpiry = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

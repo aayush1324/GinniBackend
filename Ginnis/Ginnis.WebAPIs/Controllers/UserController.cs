@@ -23,12 +23,15 @@ namespace Ginnis.WebAPIs.Controllers
         private readonly AppDbContext _authContext;
         private readonly IConfiguration _configuration;
         private readonly IEmailRepo _emailRepo;
+        private readonly IConfirmEmailRepo _confirmEmailRepo;
 
-        public UserController(AppDbContext context, IConfiguration configuration, IEmailRepo emailRepo)
+
+        public UserController(AppDbContext context, IConfiguration configuration, IEmailRepo emailRepo, IConfirmEmailRepo confirmEmailRepo)
         {
             _authContext = context;
             _configuration = configuration;
             _emailRepo = emailRepo;
+            _confirmEmailRepo = confirmEmailRepo;
         }
 
         [HttpPost("authenticate")]
@@ -79,11 +82,69 @@ namespace Ginnis.WebAPIs.Controllers
 
             await _authContext.Users.AddAsync(userObj);
             await _authContext.SaveChangesAsync();
+
+            // Send registration confirmation email
+            await SendRegistrationConfirmationEmail(userObj.Email);
+
             return Ok(new
             {
                 Status = 200,
                 Message = "User Added!"
             });
+        }
+
+        private async Task SendRegistrationConfirmationEmail(string email)
+        {
+            var user = await _authContext.Users.FirstOrDefaultAsync(a => a.Email == email);
+
+            if (user == null)
+            {
+                // Handle the case where the user doesn't exist
+                // This should ideally not happen as the user should have been added before sending the confirmation email
+                // You can log an error or throw an exception as appropriate
+                return;
+            }
+
+            // Generate a confirmation token
+            var tokenBytes = RandomNumberGenerator.GetBytes(64);
+            var emailToken = Convert.ToBase64String(tokenBytes);
+
+            // Update user with confirmation token and expiry time
+            user.ConfirmationToken = emailToken;
+            user.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
+
+            // Save changes to the database
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+
+            // Construct and send the confirmation email
+            string from = _configuration["EmailSettings:From"];
+            var emailModel = new ConfirmEmail(email, "Welcome to YourApp! Confirm Your Email", ConfirmEmailBody.EmailStringBody(email, emailToken));
+            _confirmEmailRepo.SendConfirmEmail(emailModel);
+        }
+
+
+        [HttpPost("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] User request)
+        {
+            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.ConfirmationToken == request.Token && u.ConfirmationExpiry > DateTime.Now);
+
+            if (user == null)
+            {
+                // Handle invalid or expired token
+                return BadRequest("Invalid or expired confirmation token.");
+            }
+
+            // Mark email as confirmed
+            user.IsEmailConfirmed = true;
+            user.ConfirmationToken = null;
+            //user.ConfirmationExpiry = null;
+
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+
+            // Redirect the user to a confirmation page
+            return Redirect("http://localhost:4200/ginniconfirmemail");
         }
 
 
@@ -133,7 +194,6 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("send-reset-email/{email}")]
-
         public async Task<IActionResult> SendEmail(string email)
         {
             var user = await _authContext.Users.FirstOrDefaultAsync(a => a.Email == email);
@@ -169,7 +229,6 @@ namespace Ginnis.WebAPIs.Controllers
                 Message = "Email Sent!"
             });
         }
-
 
 
         [HttpPost("reset-password")]
