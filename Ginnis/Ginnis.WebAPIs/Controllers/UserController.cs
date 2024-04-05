@@ -51,13 +51,47 @@ namespace Ginnis.WebAPIs.Controllers
                 return BadRequest(new { Message = "Password is Incorrect" });
             }
 
+            if (!user.EmailConfirmed)
+            {
+                return BadRequest(new { Message = "Email is not confirmed yet" });
+            }
+
             user.Token = CreateJwt(user);
 
+            // Update user status to 1 (assuming 1 means active or logged in)
+            user.Status = true;
+
+
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
 
             return Ok(new 
             { 
                 Token = user.Token,
                 Message = "Login Success!" 
+            });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] User userObj)
+        {
+            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Token == userObj.Token);
+
+            if (user == null)
+            {
+                // Handle case where user with provided token is not found
+                return NotFound(new { Message = "User not found!" });
+            }
+
+            // Update user status to 0 (assuming 0 means inactive or logged out)
+            user.Status = false;
+
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Logout Success!"
             });
         }
 
@@ -75,10 +109,19 @@ namespace Ginnis.WebAPIs.Controllers
             var passMessage = CheckPasswordStrength(userObj.Password);
             if (!string.IsNullOrEmpty(passMessage))
                 return BadRequest(new { Message = passMessage.ToString() });
-
             userObj.Password = PasswordHasher.HashPassword(userObj.Password);
+
+            var confpassMessage = CheckPasswordStrength(userObj.ConfirmPassword);
+            if (!string.IsNullOrEmpty(confpassMessage))
+                return BadRequest(new { Message = confpassMessage.ToString() });
+            userObj.ConfirmPassword = PasswordHasher.HashPassword(userObj.ConfirmPassword);
+
+            // Map "mobile" from frontend to "Phone" in the backend
+           
+
             userObj.Role = "User";
-            userObj.Token = "";
+            userObj.Token = CreateJwt(userObj); // Generate JWT token
+            userObj.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
 
             await _authContext.Users.AddAsync(userObj);
             await _authContext.SaveChangesAsync();
@@ -89,9 +132,11 @@ namespace Ginnis.WebAPIs.Controllers
             return Ok(new
             {
                 Status = 200,
-                Message = "User Added!"
-            });
+                Message = "User Added!" ,
+                Token = userObj.Token // Include the generated token in the response
+            });;
         }
+
 
         private async Task SendRegistrationConfirmationEmail(string email)
         {
@@ -107,10 +152,10 @@ namespace Ginnis.WebAPIs.Controllers
 
             // Generate a confirmation token
             var tokenBytes = RandomNumberGenerator.GetBytes(64);
-            var emailToken = Convert.ToBase64String(tokenBytes);
+            var confirmToken = Convert.ToBase64String(tokenBytes);
 
             // Update user with confirmation token and expiry time
-            user.ConfirmationToken = emailToken;
+            user.ConfirmationToken = confirmToken;
             user.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
 
             // Save changes to the database
@@ -119,15 +164,15 @@ namespace Ginnis.WebAPIs.Controllers
 
             // Construct and send the confirmation email
             string from = _configuration["EmailSettings:From"];
-            var emailModel = new ConfirmEmail(email, "Welcome to YourApp! Confirm Your Email", ConfirmEmailBody.EmailStringBody(email, emailToken));
+            var emailModel = new ConfirmEmail(email, "Welcome to Ginni! Confirm Your Email", ConfirmEmailBody.EmailStringBody(email, confirmToken));
             _confirmEmailRepo.SendConfirmEmail(emailModel);
         }
 
 
-        [HttpPost("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail([FromBody] User request)
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
         {
-            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.ConfirmationToken == request.Token && u.ConfirmationExpiry > DateTime.Now);
+            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null)
             {
@@ -135,16 +180,22 @@ namespace Ginnis.WebAPIs.Controllers
                 return BadRequest("Invalid or expired confirmation token.");
             }
 
-            // Mark email as confirmed
-            user.IsEmailConfirmed = true;
-            user.ConfirmationToken = null;
-            //user.ConfirmationExpiry = null;
+            // Update EmailConfirmed status
+            user.EmailConfirmed = true;
 
+            // Clear confirmation token and expiry
+            //user.ConfirmationToken = null;
+            // user.ConfirmationExpiry = null;
+
+            // Save changes to the database
             _authContext.Entry(user).State = EntityState.Modified;
             await _authContext.SaveChangesAsync();
 
-            // Redirect the user to a confirmation page
-            return Redirect("http://localhost:4200/ginniconfirmemail");
+            return Ok(new
+            {
+                StatusCode = 200,
+                Message = "Email Verified!"
+            });
         }
 
 
@@ -163,14 +214,18 @@ namespace Ginnis.WebAPIs.Controllers
             return sb.ToString();
         }
 
+
         private string CreateJwt(User user)
         {
             var jwtTokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes("veryveryveryveryveryverysceret.....");
+
             var identity = new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Name,$"{user.UserName}")
+                new Claim(ClaimTypes.Name, $"{user.UserName}"),
+                new Claim("Email", user.Email), // Include user email in the token payload
+                                                // Add more claims as needed
             });
 
             var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
@@ -178,7 +233,7 @@ namespace Ginnis.WebAPIs.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = identity,
-                Expires = DateTime.Now.AddSeconds(10),
+                Expires = DateTime.Now.AddMinutes(10),
                 SigningCredentials = credentials
             };
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);

@@ -16,17 +16,19 @@ namespace Ginnis.Domains.Entities
 
         public string Password { get; set; }
 
+        public string ConfirmPassword { get; set; }
+
         public string Phone { get; set; }
 
         public string Role { get; set; }
 
         public string Token { get; set; }
 
-        //public bool EmailConfirmed { get; set; }
+        public bool EmailConfirmed { get; set; }
 
-        //public bool PhoneConfirmed { get; set; }
+        public bool PhoneConfirmed { get; set; }
 
-        //public bool Status { get; set; }
+        public bool Status { get; set; }
 
         public string ResetPasswordToken { get; set; }
 
@@ -34,8 +36,7 @@ namespace Ginnis.Domains.Entities
 
         public string ConfirmationToken { get; set; }
 
-        public DateTime ConfirmationExpiry { get; set; }
+        public DateTime? ConfirmationExpiry { get; set; }
 
-        public bool IsEmailConfirmed { get; set; }
     }
 }
