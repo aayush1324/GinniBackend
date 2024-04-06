@@ -20,12 +20,6 @@ builder.Services.AddCors(options =>
         .AllowCredentials());
 });
 
-// Add services to the container.
-//builder.Services.AddDbContext<JwtContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
-
-//builder.Services.AddScoped<IUserAuthRepo, UserAuthRepo>();
-//builder.Services.AddScoped<ICustomerRepo, CustomerRepo>();
-
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnectionStrings")));
 
