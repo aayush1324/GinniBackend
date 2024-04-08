@@ -40,6 +40,8 @@ namespace Ginnis.Services.Context
         {
             //base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().ToTable("Users");
+
+            modelBuilder.Entity<Address>().ToTable("Addresses");
         }
     }
 }

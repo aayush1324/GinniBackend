@@ -10,7 +10,7 @@ namespace Ginnis.Domains.Entities
     {
         public Guid Id { get; set; }
 
-        public Guid UserId { get; set; }
+        //public Guid UserId { get; set; }
 
         public string FirstName { get; set; }
 
@@ -28,7 +28,7 @@ namespace Ginnis.Domains.Entities
 
         public string State { get; set; }
 
-        public int Default { get; set; }
+        public bool Default { get; set; }
 
     }
 }
