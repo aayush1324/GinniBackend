@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240408070624_init")]
+    [Migration("20240408152904_init")]
     partial class init
     {
         /// <inheritdoc />
