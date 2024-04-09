@@ -37,20 +37,16 @@ namespace Ginnis.WebAPIs.Controllers
             });
         }
 
-
         [HttpGet("getAddress")]
         public async Task<IActionResult> GetAddresses()
         {
-            var addresses = await _authContext .Addresses.ToListAsync();
+            var addresses = await _authContext.Addresses.ToListAsync();
             if (addresses == null || addresses.Count == 0)
             {
                 return NotFound();
             }
 
-            return Ok(new
-            {
-                Addresses = addresses
-            });
+            return Ok(addresses);
         }
 
 

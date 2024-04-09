@@ -28,7 +28,7 @@ namespace Ginnis.Domains.Entities
 
         public string State { get; set; }
 
-        public bool Default { get; set; }
+        public bool Default { get; set; } = false;
 
     }
 }
