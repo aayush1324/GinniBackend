@@ -176,20 +176,26 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("Order_Addresses");
                 });
 
-            modelBuilder.Entity("Ginnis.Domains.Entities.Product", b =>
+            modelBuilder.Entity("Ginnis.Domains.Entities.ProductList", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DeliveryPrice")
+                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
@@ -197,15 +203,21 @@ namespace Ginnis.Services.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subcategory")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Weight")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Products");
+                    b.ToTable("ProductLists", (string)null);
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.ProductVariant", b =>

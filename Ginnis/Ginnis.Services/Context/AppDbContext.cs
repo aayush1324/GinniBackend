@@ -29,9 +29,10 @@ namespace Ginnis.Services.Context
 
         public DbSet<Discount> Discounts { get; set; }
 
-        public DbSet<Product> Products { get; set; }
 
         public DbSet<ProductVariant> ProductVariants { get; set; }
+
+        public DbSet<ProductList> ProductLists{ get; set; }
 
 
 
@@ -42,6 +43,9 @@ namespace Ginnis.Services.Context
             modelBuilder.Entity<User>().ToTable("Users");
 
             modelBuilder.Entity<Address>().ToTable("Addresses");
+
+            modelBuilder.Entity<ProductList>().ToTable("ProductLists");
+
         }
     }
 }
