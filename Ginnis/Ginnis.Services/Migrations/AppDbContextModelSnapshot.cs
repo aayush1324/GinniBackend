@@ -83,6 +83,29 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("Carts");
                 });
 
+            modelBuilder.Entity("Ginnis.Domains.Entities.CartList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CartLists", (string)null);
+                });
+
             modelBuilder.Entity("Ginnis.Domains.Entities.Category", b =>
                 {
                     b.Property<Guid>("Id")
