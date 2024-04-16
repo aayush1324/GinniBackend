@@ -36,5 +36,9 @@ namespace Ginnis.Domains.Entities
         //public IFormFile Image { get; set; }
 
         //public byte[] Images { get; set; }
+
+        public bool CartStatus { get; set; }
+
+        public bool WishlistStatus { get; set; }
     }
 }

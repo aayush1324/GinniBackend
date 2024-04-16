@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240410084653_init")]
-    partial class init
+    [Migration("20240416053732_wishlistcolumn")]
+    partial class wishlistcolumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,6 +84,29 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.CartList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CartLists", (string)null);
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.Category", b =>
@@ -185,6 +208,9 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("CartStatus")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
@@ -217,6 +243,9 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("WishlistStatus")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -314,6 +343,29 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Wishlists");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.WishlistItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPrice")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("WishlistItems", (string)null);
                 });
 #pragma warning restore 612, 618
         }

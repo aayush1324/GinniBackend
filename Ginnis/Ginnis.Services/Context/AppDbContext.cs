@@ -35,6 +35,10 @@ namespace Ginnis.Services.Context
         public DbSet<ProductList> ProductLists{ get; set; }
 
 
+        public DbSet<CartList> CartLists { get; set; }
+
+
+        public DbSet<WishlistItem> WishlistItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,6 +49,10 @@ namespace Ginnis.Services.Context
             modelBuilder.Entity<Address>().ToTable("Addresses");
 
             modelBuilder.Entity<ProductList>().ToTable("ProductLists");
+
+            modelBuilder.Entity<CartList>().ToTable("CartLists");
+
+            modelBuilder.Entity<WishlistItem>().ToTable("WishlistItems");
 
         }
     }
