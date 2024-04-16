@@ -4,6 +4,7 @@ using Ginnis.Services.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240416043256_init")]
+    partial class init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -205,9 +208,6 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("CartStatus")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
@@ -240,9 +240,6 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("WishlistStatus")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -359,9 +356,6 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
-
-                    b.Property<bool>("WishlistStatus")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

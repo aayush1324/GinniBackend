@@ -19,5 +19,8 @@ namespace Ginnis.Domains.Entities
         public int Price { get; set; }
 
         public int TotalPrice { get; set; }
+
+        public bool WishlistStatus { get; set; }
+
     }
 }

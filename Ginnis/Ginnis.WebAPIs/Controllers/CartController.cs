@@ -61,6 +61,8 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
+
+
         // GET: api/cart/getCart
         [HttpGet("getCart")]
         public async Task<IActionResult> GetCart()
@@ -81,6 +83,7 @@ namespace Ginnis.WebAPIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
         [HttpPut("updateCartQuantity/{id}")]
         public async Task<IActionResult> UpdateCartQuantity(Guid id, [FromBody] CartList cart)
@@ -116,6 +119,7 @@ namespace Ginnis.WebAPIs.Controllers
             return NoContent();
         }
 
+
         [HttpDelete("deleteItem/{id}")]
         public async Task<IActionResult> RemoveCartItem(Guid id)
         {
@@ -130,6 +134,7 @@ namespace Ginnis.WebAPIs.Controllers
 
             return NoContent();
         }
+
 
         [HttpDelete("deleteAllItem")]
         public async Task<IActionResult> EmptyCart()

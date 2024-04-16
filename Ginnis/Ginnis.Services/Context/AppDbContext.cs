@@ -52,6 +52,8 @@ namespace Ginnis.Services.Context
 
             modelBuilder.Entity<CartList>().ToTable("CartLists");
 
+            modelBuilder.Entity<WishlistItem>().ToTable("WishlistItems");
+
         }
     }
 }
