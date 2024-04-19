@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240416053732_wishlistcolumn")]
-    partial class wishlistcolumn
+    [Migration("20240419105707_refund")]
+    partial class refund
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -161,6 +161,65 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("Discounts");
                 });
 
+            modelBuilder.Entity("Ginnis.Domains.Entities.OrderList", b =>
+                {
+                    b.Property<string>("RazorpayOrderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmountDue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmountPaid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Entity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfferId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PaymentSuccessful")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RazorpayPaymentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RazorpaySignature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Receipt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RazorpayOrderId");
+
+                    b.ToTable("OrderLists", (string)null);
+                });
+
             modelBuilder.Entity("Ginnis.Domains.Entities.Order_Address", b =>
                 {
                     b.Property<Guid>("Id")
@@ -272,6 +331,46 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("ProductVariants");
                 });
 
+            modelBuilder.Entity("Ginnis.Domains.Entities.RefundList", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BatchId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("CreatedAt")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Entity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PaymentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Receipt")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SpeedProcessed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SpeedRequested")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RefundLists", (string)null);
+                });
+
             modelBuilder.Entity("Ginnis.Domains.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -362,6 +461,9 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
+
+                    b.Property<bool>("WishlistStatus")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

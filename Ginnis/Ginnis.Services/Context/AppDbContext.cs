@@ -1,5 +1,6 @@
 ﻿using Ginnis.Domains.Entities;
 using Microsoft.EntityFrameworkCore;
+using Razorpay.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,8 @@ namespace Ginnis.Services.Context
 
         public DbSet<OrderList> OrderLists { get; set; }
 
+        public DbSet<RefundList> RefundLists { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +61,7 @@ namespace Ginnis.Services.Context
 
             modelBuilder.Entity<OrderList>().ToTable("OrderLists");
 
+            modelBuilder.Entity<RefundList>().ToTable("RefundLists");
         }
     }
 }
