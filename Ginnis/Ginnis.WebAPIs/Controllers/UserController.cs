@@ -240,13 +240,6 @@ namespace Ginnis.WebAPIs.Controllers
             return jwtTokenHandler.WriteToken(token);
         }
 
-        [Authorize]
-        [HttpGet]
-        public async Task<ActionResult<User>> GetAllUsers()
-        {
-            return Ok(await _authContext.Users.ToListAsync());
-        }
-
 
         [HttpPost("send-reset-email/{email}")]
         public async Task<IActionResult> SendEmail(string email)
@@ -327,5 +320,103 @@ namespace Ginnis.WebAPIs.Controllers
                 Message = "Password Reset Successfully"
             });
         }
+
+
+
+        [HttpGet("getCustomer")]
+        public async Task<IActionResult> GetCustomer()
+        {
+            var customerList = await _authContext.Users
+                .Select(user => new CustomerDTO
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Role = user.Role,
+                    PhoneConfirmed = user.PhoneConfirmed,
+                    EmailConfirmed = user.EmailConfirmed,
+                    Status = user.Status,
+                    //Address = user.Address
+                })
+                .ToListAsync();
+
+            if (customerList == null || customerList.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(customerList);
+        }
+
+
+
+        [HttpPost("addCustomer")]
+        public async Task<IActionResult> AddCustomer([FromBody] User customer)
+        {
+            if (customer == null)
+                return BadRequest();
+
+            // check email
+            if (await CheckEmailExistAsync(customer.Email))
+                return BadRequest(new { Message = "Email Already Exist" });
+
+            var passMessage = CheckPasswordStrength(customer.Password);
+            if (!string.IsNullOrEmpty(passMessage))
+                return BadRequest(new { Message = passMessage.ToString() });
+            customer.Password = PasswordHasher.HashPassword(customer.Password);
+
+            var confpassMessage = CheckPasswordStrength(customer.ConfirmPassword);
+            if (!string.IsNullOrEmpty(confpassMessage))
+                return BadRequest(new { Message = confpassMessage.ToString() });
+            customer.ConfirmPassword = PasswordHasher.HashPassword(customer.ConfirmPassword);
+
+
+            customer.Token = CreateJwt(customer); // Generate JWT token
+            customer.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
+
+            await _authContext.Users.AddAsync(customer);
+            await _authContext.SaveChangesAsync();
+
+            // Send registration confirmation email
+            await SendRegistrationConfirmationEmail(customer.Email);
+
+            return Ok(new
+            {
+                Status = 200,
+                Message = "User Added!",
+                Token = customer.Token // Include the generated token in the response
+            }); ;
+        }
+
+
+        [HttpDelete("deleteCustomer/{customerId}")]
+        public async Task<IActionResult> DeleteCustomer(Guid customerId)
+        {
+            try
+            {
+                var customer = await _authContext.Users.FindAsync(customerId);
+
+                if (customer == null)
+                {
+                    return NotFound(); // Address not found
+                }
+
+                _authContext.Users.Remove(customer);
+                await _authContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Delete Customer Success!"
+                }); 
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+
     }
 }

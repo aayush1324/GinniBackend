@@ -49,6 +49,20 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [HttpGet("getProductName/{productName}")]
+        public async Task<IActionResult> GetProductByName( string productName)
+        {
+            var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.ProductName == productName);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(product);
+        }
+
+
         [HttpPut("editProduct/{productId}")]
         public async Task<IActionResult> EditProduct(Guid productId, [FromBody] ProductList updatedProduct)
         {
