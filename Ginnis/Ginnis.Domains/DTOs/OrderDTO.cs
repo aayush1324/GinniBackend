@@ -20,5 +20,8 @@ namespace Ginnis.Domains.DTOs
         public int Attempts { get; set; }
         public List<object> Notes { get; set; }
         public long CreatedAt { get; set; }
+        // New property for custom order ID
+        public string OrderId { get; set; }
+
     }
 }

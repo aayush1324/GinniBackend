@@ -329,6 +329,7 @@ namespace Ginnis.WebAPIs.Controllers
             var customerList = await _authContext.Users
                 .Select(user => new CustomerDTO
                 {
+                    Id = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
                     Phone = user.Phone,
@@ -416,6 +417,45 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [HttpPut("editProduct/{productId}")]
+        public async Task<IActionResult> EditProduct(Guid productId, [FromBody] ProductList updatedProduct)
+        {
+            try
+            {
+                // Find the address by its unique identifier
+                var product = await _authContext.ProductLists.FindAsync(productId);
+
+                if (product == null)
+                {
+                    return NotFound(); // Address not found
+                }
+
+                // Update product properties with the new values
+                product.ProductName = updatedProduct.ProductName;
+                product.Url = updatedProduct.Url;
+                product.Price = updatedProduct.Price;
+                product.Discount = updatedProduct.Discount;
+                product.DeliveryPrice = updatedProduct.DeliveryPrice;
+                product.Quantity = updatedProduct.Quantity;
+                product.Description = updatedProduct.Description;
+                product.Category = updatedProduct.Category;
+                product.Subcategory = updatedProduct.Subcategory;
+                product.Weight = updatedProduct.Weight;
+                product.Status = updatedProduct.Status;
+
+                // Save changes to the database
+                await _authContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Update Product Success!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
 
     }

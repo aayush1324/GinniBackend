@@ -51,5 +51,9 @@ namespace Ginnis.Domains.Entities
         public bool PaymentSuccessful { get; set; }
 
         public string Payload { get; set; }
+
+        // New property for custom order ID
+        public string OrderId { get; set; }
+
     }
 }

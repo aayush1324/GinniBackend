@@ -36,6 +36,9 @@ namespace Ginnis.WebAPIs.Controllers
         {
             try
             {
+                // Generate a unique order ID
+                string orderId = "GINNI" + System.DateTime.UtcNow.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N").Substring(0, 6);
+
                 // Initialize Razorpay client
                 RazorpayClient client = new RazorpayClient("rzp_test_NHayhA8KgRDaCx", "GMmu5cPZbH7ryafdxLFMHF7N");
 
@@ -62,7 +65,8 @@ namespace Ginnis.WebAPIs.Controllers
                     Status = order["status"].ToString(),
                     Attempts = Convert.ToInt32(order["attempts"]),
                     Notes = ((JArray)order["notes"]).ToObject<List<object>>(), // Convert JArray to List<object>
-                    CreatedAt = Convert.ToInt64(order["created_at"])
+                    CreatedAt = Convert.ToInt64(order["created_at"]),
+                    OrderId = orderId // Assign the custom order ID
                 };
 
                 // Save order details in the database
@@ -82,7 +86,8 @@ namespace Ginnis.WebAPIs.Controllers
                     RazorpaySignature = "", // Initialize these properties
                     RazorpayPaymentId = "",
                     PaymentSuccessful = false,
-                    Payload = ""
+                    Payload = "",
+                    OrderId = orderDto.OrderId // Assign the custom order ID
                 };
 
                 // Add the entity to the context and save changes
@@ -298,6 +303,19 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
+
+        [HttpGet("getOrder")]
+        public async Task<IActionResult> GetOrder()
+        {
+            var orderlist = await _authContext.OrderLists.ToListAsync();
+
+            if (orderlist == null || orderlist.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(orderlist);
+        }
     }
 
         
