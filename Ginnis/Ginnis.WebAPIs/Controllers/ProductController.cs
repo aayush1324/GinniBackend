@@ -19,7 +19,6 @@ namespace Ginnis.WebAPIs.Controllers
             _configuration = configuration;
         }
 
-        // POST api/<AddressController>
         [HttpPost("addProduct")]
         public async Task<IActionResult> AddProduct([FromBody] ProductList product)
         {
@@ -34,6 +33,7 @@ namespace Ginnis.WebAPIs.Controllers
                 Message = "Add Product Success!"
             });
         }
+
 
         [HttpGet("getProduct")]
         public async Task<IActionResult> GetProduct()

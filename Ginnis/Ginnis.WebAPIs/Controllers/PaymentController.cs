@@ -316,7 +316,22 @@ namespace Ginnis.WebAPIs.Controllers
 
             return Ok(orderlist);
         }
+
+
+        [HttpGet("getOrderById/{orderID}")]
+        public async Task<IActionResult> GetOrderByID(string orderID)
+        {
+            var order = await _authContext.OrderLists.FirstOrDefaultAsync(p => p.OrderId == orderID);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(order);
+        }
+
     }
 
-        
+
 }

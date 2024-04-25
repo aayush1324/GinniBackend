@@ -45,6 +45,8 @@ namespace Ginnis.Services.Context
 
         public DbSet<RefundList> RefundLists { get; set; }
 
+        public DbSet<ZipCode> ZipCodes { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -62,6 +64,8 @@ namespace Ginnis.Services.Context
             modelBuilder.Entity<OrderList>().ToTable("OrderLists");
 
             modelBuilder.Entity<RefundList>().ToTable("RefundLists");
+
+            modelBuilder.Entity<ZipCode>().ToTable("ZipCodes");
         }
     }
 }
