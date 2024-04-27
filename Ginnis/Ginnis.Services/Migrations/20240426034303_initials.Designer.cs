@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240419105707_refund")]
-    partial class refund
+    [Migration("20240426034303_initials")]
+    partial class initials
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,6 +189,9 @@ namespace Ginnis.Services.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OfferId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Payload")
@@ -468,6 +471,41 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WishlistItems", (string)null);
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.ZipCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Delivery")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("District")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DivisionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfficeType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PinCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RegionName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ZipCodes", (string)null);
                 });
 #pragma warning restore 612, 618
         }

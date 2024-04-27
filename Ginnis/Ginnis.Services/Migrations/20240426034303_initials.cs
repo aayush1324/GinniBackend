@@ -133,7 +133,8 @@ namespace Ginnis.Services.Migrations
                     RazorpaySignature = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RazorpayPaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaymentSuccessful = table.Column<bool>(type: "bit", nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -176,6 +177,27 @@ namespace Ginnis.Services.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductVariants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefundLists",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Receipt = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<long>(type: "bigint", nullable: false),
+                    BatchId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SpeedProcessed = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SpeedRequested = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefundLists", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -232,6 +254,25 @@ namespace Ginnis.Services.Migrations
                 {
                     table.PrimaryKey("PK_Wishlists", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "ZipCodes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PinCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Delivery = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OfficeType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OfficeName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RegionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DivisionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    District = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ZipCodes", x => x.Id);
+                });
         }
 
         /// <inheritdoc />
@@ -265,6 +306,9 @@ namespace Ginnis.Services.Migrations
                 name: "ProductVariants");
 
             migrationBuilder.DropTable(
+                name: "RefundLists");
+
+            migrationBuilder.DropTable(
                 name: "Users");
 
             migrationBuilder.DropTable(
@@ -272,6 +316,9 @@ namespace Ginnis.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "Wishlists");
+
+            migrationBuilder.DropTable(
+                name: "ZipCodes");
         }
     }
 }
