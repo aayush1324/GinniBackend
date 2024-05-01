@@ -2,8 +2,10 @@ using Ginnis.Domains.DTOs;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Repos.Repositories;
 using Ginnis.Services.Context;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NETCore.MailKit.Core;
@@ -11,6 +13,8 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 builder.Services.AddCors(options =>
 {
@@ -51,6 +55,11 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+var twilioAccountSID = "AC10e7e25e6be87abd8b6e39933c21b9f8";
+var twilioAuthToken = "db5f6289eb9c4631b234bd7fa9eed643";
+var twilioPhoneNumber = "+12698154089";
+
+builder.Services.AddSingleton<ISmsService>(new TwilioSmsService(twilioAccountSID, twilioAuthToken, twilioPhoneNumber));
 
 builder.Services.AddAuthorization();
 
