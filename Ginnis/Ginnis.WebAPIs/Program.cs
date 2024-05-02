@@ -59,7 +59,7 @@ var twilioAccountSID = "AC10e7e25e6be87abd8b6e39933c21b9f8";
 var twilioAuthToken = "db5f6289eb9c4631b234bd7fa9eed643";
 var twilioPhoneNumber = "+12698154089";
 
-builder.Services.AddSingleton<ISmsService>(new TwilioSmsService(twilioAccountSID, twilioAuthToken, twilioPhoneNumber));
+//builder.Services.AddSingleton<ISmsService>(new TwilioSmsService(twilioAccountSID, twilioAuthToken, twilioPhoneNumber));
 
 builder.Services.AddAuthorization();
 

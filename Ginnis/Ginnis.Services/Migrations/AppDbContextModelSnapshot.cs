@@ -83,6 +83,20 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("CartLists", (string)null);
                 });
 
+            modelBuilder.Entity("Ginnis.Domains.Entities.Image", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Images", (string)null);
+                });
+
             modelBuilder.Entity("Ginnis.Domains.Entities.OrderList", b =>
                 {
                     b.Property<string>("RazorpayOrderId")
