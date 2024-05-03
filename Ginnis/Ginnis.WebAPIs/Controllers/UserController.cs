@@ -13,6 +13,13 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Cryptography;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Domains.DTOs;
+using Twilio;
+using Grpc.Core;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio;
+using Twilio.Types;
+using Google;
+using Ginnis.Services.Context;
 
 namespace Ginnis.WebAPIs.Controllers
 {
@@ -129,6 +136,9 @@ namespace Ginnis.WebAPIs.Controllers
             // Send registration confirmation email
             await SendRegistrationConfirmationEmail(userObj.Email);
 
+            // Send registration confirmation phone
+            await SendRegistrationConfirmationPhone(userObj.Phone);
+
             return Ok(new
             {
                 Status = 200,
@@ -158,14 +168,167 @@ namespace Ginnis.WebAPIs.Controllers
             user.ConfirmationToken = confirmToken;
             user.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
 
+            // Generate a random OTP
+            var otp = GenerateRandomOtp(); // Implement this method to generate a random OTP
+
+            // Update user with the OTP
+            user.EmailOTP = otp;
+            user.EmailOTPExpiry = DateTime.Now.AddMinutes(5); // Set expiry time for OTP, adjust as needed
+
+
             // Save changes to the database
             _authContext.Entry(user).State = EntityState.Modified;
             await _authContext.SaveChangesAsync();
 
             // Construct and send the confirmation email
             string from = _configuration["EmailSettings:From"];
-            var emailModel = new ConfirmEmail(email, "Welcome to Ginni! Confirm Your Email", ConfirmEmailBody.EmailStringBody(email, confirmToken));
+            var emailModel = new ConfirmEmail(email, "Welcome to Ginni! Confirm Your Email", ConfirmEmailBody.EmailStringBody(email, confirmToken, otp));
             _confirmEmailRepo.SendConfirmEmail(emailModel);
+        }
+
+
+        private string GenerateRandomOtp()
+        {
+            //// Define the length of the OTP
+            //int otpLength = 6; // 6 digits OTP
+
+            //// Define the characters allowed in the OTP
+            //const string allowedChars = "0123456789";
+
+            //// Initialize a StringBuilder to store the OTP
+            //StringBuilder otp = new StringBuilder();
+
+            //// Initialize a Random object
+            //Random random = new Random();
+
+            //// Generate random characters and append them to the OTP
+            //for (int i = 0; i < otpLength; i++)
+            //{
+            //    // Generate a random index to select a character from allowedChars
+            //    int randomIndex = random.Next(0, allowedChars.Length);
+
+            //    // Append the selected character to the OTP
+            //    otp.Append(allowedChars[randomIndex]);
+            //}
+            //// Return the generated OTP as a string
+            //return otp.ToString();
+
+
+            Random random1 = new Random();
+            string pinCode = (random1.Next() % 900000 + 100000).ToString();
+            return pinCode;
+        }
+
+
+        private async Task SendRegistrationConfirmationPhone(string phone)
+        {
+            var user = await _authContext.Users.FirstOrDefaultAsync(a => a.Phone == phone);
+
+            if (user == null)
+            {
+                // Handle the case where the user doesn't exist
+                // This should ideally not happen as the user should have been added before sending the confirmation email
+                // You can log an error or throw an exception as appropriate
+                return;
+            }
+
+            // Generate a random OTP
+            var otp = GenerateRandomOtp(); // Implement this method to generate a random OTP
+
+            // Update user with the OTP
+            user.PhoneOTP = otp;
+            user.PhoneOTPExpiry = DateTime.Now.AddMinutes(1); // Set expiry time for OTP, adjust as needed
+
+            // Save changes to the database
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+
+
+            string accountSid = "AC10e7e25e6be87abd8b6e39933c21b9f8";
+            string authToken = "db5f6289eb9c4631b234bd7fa9eed643";
+            string twilioNumber = "+12698154089";
+            string countryCode = "+91";
+
+            TwilioClient.Init(accountSid, authToken);
+
+            try
+            {
+                string message = $"Welcome to Atul. Your authorization code is {otp}";
+
+                var messageOptions = new CreateMessageOptions(new PhoneNumber(countryCode + user.Phone))
+                {
+                    From = new PhoneNumber(twilioNumber),
+                    Body = message
+                };
+
+                var messageResponse = MessageResource.Create(messageOptions);
+
+
+                if (messageResponse != null && !string.IsNullOrEmpty(messageResponse.Sid))
+                {
+                    // Save OTP verification data to the database
+                    //var otpVerificationData = new TwilioVerify
+                    //{
+                    //    MobileNumber = verification.MobileNumber,
+                    //    VerificationCode = pinCode
+                    //};
+                    //_authContext.TwilioVerifys.Add(otpVerificationData);
+                    //_authContext.SaveChanges();
+
+                    
+                }
+                else
+                {
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle the exception
+                // Log or return an appropriate response
+            }
+        }
+
+
+        [HttpPost("verifyOtps")]
+        public async Task<IActionResult> VerifyOtp([FromBody] OtpVerify request)
+        {
+            // Retrieve the user from the database based on the provided email
+            //var user = await _authContext.Users.FirstOrDefaultAsync(u => (u.PhoneOTP == request.PhoneOtp && u.EmailOTP == request.EmailOtp));
+
+            var user = await _authContext.Users.FirstOrDefaultAsync(u =>
+                                        u.PhoneOTP == request.PhoneOtp &&
+                                        u.EmailOTP == request.EmailOtp &&
+                                        u.EmailOTPExpiry >= DateTime.Now &&
+                                        u.PhoneOTPExpiry >= DateTime.Now);
+
+
+            if (user == null)
+            {
+                // User not found or OTPs expired, return a BadRequest response
+                return BadRequest(new { Message = "Incorrect OTP or OTP expired" });
+            }
+
+            return Ok(new { Message = "OTP verification successful" });
+
+            // Verify email OTP
+            //if (user.EmailOTP != request.EmailOtp || user.EmailOTPExpiry < DateTime.Now)
+            //{
+            //    // Email OTP verification failed, return a BadRequest response
+            //    return BadRequest(new { Message = "Invalid Email OTP" });
+            //}
+
+            // Verify mobile OTP
+            //if (user.PhoneOTP != request.MobileOtp || user.PhoneOTPExpiry < DateTime.Now)
+            //{
+            //    // Mobile OTP verification failed, return a BadRequest response
+            //    return BadRequest(new { Message = "Invalid Mobile OTP" });
+            //}
+
+            // Both OTPs are valid, update user status or perform any necessary actions
+            // For example, you can mark the user as verified in the database
+
+
         }
 
 

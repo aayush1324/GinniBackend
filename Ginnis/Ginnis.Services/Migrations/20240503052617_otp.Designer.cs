@@ -4,6 +4,7 @@ using Ginnis.Services.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240503052617_otp")]
+    partial class otp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -287,12 +290,6 @@ namespace Ginnis.Services.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("EmailOTP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("EmailOTPExpiry")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -301,12 +298,6 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<bool>("PhoneConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("PhoneOTP")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("PhoneOTPExpiry")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ResetPasswordExpiry")
                         .HasColumnType("datetime2");

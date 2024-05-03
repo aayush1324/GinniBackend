@@ -39,6 +39,9 @@ namespace Ginnis.Services.Context
 
         public DbSet<Image> Images { get; set; }
 
+        public DbSet<TwilioVerify> TwilioVerifys { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -60,6 +63,9 @@ namespace Ginnis.Services.Context
             modelBuilder.Entity<ZipCode>().ToTable("ZipCodes");
 
             modelBuilder.Entity<Image>().ToTable("Images");
+
+            modelBuilder.Entity<TwilioVerify>().ToTable("TwilioVerifys");
+
 
         }
     }

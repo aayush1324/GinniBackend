@@ -26,7 +26,15 @@ namespace Ginnis.Domains.Entities
 
         public bool EmailConfirmed { get; set; }
 
+        public string EmailOTP { get; set; }
+
+        public DateTime? EmailOTPExpiry { get; set; }
+
         public bool PhoneConfirmed { get; set; }
+
+        public string PhoneOTP { get; set; }
+
+        public DateTime? PhoneOTPExpiry { get; set; }
 
         public bool Status { get; set; }
 
