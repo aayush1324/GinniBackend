@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240503052617_otp")]
-    partial class otp
+    [Migration("20240504062437_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -290,6 +290,12 @@ namespace Ginnis.Services.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("EmailOTP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailOTPExpiry")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -298,6 +304,12 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<bool>("PhoneConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PhoneOTP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PhoneOTPExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ResetPasswordExpiry")
                         .HasColumnType("datetime2");

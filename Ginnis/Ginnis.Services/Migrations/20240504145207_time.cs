@@ -6,31 +6,37 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class emailotps : Migration
+    public partial class time : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "EmailOTP",
-                table: "Users",
-                type: "nvarchar(max)",
-                nullable: true);
-
             migrationBuilder.AddColumn<DateTime>(
-                name: "EmailOTPExpiry",
+                name: "Created_at",
                 table: "Users",
                 type: "datetime2",
                 nullable: true);
 
-            migrationBuilder.AddColumn<string>(
-                name: "PhoneOTP",
+            migrationBuilder.AddColumn<DateTime>(
+                name: "Deleted_at",
                 table: "Users",
-                type: "nvarchar(max)",
+                type: "datetime2",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "PhoneOTPExpiry",
+                name: "LoginTime",
+                table: "Users",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "LogoutTime",
+                table: "Users",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "Modified_at",
                 table: "Users",
                 type: "datetime2",
                 nullable: true);
@@ -40,19 +46,23 @@ namespace Ginnis.Services.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "EmailOTP",
+                name: "Created_at",
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "EmailOTPExpiry",
+                name: "Deleted_at",
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "PhoneOTP",
+                name: "LoginTime",
                 table: "Users");
 
             migrationBuilder.DropColumn(
-                name: "PhoneOTPExpiry",
+                name: "LogoutTime",
+                table: "Users");
+
+            migrationBuilder.DropColumn(
+                name: "Modified_at",
                 table: "Users");
         }
     }

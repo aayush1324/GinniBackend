@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class initials : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,6 +44,18 @@ namespace Ginnis.Services.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CartLists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,6 +131,19 @@ namespace Ginnis.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TwilioVerifys",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TwilioVerifys", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -131,7 +156,11 @@ namespace Ginnis.Services.Migrations
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    EmailOTP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailOTPExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PhoneConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PhoneOTP = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneOTPExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: false),
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -189,6 +218,9 @@ namespace Ginnis.Services.Migrations
                 name: "CartLists");
 
             migrationBuilder.DropTable(
+                name: "Images");
+
+            migrationBuilder.DropTable(
                 name: "OrderLists");
 
             migrationBuilder.DropTable(
@@ -196,6 +228,9 @@ namespace Ginnis.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "RefundLists");
+
+            migrationBuilder.DropTable(
+                name: "TwilioVerifys");
 
             migrationBuilder.DropTable(
                 name: "Users");

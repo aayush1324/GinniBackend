@@ -33,6 +33,9 @@ namespace Ginnis.Domains.Entities
 
         public string Status { get; set; }
 
+        public string Image { get; set; }
+
+
         //public IFormFile Image { get; set; }
 
         //public byte[] Images { get; set; }

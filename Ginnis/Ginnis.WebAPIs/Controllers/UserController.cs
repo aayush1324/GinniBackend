@@ -20,6 +20,7 @@ using Twilio;
 using Twilio.Types;
 using Google;
 using Ginnis.Services.Context;
+using Google.Api;
 
 namespace Ginnis.WebAPIs.Controllers
 {
@@ -68,6 +69,8 @@ namespace Ginnis.WebAPIs.Controllers
             // Update user status to 1 (assuming 1 means active or logged in)
             user.Status = true;
 
+            // Set the Created_at datetime
+            user.LoginTime = DateTime.Now;
 
             _authContext.Entry(user).State = EntityState.Modified;
             await _authContext.SaveChangesAsync();
@@ -79,27 +82,34 @@ namespace Ginnis.WebAPIs.Controllers
             });
         }
 
+        
+
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout([FromBody] User userObj)
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
         {
-            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Token == userObj.Token);
+            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Token == request.Token);
 
             if (user == null)
             {
-                // Handle case where user with provided token is not found
                 return NotFound(new { Message = "User not found!" });
             }
 
-            // Update user status to 0 (assuming 0 means inactive or logged out)
+            // Perform additional validations if needed
+            
+            user.Token = null; // Invalidate the token or set it to null
             user.Status = false;
 
-            _authContext.Entry(user).State = EntityState.Modified;
+            // Set the Created_at datetime
+            user.LogoutTime = DateTime.Now;
+
             await _authContext.SaveChangesAsync();
 
-            return Ok(new
-            {
-                Message = "Logout Success!"
-            });
+            return Ok(new { Message = "Logout success!" });
+        }
+
+        public class LogoutRequest
+        {
+            public string Token { get; set; }
         }
 
 
@@ -129,6 +139,9 @@ namespace Ginnis.WebAPIs.Controllers
             userObj.Role = "User";
             userObj.Token = CreateJwt(userObj); // Generate JWT token
             userObj.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
+
+            // Set the Created_at datetime
+            userObj.Created_at = DateTime.Now;
 
             await _authContext.Users.AddAsync(userObj);
             await _authContext.SaveChangesAsync();
@@ -237,7 +250,7 @@ namespace Ginnis.WebAPIs.Controllers
 
             // Update user with the OTP
             user.PhoneOTP = otp;
-            user.PhoneOTPExpiry = DateTime.Now.AddMinutes(1); // Set expiry time for OTP, adjust as needed
+            user.PhoneOTPExpiry = DateTime.Now.AddMinutes(5); // Set expiry time for OTP, adjust as needed
 
             // Save changes to the database
             _authContext.Entry(user).State = EntityState.Modified;
@@ -293,21 +306,42 @@ namespace Ginnis.WebAPIs.Controllers
         [HttpPost("verifyOtps")]
         public async Task<IActionResult> VerifyOtp([FromBody] OtpVerify request)
         {
+            if (request == null)
+            {
+                return BadRequest();
+            }
             // Retrieve the user from the database based on the provided email
             //var user = await _authContext.Users.FirstOrDefaultAsync(u => (u.PhoneOTP == request.PhoneOtp && u.EmailOTP == request.EmailOtp));
 
             var user = await _authContext.Users.FirstOrDefaultAsync(u =>
                                         u.PhoneOTP == request.PhoneOtp &&
-                                        u.EmailOTP == request.EmailOtp &&
-                                        u.EmailOTPExpiry >= DateTime.Now &&
-                                        u.PhoneOTPExpiry >= DateTime.Now);
-
+                                        u.EmailOTP == request.EmailOtp);
 
             if (user == null)
             {
                 // User not found or OTPs expired, return a BadRequest response
-                return BadRequest(new { Message = "Incorrect OTP or OTP expired" });
+                return BadRequest(new { Message = "Incorrect OTP" });
             }
+
+            var userexpiry = await _authContext.Users.FirstOrDefaultAsync(u => 
+                                        u.EmailOTPExpiry >= DateTime.Now &&
+                                        u.PhoneOTPExpiry >= DateTime.Now);
+
+            if (userexpiry == null)
+            {
+                return BadRequest(new { Message = "OTP expired" });
+
+            }
+
+            user.EmailConfirmed = true;
+            user.PhoneConfirmed = true;
+
+            //user.EmailOTP = "Done";
+            //user.PhoneOTP = "Done";
+
+            // Save changes to the database
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
 
             return Ok(new { Message = "OTP verification successful" });
 

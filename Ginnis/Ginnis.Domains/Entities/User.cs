@@ -46,5 +46,16 @@ namespace Ginnis.Domains.Entities
 
         public DateTime? ConfirmationExpiry { get; set; }
 
+        public DateTime? LoginTime { get; set; }
+
+        public DateTime? LogoutTime { get; set; }
+
+        public DateTime? Created_at { get; set; }
+
+        public DateTime? Modified_at { get; set; }
+
+        public DateTime? Deleted_at { get; set; }
+
+
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240502111308_image")]
-    partial class image
+    [Migration("20240504145207_time")]
+    partial class time
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,6 +183,9 @@ namespace Ginnis.Services.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -252,6 +255,23 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("RefundLists", (string)null);
                 });
 
+            modelBuilder.Entity("Ginnis.Domains.Entities.TwilioVerify", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("MobileNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("VerificationCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TwilioVerifys", (string)null);
+                });
+
             modelBuilder.Entity("Ginnis.Domains.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -267,11 +287,32 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("ConfirmationToken")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("EmailOTP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EmailOTPExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LoginTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LogoutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
@@ -281,6 +322,12 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<bool>("PhoneConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PhoneOTP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PhoneOTPExpiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("ResetPasswordExpiry")
                         .HasColumnType("datetime2");

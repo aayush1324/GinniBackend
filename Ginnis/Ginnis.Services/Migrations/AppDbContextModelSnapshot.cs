@@ -180,6 +180,9 @@ namespace Ginnis.Services.Migrations
                     b.Property<int>("Discount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
@@ -281,6 +284,12 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("ConfirmationToken")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -291,6 +300,15 @@ namespace Ginnis.Services.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("EmailOTPExpiry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LoginTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LogoutTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Modified_at")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Password")
