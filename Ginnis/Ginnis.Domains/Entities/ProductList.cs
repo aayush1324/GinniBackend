@@ -38,7 +38,9 @@ namespace Ginnis.Domains.Entities
 
         //public IFormFile Image { get; set; }
 
-        //public byte[] Images { get; set; }
+        public byte[] ProfileImage { get; set; }  // Property to store image data as byte array (BLOB)
+
+        public string ImageData { get; set; }       // Property to store Base64-encoded image data
 
         public bool CartStatus { get; set; }
 

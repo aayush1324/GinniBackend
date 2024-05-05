@@ -40,5 +40,38 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+
+        [HttpPost("addMultipleImage")]
+        public async Task<IActionResult> AddImages([FromForm] List<IFormFile> images)
+        {
+            if (images == null || images.Count == 0)
+                return BadRequest("No images provided");
+
+            foreach (var image in images)
+            {
+                if (image == null || image.Length == 0)
+                    continue; // Skip empty images
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    await image.CopyToAsync(memoryStream);
+                    var newImage = new Image
+                    {
+                        Id = Guid.NewGuid(),
+                        ProfileImage = memoryStream.ToArray(),
+                        ImageData = Convert.ToBase64String(memoryStream.ToArray())
+                    };
+
+                    _authContext.Images.Add(newImage);
+                }
+            }
+
+            await _authContext.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = "Images added successfully!"
+            });
+        }
     }
 }
