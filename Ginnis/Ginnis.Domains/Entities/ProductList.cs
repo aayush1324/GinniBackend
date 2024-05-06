@@ -45,5 +45,11 @@ namespace Ginnis.Domains.Entities
         public bool CartStatus { get; set; }
 
         public bool WishlistStatus { get; set; }
+
+        public DateTime? Created_at { get; set; }
+
+        public DateTime? Modified_at { get; set; }
+
+        public DateTime? Deleted_at { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Ginnis.Services.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ginnis.WebAPIs.Controllers
 {
@@ -19,33 +20,16 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpPost("addImage")]
-        public async Task<IActionResult> AddImage([FromBody] List<string> urls)
-        {
-            if (urls == null || !urls.Any())
-                return BadRequest();
-
-            foreach (var url in urls)
-            {
-                var image = new Image { Url = url };
-                await _authContext.Images.AddAsync(image);
-            }
-
-            await _authContext.SaveChangesAsync();
-
-            return Ok(new
-            {
-                Message = "Add Image Success!"
-            });
-        }
-
-
-
         [HttpPost("addMultipleImage")]
-        public async Task<IActionResult> AddImages([FromForm] List<IFormFile> images)
+        public async Task<IActionResult> AddMultipleImages([FromForm] List<IFormFile> images, [FromForm] Guid productId)
         {
             if (images == null || images.Count == 0)
                 return BadRequest("No images provided");
+
+            // Find the product based on the provided product ID
+            var product = await _authContext.ProductLists.FindAsync(productId);
+            if (product == null)
+                return BadRequest("Invalid product ID");
 
             foreach (var image in images)
             {
@@ -58,6 +42,7 @@ namespace Ginnis.WebAPIs.Controllers
                     var newImage = new Image
                     {
                         Id = Guid.NewGuid(),
+                        ProductId = productId, // Associate the image with the specified product
                         ProfileImage = memoryStream.ToArray(),
                         ImageData = Convert.ToBase64String(memoryStream.ToArray())
                     };
@@ -73,5 +58,23 @@ namespace Ginnis.WebAPIs.Controllers
                 Message = "Images added successfully!"
             });
         }
+
+
+        [HttpGet("getImagesByProductId/{productId}")]
+        public IActionResult GetImagesByProductId(Guid productId)
+        {
+            try
+            {
+                // Retrieve images associated with the specified product ID
+                var images = _authContext.Images.Where(img => img.ProductId == productId).ToList();
+
+                return Ok(images);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
     }
 }

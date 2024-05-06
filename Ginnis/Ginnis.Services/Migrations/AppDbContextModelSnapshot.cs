@@ -92,6 +92,9 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("ImageData")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<byte[]>("ProfileImage")
                         .HasColumnType("varbinary(max)");
 
@@ -177,6 +180,12 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("DeliveryPrice")
                         .HasColumnType("int");
 
@@ -191,6 +200,9 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<string>("ImageData")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("Price")
                         .HasColumnType("int");

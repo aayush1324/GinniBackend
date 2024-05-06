@@ -5,14 +5,14 @@
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class imagebyte : Migration
+    public partial class initials : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "ImageData",
-                table: "ProductLists",
+                name: "ProductId",
+                table: "Images",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -21,8 +21,8 @@ namespace Ginnis.Services.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ImageData",
-                table: "ProductLists");
+                name: "ProductId",
+                table: "Images");
         }
     }
 }

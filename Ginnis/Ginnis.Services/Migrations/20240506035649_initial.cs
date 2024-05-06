@@ -6,38 +6,26 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class time : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<DateTime>(
                 name: "Created_at",
-                table: "Users",
+                table: "ProductLists",
                 type: "datetime2",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "Deleted_at",
-                table: "Users",
-                type: "datetime2",
-                nullable: true);
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "LoginTime",
-                table: "Users",
-                type: "datetime2",
-                nullable: true);
-
-            migrationBuilder.AddColumn<DateTime>(
-                name: "LogoutTime",
-                table: "Users",
+                table: "ProductLists",
                 type: "datetime2",
                 nullable: true);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "Modified_at",
-                table: "Users",
+                table: "ProductLists",
                 type: "datetime2",
                 nullable: true);
         }
@@ -47,23 +35,15 @@ namespace Ginnis.Services.Migrations
         {
             migrationBuilder.DropColumn(
                 name: "Created_at",
-                table: "Users");
+                table: "ProductLists");
 
             migrationBuilder.DropColumn(
                 name: "Deleted_at",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "LoginTime",
-                table: "Users");
-
-            migrationBuilder.DropColumn(
-                name: "LogoutTime",
-                table: "Users");
+                table: "ProductLists");
 
             migrationBuilder.DropColumn(
                 name: "Modified_at",
-                table: "Users");
+                table: "ProductLists");
         }
     }
 }

@@ -45,19 +45,22 @@ namespace Ginnis.WebAPIs.Controllers
             if (product == null)
                 return BadRequest();
 
+            product.Created_at = DateTime.Now;
+
+
             using (var memoryStream = new MemoryStream())
             {
                 await image.CopyToAsync(memoryStream);
                 product.ProfileImage = memoryStream.ToArray();
-                product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
-
-                _authContext.ProductLists.Add(product);
-                await _authContext.SaveChangesAsync();
+                product.ImageData = Convert.ToBase64String(memoryStream.ToArray());               
             }
 
+            var productAdded = _authContext.ProductLists.Add(product);
+            await _authContext.SaveChangesAsync();
             return Ok(new
             {
-                Message = "Add Product Success!"
+                ProductId = productAdded.Entity.Id.ToString(),
+                Message = "Product Added Successfully!"
             });
         }
 
@@ -119,16 +122,16 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPut("editProduct/{productId}")]
-        public async Task<IActionResult> EditProduct(Guid productId, [FromBody] ProductList updatedProduct)
+        public async Task<IActionResult> EditProduct(Guid productId, [FromForm] ProductList updatedProduct, IFormFile image)
         {
             try
             {
-                // Find the address by its unique identifier
+                // Find the product by its unique identifier
                 var product = await _authContext.ProductLists.FindAsync(productId);
 
                 if (product == null)
                 {
-                    return NotFound(); // Address not found
+                    return NotFound(); // Product not found
                 }
 
                 // Update product properties with the new values
@@ -144,13 +147,27 @@ namespace Ginnis.WebAPIs.Controllers
                 product.Weight = updatedProduct.Weight;
                 product.Status = updatedProduct.Status;
 
+                product.Modified_at = DateTime.Now;
+
+                // Handle image update if provided
+                if (image != null)
+                {
+                    // Process the image here
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await image.CopyToAsync(memoryStream);
+                        product.ProfileImage = memoryStream.ToArray();
+                        product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
+                    }
+                }
+
                 // Save changes to the database
                 await _authContext.SaveChangesAsync();
 
                 return Ok(new
                 {
-                    Message = "Update Product Success!"
-                }); 
+                    Message = "Product updated successfully!"
+                });
             }
             catch (Exception ex)
             {
@@ -159,72 +176,32 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        //[HttpPut("editProduct/{productId}")]
-        //public async Task<IActionResult> EditProducts(Guid productId, [FromForm] ProductList updatedProductModel)
-        //{
-        //    try
-        //    {
-        //        // Find the product by its unique identifier
-        //        var product = await _authContext.ProductLists.FindAsync(productId);
-
-        //        if (product == null)
-        //        {
-        //            return NotFound(); // Product not found
-        //        }
-
-        //        // Update product properties with the new values
-        //        product.ProductName = updatedProductModel.ProductName;
-        //        product.Url = updatedProductModel.Url;
-        //        product.Price = updatedProductModel.Price;
-        //        product.Discount = updatedProductModel.Discount;
-        //        product.DeliveryPrice = updatedProductModel.DeliveryPrice;
-        //        product.Quantity = updatedProductModel.Quantity;
-        //        product.Description = updatedProductModel.Description;
-        //        product.Category = updatedProductModel.Category;
-        //        product.Subcategory = updatedProductModel.Subcategory;
-        //        product.Weight = updatedProductModel.Weight;
-        //        product.Status = updatedProductModel.Status;
-
-        //        // Handle the image update
-        //        if (updatedProductModel.Image != null && updatedProductModel.Image.Length > 0)
-        //        {
-        //            using (var stream = new MemoryStream())
-        //            {
-        //                //await updatedProductModel.Image.CopyToAsync(stream);
-        //                //product.ImageData = stream.ToArray(); // Convert image to byte array and store in the database
-        //            }
-        //        }
-
-        //        // Save changes to the database
-        //        await _authContext.SaveChangesAsync();
-
-        //        return Ok(new
-        //        {
-        //            Message = "Update Product Success!"
-        //        });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
-
-
-
         [HttpDelete("deleteProduct/{productId}")]
         public async Task<IActionResult> DeleteProduct(Guid productId)
         {
             try
             {
                 var product = await _authContext.ProductLists.FindAsync(productId);
+                
+                // Retrieve images associated with the specified product ID
+                var images = await _authContext.Images.Where(img => img.ProductId == productId).ToListAsync();
+
 
                 if (product == null)
                 {
                     return NotFound(); // Address not found
                 }
 
+                //if (images == null || images.Count == 0)
+                //{
+                //    return NotFound("No images found for the product");
+                //}
+
                 // Remove the address from the context
                 _authContext.ProductLists.Remove(product);
+
+                _authContext.Images.RemoveRange(images);
+
 
                 // Save changes to the database
                 await _authContext.SaveChangesAsync();
@@ -239,11 +216,6 @@ namespace Ginnis.WebAPIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
-
-
-
-
 
     }
 }

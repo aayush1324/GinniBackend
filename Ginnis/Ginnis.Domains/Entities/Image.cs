@@ -11,6 +11,8 @@ namespace Ginnis.Domains.Entities
         public Guid Id { get; set; }
 
         //public Guid Product_id { get; set; }
+        public Guid ProductId { get; set; } // Add a property to store the product ID
+
 
         public string Url { get; set; }
 

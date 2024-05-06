@@ -51,7 +51,9 @@ namespace Ginnis.Services.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -101,6 +103,9 @@ namespace Ginnis.Services.Migrations
                     Subcategory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Weight = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CartStatus = table.Column<bool>(type: "bit", nullable: false),
                     WishlistStatus = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -165,7 +170,12 @@ namespace Ginnis.Services.Migrations
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ConfirmationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConfirmationExpiry = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    ConfirmationExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    LogoutTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
