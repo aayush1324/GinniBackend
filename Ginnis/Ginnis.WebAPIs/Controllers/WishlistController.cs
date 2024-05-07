@@ -50,6 +50,9 @@ namespace Ginnis.WebAPIs.Controllers
                     await _authContext.WishlistItems.AddAsync(wishlist);
                 }
 
+                wishlist.Created_at = DateTime.Now;
+
+
                 existingWishList.WishlistStatus = true;
                 await _authContext.SaveChangesAsync();
 
@@ -65,13 +68,14 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        // GET: api/cart/getCart
-        [HttpGet("getWishlist")]
-        public async Task<IActionResult> GetWishlist()
+        [HttpGet("getWishlist/{userId}")]
+        public async Task<IActionResult> GetWishlist(Guid userId)
         {
             try
             {
-                var wishlist = await _authContext.WishlistItems.ToListAsync();
+                var wishlist = await _authContext.WishlistItems
+                    .Where(w => w.UserId == userId)
+                    .ToListAsync();
 
                 if (wishlist == null || wishlist.Count == 0)
                 {
@@ -85,6 +89,7 @@ namespace Ginnis.WebAPIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
 
 
         // Update your API controller to handle updating the wishlist status
@@ -146,24 +151,35 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpDelete("deleteItem/{id}")]
-        public async Task<IActionResult> RemoveWishlistItem(Guid id)
+        [HttpDelete("deleteItem/{userId}/{productId}")]
+        public async Task<IActionResult> RemoveWishlistItem(string userId, string productId)
         {
-            var wishlistItem = await _authContext.WishlistItems.FindAsync(id);
+            if (!Guid.TryParse(userId, out Guid userIdGuid) || !Guid.TryParse(productId, out Guid productIdGuid))
+            {
+                return BadRequest("Invalid user or product ID format");
+            }
+
+            // Find the wishlist item for the specified user and product
+            var wishlistItem = await _authContext.WishlistItems.FirstOrDefaultAsync(wi => wi.UserId == userIdGuid && wi.ProductId == productIdGuid);
+
             if (wishlistItem == null)
             {
                 return NotFound();
             }
 
-            var wishListProduct = await _authContext.ProductLists.FindAsync(id);
-            wishListProduct.WishlistStatus = false;
+            // Update the wishlist status of the associated product
+            var productList = await _authContext.ProductLists.FindAsync(productIdGuid);
+            if (productList != null)
+            {
+                productList.WishlistStatus = false;
+            }
 
+            // Remove the wishlist item
             _authContext.WishlistItems.Remove(wishlistItem);
             await _authContext.SaveChangesAsync();
 
             return NoContent();
         }
-
 
 
         [HttpDelete("deleteAllItem")]

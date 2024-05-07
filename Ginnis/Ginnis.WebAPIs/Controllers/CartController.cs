@@ -61,6 +61,46 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
+        [HttpPost("addToCart")]
+        public async Task<IActionResult> addToCart([FromBody] CartList cart)
+        {
+            if (cart == null)
+            {
+                return BadRequest("Invalid cart data");
+            }
+
+            try
+            {
+                // Check if the product already exists in the cart based on product ID
+                var existingCartItem = await _authContext.CartLists
+                    .FirstOrDefaultAsync(c => c.ProductId == cart.ProductId && c.UserId == cart.UserId);
+
+                if (existingCartItem != null)
+                {
+                    // If the product already exists, increment its quantity
+                    existingCartItem.Quantity += cart.Quantity;
+                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
+                }
+                else
+                {
+                    // If the product doesn't exist, add it to the cart
+                    await _authContext.CartLists.AddAsync(cart);
+                }
+
+                cart.Created_at = DateTime.Now;
+
+                await _authContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Item added to cart successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
 
 
         // GET: api/cart/getCart
@@ -83,6 +123,29 @@ namespace Ginnis.WebAPIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpGet("getCarts/{userId}")]
+        public async Task<IActionResult> GetCart(Guid userId)
+        {
+            try
+            {
+                var cartList = await _authContext.CartLists
+                    .Where(c => c.UserId == userId)
+                    .ToListAsync();
+
+                if (cartList == null || cartList.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(cartList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
 
 
         [HttpPut("updateCartQuantity/{id}")]

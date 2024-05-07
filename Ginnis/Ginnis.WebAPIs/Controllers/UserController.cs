@@ -419,6 +419,7 @@ namespace Ginnis.WebAPIs.Controllers
 
             var identity = new ClaimsIdentity(new Claim[]
             {
+                new Claim("UserID", user.Id.ToString()),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.Name, $"{user.UserName}"),
                 new Claim("Email", user.Email), // Include user email in the token payload

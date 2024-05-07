@@ -10,7 +10,9 @@ namespace Ginnis.Domains.Entities
     {
         public Guid Id { get; set; }
 
-        //public Guid ProductId { get; set; }
+        public Guid UserId { get; set; }
+
+        public Guid ProductId { get; set; }
 
         public string ProductName { get; set; }
 
@@ -21,6 +23,16 @@ namespace Ginnis.Domains.Entities
         public int TotalPrice { get; set; }
 
         public bool WishlistStatus { get; set; }
+
+        public byte[] ProfileImage { get; set; }  // Property to store image data as byte array (BLOB)
+
+        public string ImageData { get; set; }       // Property to store Base64-encoded image data
+
+        public DateTime? Created_at { get; set; }
+
+        public DateTime? Modified_at { get; set; }
+
+        public DateTime? Deleted_at { get; set; }
 
     }
 }
