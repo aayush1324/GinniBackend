@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240506035649_initial")]
-    partial class initial
+    [Migration("20240508041016_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,14 +40,23 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("City")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("Default")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
@@ -57,6 +66,12 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -69,17 +84,41 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ProfileImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -92,14 +131,26 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ImageData")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte[]>("ProfileImage")
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -174,9 +225,6 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("CartStatus")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Category")
                         .HasColumnType("nvarchar(max)");
 
@@ -194,6 +242,9 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<int>("Discount")
                         .HasColumnType("int");
+
+                    b.Property<string>("DiscountCoupon")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -228,7 +279,7 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("Weight")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("WishlistStatus")
+                    b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -282,11 +333,23 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("MobileNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("VerificationCode")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -368,6 +431,9 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
@@ -379,11 +445,29 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ProfileImage")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -391,7 +475,13 @@ namespace Ginnis.Services.Migrations
                     b.Property<int>("TotalPrice")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("WishlistStatus")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isDeleted")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
@@ -405,6 +495,12 @@ namespace Ginnis.Services.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Delivery")
                         .HasColumnType("nvarchar(max)");
 
@@ -413,6 +509,9 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<string>("DivisionName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("OfficeName")
                         .HasColumnType("nvarchar(max)");
@@ -428,6 +527,9 @@ namespace Ginnis.Services.Migrations
 
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 

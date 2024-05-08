@@ -6,15 +6,17 @@ using System.Threading.Tasks;
 
 namespace Ginnis.Domains.Entities
 {
-    public class Address
+    public class ShippingAddress
     {
         public Guid Id { get; set; }
 
         public Guid UserId { get; set; }
 
+        public Guid OrderId { get; set; }
+
         public string FirstName { get; set; }
 
-        public string LastName { get; set; } = string.Empty;   
+        public string LastName { get; set; } = string.Empty;
 
         public string Phone { get; set; }
 
@@ -37,6 +39,5 @@ namespace Ginnis.Domains.Entities
         public DateTime? Modified_at { get; set; }
 
         public DateTime? Deleted_at { get; set; }
-
     }
 }

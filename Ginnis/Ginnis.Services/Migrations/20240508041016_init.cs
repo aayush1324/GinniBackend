@@ -16,6 +16,7 @@ namespace Ginnis.Services.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -24,7 +25,11 @@ namespace Ginnis.Services.Migrations
                     Pincode = table.Column<int>(type: "int", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Default = table.Column<bool>(type: "bit", nullable: false)
+                    Default = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,10 +41,18 @@ namespace Ginnis.Services.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<int>(type: "int", nullable: false)
+                    TotalPrice = table.Column<int>(type: "int", nullable: false),
+                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -51,9 +64,13 @@ namespace Ginnis.Services.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -96,6 +113,7 @@ namespace Ginnis.Services.Migrations
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<int>(type: "int", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountCoupon = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryPrice = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -106,8 +124,10 @@ namespace Ginnis.Services.Migrations
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CartStatus = table.Column<bool>(type: "bit", nullable: false),
-                    WishlistStatus = table.Column<bool>(type: "bit", nullable: false)
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -141,7 +161,11 @@ namespace Ginnis.Services.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     MobileNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    VerificationCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -166,13 +190,14 @@ namespace Ginnis.Services.Migrations
                     PhoneConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PhoneOTP = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneOTPExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<bool>(type: "bit", nullable: false),
                     ResetPasswordToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ResetPasswordExpiry = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ConfirmationToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConfirmationExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<bool>(type: "bit", nullable: false),
                     LoginTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     LogoutTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -187,11 +212,19 @@ namespace Ginnis.Services.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<int>(type: "int", nullable: false),
-                    WishlistStatus = table.Column<bool>(type: "bit", nullable: false)
+                    WishlistStatus = table.Column<bool>(type: "bit", nullable: false),
+                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -210,7 +243,11 @@ namespace Ginnis.Services.Migrations
                     RegionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DivisionName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     District = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

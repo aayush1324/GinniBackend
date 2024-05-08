@@ -28,6 +28,8 @@ namespace Ginnis.Domains.Entities
 
         public string ImageData { get; set; }       // Property to store Base64-encoded image data
 
+        public bool isDeleted { get; set; }
+
         public DateTime? Created_at { get; set; }
 
         public DateTime? Modified_at { get; set; }
@@ -35,4 +37,5 @@ namespace Ginnis.Domains.Entities
         public DateTime? Deleted_at { get; set; }
 
     }
+
 }

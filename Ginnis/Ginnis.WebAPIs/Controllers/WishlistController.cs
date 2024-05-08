@@ -20,46 +20,60 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        // POST: api/Wishlist/addWishlist
         [HttpPost("addWishlist")]
         public async Task<IActionResult> AddWishlist([FromBody] WishlistItem wishlist)
         {
             if (wishlist == null)
-                return BadRequest();
+                return BadRequest("Wishlist item cannot be null.");
 
             try
             {
-                // Check if the product already exists in the cart
-                var existingWishlistItem = await _authContext.WishlistItems
-                    .FirstOrDefaultAsync(c => c.ProductName == wishlist.ProductName);
+                // Check if the product exists in the product list
+                var existingProduct = await _authContext.ProductLists
+                    .FirstOrDefaultAsync(p => p.Id == wishlist.ProductId);
 
-                var existingWishList = await _authContext.ProductLists
-                    .FirstOrDefaultAsync(c=>c.ProductName == wishlist.ProductName);
+                if (existingProduct == null)
+                    return BadRequest("Product does not exist.");
+
+                // Check if the product already exists in the wishlist
+                var existingWishlistItem = await _authContext.WishlistItems
+                    .FirstOrDefaultAsync(c => c.ProductId == wishlist.ProductId && c.UserId == wishlist.UserId);
 
                 if (existingWishlistItem != null)
-                {
-                    // Item already exists, return conflict
                     return Conflict("Item already exists in the wishlist.");
-                }
-                else
-                {
-                    // If the product doesn't exist, add it to the cart with a default quantity of 1
-                    wishlist.Quantity = 1;
-                    wishlist.TotalPrice = wishlist.Price;
-                    wishlist.WishlistStatus = true; // Update the wishlist status
-                    await _authContext.WishlistItems.AddAsync(wishlist);
-                }
 
+                // Add the item to the wishlist with default quantity and total price
+                wishlist.Quantity = 1;
+                wishlist.TotalPrice = wishlist.Price;
+                wishlist.WishlistStatus = true;
                 wishlist.Created_at = DateTime.Now;
 
-
-                existingWishList.WishlistStatus = true;
-                await _authContext.SaveChangesAsync();
-
-                return Ok(new
+                // Begin transaction
+                using (var transaction = await _authContext.Database.BeginTransactionAsync())
                 {
-                    Message = "Item added to Wishlist successfully"
-                });
+                    try
+                    {
+                        // Add wishlist item
+                        await _authContext.WishlistItems.AddAsync(wishlist);
+
+                        // Update InWishlist property in the product list
+                        existingProduct.InWishlist = true;
+
+                        // Save changes
+                        await _authContext.SaveChangesAsync();
+
+                        // Commit transaction
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception)
+                    {
+                        // Rollback transaction in case of an error
+                        await transaction.RollbackAsync();
+                        throw; // Rethrow the exception to be handled at a higher level
+                    }
+                }
+
+                return Ok(new { Message = "Item added to Wishlist successfully" });
             }
             catch (Exception ex)
             {
@@ -68,7 +82,8 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpGet("getWishlist/{userId}")]
+
+        [HttpGet("getWishlists/{userId}")]
         public async Task<IActionResult> GetWishlist(Guid userId)
         {
             try
@@ -79,7 +94,7 @@ namespace Ginnis.WebAPIs.Controllers
 
                 if (wishlist == null || wishlist.Count == 0)
                 {
-                    return NotFound();
+                    return Ok(wishlist);
                 }
 
                 return Ok(wishlist);
@@ -171,7 +186,7 @@ namespace Ginnis.WebAPIs.Controllers
             var productList = await _authContext.ProductLists.FindAsync(productIdGuid);
             if (productList != null)
             {
-                productList.WishlistStatus = false;
+                //productList.WishlistStatus = false;
             }
 
             // Remove the wishlist item
@@ -189,7 +204,7 @@ namespace Ginnis.WebAPIs.Controllers
 
             foreach (var product in productList)
             {
-                product.WishlistStatus = false;
+                //product.WishlistStatus = false;
             }
 
             _authContext.WishlistItems.RemoveRange(_authContext.WishlistItems); // Remove all Wishlist items

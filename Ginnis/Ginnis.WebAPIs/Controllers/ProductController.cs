@@ -1,4 +1,5 @@
-﻿using Ginnis.Domains.Entities;
+﻿using Ginnis.Domains.DTOs;
+using Ginnis.Domains.Entities;
 using Ginnis.Services.Context;
 using Google.Api;
 using Microsoft.AspNetCore.Http;
@@ -66,7 +67,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpGet("getProductsWithImages")]
-        public async Task<IActionResult> GetProductsWithImages()
+        public async Task<IActionResult> GetProductsWithImages(Guid userID)
         {
             var products = await _authContext.ProductLists.ToListAsync();
 
@@ -77,6 +78,65 @@ namespace Ginnis.WebAPIs.Controllers
 
             return Ok(products);
 
+        }
+
+
+        [HttpGet("getProductsWithImage/{userID}")]
+        public async Task<IActionResult> GetProductsWithImage(Guid userID)
+        {
+            var products = await _authContext.ProductLists.ToListAsync();
+
+            if (products == null || products.Count == 0)
+            {
+                return NotFound();
+            }
+
+            // Query the cart to check if each product is in the cart for the current user
+            var cartItems = await _authContext.CartLists
+                .Where(item => item.UserId == userID && item.isDeleted == false)
+                .Select(item => item.ProductId)
+                .ToListAsync();
+
+            // Query the wishlist to check if each product is in the wishlist for the current user
+            var wishlistItems = await _authContext.WishlistItems
+                .Where(item => item.UserId == userID && item.isDeleted == false)
+                .Select(item => item.ProductId)
+                .ToListAsync();
+
+            // Create a list to hold ProductDTO objects
+            var productDTOs = new List<ProductDTO>();
+
+            // Populate the list of ProductDTOs with product information and status
+            foreach (var product in products)
+            {
+                var productDTO = new ProductDTO
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Url = product.Url,
+                    Price = product.Price,
+                    Discount = product.Discount,
+                    DiscountCoupon = product.DiscountCoupon,
+                    DeliveryPrice = product.DeliveryPrice,
+                    Quantity = product.Quantity,
+                    Description = product.Description,
+                    Category = product.Category,
+                    Subcategory = product.Subcategory,
+                    Weight = product.Weight,
+                    Status = product.Status,
+                    Image = product.Image,
+                    ProfileImage = product.ProfileImage,
+                    ImageData = product.ImageData,
+                    isDeleted = product.isDeleted,
+                    InCart = cartItems.Contains(product.Id), // Check if the product is in the cart
+                    InWishlist = wishlistItems.Contains(product.Id) // Check if the product is in the wishlist
+                };
+
+                // Add the ProductDTO to the list
+                productDTOs.Add(productDTO);
+            }
+
+            return Ok(productDTOs);
         }
 
 

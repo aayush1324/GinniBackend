@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ginnis.Domains.Entities
+namespace Ginnis.Domains.DTOs
 {
-    public class ProductList
+    public class ProductDTO
     {
         public Guid Id { get; set; }
 
@@ -43,14 +42,11 @@ namespace Ginnis.Domains.Entities
 
         public bool isDeleted { get; set; }
 
-        public DateTime? Created_at { get; set; }
-
-        public DateTime? Modified_at { get; set; }
-
-        public DateTime? Deleted_at { get; set; }
 
         // New property to indicate whether the product is in the wishlist
         public bool InWishlist { get; set; }
+
+        public bool InCart { get; set; }
     }
 
 }

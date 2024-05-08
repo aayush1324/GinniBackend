@@ -10,6 +10,10 @@ namespace Ginnis.Domains.Entities
     {
         public Guid Id { get; set; }
 
+        //public string FirstName { get; set; }
+
+        //public string LastName { get; set; } = string.Empty;
+
         public string UserName { get; set; }
 
         public string Email { get; set; }
@@ -36,8 +40,6 @@ namespace Ginnis.Domains.Entities
 
         public DateTime? PhoneOTPExpiry { get; set; }
 
-        public bool Status { get; set; }
-
         public string ResetPasswordToken { get; set; }
 
         public DateTime ResetPasswordExpiry { get; set; }
@@ -46,16 +48,19 @@ namespace Ginnis.Domains.Entities
 
         public DateTime? ConfirmationExpiry { get; set; }
 
+        public bool Status { get; set; }
+
         public DateTime? LoginTime { get; set; }
 
         public DateTime? LogoutTime { get; set; }
+
+        public bool isDeleted { get; set; }
 
         public DateTime? Created_at { get; set; }
 
         public DateTime? Modified_at { get; set; }
 
         public DateTime? Deleted_at { get; set; }
-
 
     }
 }
