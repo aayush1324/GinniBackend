@@ -312,5 +312,23 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
+
+        [HttpGet("search")]
+        public IActionResult Search(string term)
+        {
+            var results = _authContext.ProductLists
+                .Where(p => p.ProductName.Contains(term))
+                 .Select(p => new
+                 {
+                     ProductName = p.ProductName,
+                     Price = p.Price,
+                     ImageData = p.ImageData,
+                     ProfileImage = p.ProfileImage,
+                 })
+                .Take(5)
+                .ToList();
+
+            return Ok(results);
+        }
     }
 }
