@@ -167,15 +167,11 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpDelete("deleteItem/{userId}/{productId}")]
-        public async Task<IActionResult> RemoveWishlistItem(string userId, string productId)
+        public async Task<IActionResult> RemoveWishlistItem(Guid userId, Guid productId)
         {
-            if (!Guid.TryParse(userId, out Guid userIdGuid) || !Guid.TryParse(productId, out Guid productIdGuid))
-            {
-                return BadRequest("Invalid user or product ID format");
-            }
 
             // Find the wishlist item for the specified user and product
-            var wishlistItem = await _authContext.WishlistItems.FirstOrDefaultAsync(wi => wi.UserId == userIdGuid && wi.ProductId == productIdGuid);
+            var wishlistItem = await _authContext.WishlistItems.FirstOrDefaultAsync(wi => wi.UserId == userId && wi.ProductId == productId);
 
             if (wishlistItem == null)
             {
@@ -183,7 +179,7 @@ namespace Ginnis.WebAPIs.Controllers
             }
 
             // Update the wishlist status of the associated product
-            var productList = await _authContext.ProductLists.FindAsync(productIdGuid);
+            var productList = await _authContext.ProductLists.FindAsync(productId);
             if (productList != null)
             {
                 //productList.WishlistStatus = false;
@@ -197,21 +193,21 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpDelete("deleteAllItem")]
-        public async Task<IActionResult> EmptyWishlist()
+        [HttpDelete("deleteAllItem/{userId}")]
+        public async Task<IActionResult> EmptyWishlist(Guid userId)
         {
-            var productList = await _authContext.ProductLists.ToListAsync();
+            // Retrieve wishlist items for the specified user ID
+            var wishlistItems = await _authContext.WishlistItems
+                .Where(item => item.UserId == userId)
+                .ToListAsync();
 
-            foreach (var product in productList)
-            {
-                //product.WishlistStatus = false;
-            }
-
-            _authContext.WishlistItems.RemoveRange(_authContext.WishlistItems); // Remove all Wishlist items
+            // Remove wishlist items for the specified user
+            _authContext.WishlistItems.RemoveRange(wishlistItems);
 
             await _authContext.SaveChangesAsync();
 
             return NoContent();
         }
+
     }
 }

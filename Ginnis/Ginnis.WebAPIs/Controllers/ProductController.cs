@@ -67,7 +67,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpGet("getProductsWithImages")]
-        public async Task<IActionResult> GetProductsWithImages(Guid userID)
+        public async Task<IActionResult> GetProductsWithImages()
         {
             var products = await _authContext.ProductLists.ToListAsync();
 
@@ -76,7 +76,40 @@ namespace Ginnis.WebAPIs.Controllers
                 return NotFound();
             }
 
-            return Ok(products);
+            // Create a list to hold ProductDTO objects
+            var productDTOs = new List<ProductDTO>();
+
+            // Populate the list of ProductDTOs with product information and status
+            foreach (var product in products)
+            {
+                var productDTO = new ProductDTO
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    Url = product.Url,
+                    Price = product.Price,
+                    Discount = product.Discount,
+                    DiscountCoupon = product.DiscountCoupon,
+                    DeliveryPrice = product.DeliveryPrice,
+                    Quantity = product.Quantity,
+                    Description = product.Description,
+                    Category = product.Category,
+                    Subcategory = product.Subcategory,
+                    Weight = product.Weight,
+                    Status = product.Status,
+                    Image = product.Image,
+                    ProfileImage = product.ProfileImage,
+                    ImageData = product.ImageData,
+                    isDeleted = product.isDeleted,
+                    InCart = false, 
+                    InWishlist = false 
+                };
+
+                // Add the ProductDTO to the list
+                productDTOs.Add(productDTO);
+            }
+
+            return Ok(productDTOs);
 
         }
 
@@ -90,6 +123,8 @@ namespace Ginnis.WebAPIs.Controllers
             {
                 return NotFound();
             }
+
+      
 
             // Query the cart to check if each product is in the cart for the current user
             var cartItems = await _authContext.CartLists

@@ -136,7 +136,7 @@ namespace Ginnis.WebAPIs.Controllers
 
                 if (cartList == null || cartList.Count == 0)
                 {
-                    return NotFound();
+                    return Ok(cartList);
                 }
 
                 return Ok(cartList);
@@ -200,14 +200,22 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpDelete("deleteAllItem")]
-        public async Task<IActionResult> EmptyCart()
+        [HttpDelete("deleteAllItem/{userId}")]
+        public async Task<IActionResult> EmptyCart(Guid userId)
         {
-            _authContext.CartLists.RemoveRange(_authContext.CartLists); // Remove all cart items
+            // Retrieve cart items for the specified user ID
+            var cartItems = await _authContext.CartLists
+                .Where(item => item.UserId == userId)
+                .ToListAsync();
+
+            // Remove cart items for the specified user
+            _authContext.CartLists.RemoveRange(cartItems);
+
             await _authContext.SaveChangesAsync();
 
             return NoContent();
         }
+
 
 
         [HttpPost("addToWishlist")]
