@@ -28,6 +28,8 @@ namespace Ginnis.Domains.Entities
 
         public bool isDeleted { get; set; }
 
+        public bool isPaymentDone { get; set; }
+
         public DateTime? Created_at { get; set; }
 
         public DateTime? Modified_at { get; set; }

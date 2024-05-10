@@ -30,7 +30,7 @@ namespace Ginnis.WebAPIs.Controllers
             try
             {
                 // Fetch cart items for the given userId from your Cartlists table
-                var cartItems = await _authContext.CartLists.Where(c => c.UserId == userId).ToListAsync();
+                var cartItems = await _authContext.CartLists.Where(c => c.UserId == userId && c.isPaymentDone == false).ToListAsync();
 
                 string orderId = "GINNI" + DateTime.UtcNow.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N").Substring(0, 6);
 
@@ -67,7 +67,7 @@ namespace Ginnis.WebAPIs.Controllers
             try
             {
                 // Fetch cart items for the given userId and productId from your Cartlists table
-                var cartItem = await _authContext.CartLists.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
+                var cartItem = await _authContext.CartLists.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId && c.isPaymentDone == false);
 
                 if (cartItem == null)
                 {
