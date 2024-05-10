@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Ginnis.Domains.DTOs;
+using Google.Type;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,51 +11,15 @@ namespace Ginnis.Domains.Entities
 {
     public class OrderList
     {
-
-        [Key]
-        public string RazorpayOrderId { get; set; }
-
-
-        [Required]
-        public int Amount { get; set; }
-
-        [Required]
-        public string Currency { get; set; }
-
-        [Required]
-        public string Receipt { get; set; }
-
-        public string Entity { get; set; }
-
-        public int AmountPaid { get; set; }
-
-        public int AmountDue { get; set; }
-
-        public string OfferId { get; set; }
-
-        public string Status { get; set; }
-
-        public int Attempts { get; set; }
-
-   
-        [Timestamp]
-        public byte[] RowVersion { get; set; } // For concurrency control
-
-        public DateTime CreatedAt { get; set; }
-
-
-        // New properties
-
-        public string RazorpaySignature { get; set; }
-
-        public string RazorpayPaymentId { get; set; }
-
-        public bool PaymentSuccessful { get; set; }
-
-        public string Payload { get; set; }
-
-        // New property for custom order ID
+        public Guid Id { get; set; }
         public string OrderId { get; set; }
-
+        public Guid UserId { get; set; }
+        // Include properties from CheckoutOrderDTO
+        public Guid ProductId { get; set; }
+        public int ProductCount { get; set; }
+        public int ProductAmount { get; set; }
+        public int TotalAmount { get; set; }
+        public System.DateTime OrderDate { get; set; }
+        public string Status { get; set; }
     }
 }

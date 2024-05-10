@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240508041016_init")]
-    partial class init
+    [Migration("20240510064853_chnage")]
+    partial class chnage
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -159,6 +159,100 @@ namespace Ginnis.Services.Migrations
 
             modelBuilder.Entity("Ginnis.Domains.Entities.OrderList", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OrderLists", (string)null);
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.ProductList", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Category")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DeliveryPrice")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Discount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DiscountCoupon")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("InWishlist")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("ProfileImage")
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Subcategory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Weight")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductLists", (string)null);
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.RazorpayPayment", b =>
+                {
                     b.Property<string>("RazorpayOrderId")
                         .HasColumnType("nvarchar(450)");
 
@@ -216,75 +310,7 @@ namespace Ginnis.Services.Migrations
 
                     b.HasKey("RazorpayOrderId");
 
-                    b.ToTable("OrderLists", (string)null);
-                });
-
-            modelBuilder.Entity("Ginnis.Domains.Entities.ProductList", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Category")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Deleted_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DeliveryPrice")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DiscountCoupon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageData")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("Modified_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Price")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("ProfileImage")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Subcategory")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Weight")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("isDeleted")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProductLists", (string)null);
+                    b.ToTable("RazorpayPayments", (string)null);
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.RefundList", b =>

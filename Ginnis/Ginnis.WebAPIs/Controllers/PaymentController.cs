@@ -32,13 +32,10 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("create-order")]
-        public async Task<IActionResult> CreateOrder(int amount)
+        public async Task<IActionResult> CreateOrder(int amount, string orderId)
         {
             try
             {
-                // Generate a unique order ID
-                string orderId = "GINNI" + System.DateTime.UtcNow.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N").Substring(0, 6);
-
                 // Initialize Razorpay client
                 RazorpayClient client = new RazorpayClient("rzp_test_NHayhA8KgRDaCx", "GMmu5cPZbH7ryafdxLFMHF7N");
 
@@ -70,7 +67,7 @@ namespace Ginnis.WebAPIs.Controllers
                 };
 
                 // Save order details in the database
-                var entity = new OrderList
+                var entity = new RazorpayPayment
                 {
                     RazorpayOrderId = orderDto.Id,
                     Amount = orderDto.Amount,
@@ -91,7 +88,7 @@ namespace Ginnis.WebAPIs.Controllers
                 };
 
                 // Add the entity to the context and save changes
-                _authContext.OrderLists.Add(entity);
+                _authContext.RazorpayPayments.Add(entity);
                 await _authContext.SaveChangesAsync();
 
                 // Return the OrderDto
@@ -106,7 +103,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("confirm-payment")]
-        public async Task<IActionResult> ConfirmPayment([FromBody] JsonElement data)
+        public async Task<IActionResult> ConfirmPayment([FromBody] JsonElement data, string OrderID)
         {
             try
             {
@@ -122,13 +119,30 @@ namespace Ginnis.WebAPIs.Controllers
                 {
                     // Signature verified, process payment
                     // Update the OrderList entity in the database
-                    var orderListEntity = await _authContext.OrderLists.FirstOrDefaultAsync(o => o.RazorpayOrderId == orderId);
+                    var orderListEntity = await _authContext.RazorpayPayments.FirstOrDefaultAsync(o => o.RazorpayOrderId == orderId);
                     if (orderListEntity != null)
                     {
                         orderListEntity.RazorpaySignature = signature;
                         orderListEntity.RazorpayPaymentId = paymentId;
                         orderListEntity.PaymentSuccessful = true;
                         orderListEntity.Payload = payload;
+
+                        // Update the order status in the OrderList table to "Completed"
+                        var orderdata = await _authContext.OrderLists.Where(o => o.OrderId == OrderID).ToListAsync();
+
+                        if (orderdata != null)
+                        {
+                            foreach (var order in orderdata)
+                            {
+                                order.Status = "Completed";
+                            }
+                            await _authContext.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            // Handle case where order with the provided orderId is not found
+                            return NotFound("Order not found");
+                        }
 
                         // Save changes to the database
                         await _authContext.SaveChangesAsync();
@@ -172,7 +186,7 @@ namespace Ginnis.WebAPIs.Controllers
                 var orderId = data.GetProperty("razorpay_order_id").GetString();
 
                 // Update the OrderList entity in the database
-                var orderListEntity = await _authContext.OrderLists.FirstOrDefaultAsync(o => o.RazorpayOrderId == orderId);
+                var orderListEntity = await _authContext.RazorpayPayments.FirstOrDefaultAsync(o => o.RazorpayOrderId == orderId);
                 if (orderListEntity != null)
                 {
                     orderListEntity.PaymentSuccessful = false;
@@ -321,7 +335,7 @@ namespace Ginnis.WebAPIs.Controllers
         [HttpGet("getOrderById/{orderID}")]
         public async Task<IActionResult> GetOrderByID(string orderID)
         {
-            var order = await _authContext.OrderLists.FirstOrDefaultAsync(p => p.OrderId == orderID);
+            var order = await _authContext.RazorpayPayments.FirstOrDefaultAsync(p => p.OrderId == orderID);
 
             if (order == null)
             {

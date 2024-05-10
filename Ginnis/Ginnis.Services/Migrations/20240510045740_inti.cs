@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class inti : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -81,27 +81,19 @@ namespace Ginnis.Services.Migrations
                 name: "OrderLists",
                 columns: table => new
                 {
-                    RazorpayOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Receipt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AmountPaid = table.Column<int>(type: "int", nullable: false),
-                    AmountDue = table.Column<int>(type: "int", nullable: false),
-                    OfferId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Attempts = table.Column<int>(type: "int", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RazorpaySignature = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RazorpayPaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymentSuccessful = table.Column<bool>(type: "bit", nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductCount = table.Column<int>(type: "int", nullable: false),
+                    ProductAmount = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderLists", x => x.RazorpayOrderId);
+                    table.PrimaryKey("PK_OrderLists", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -127,11 +119,39 @@ namespace Ginnis.Services.Migrations
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    InWishlist = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductLists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RazorpayPayments",
+                columns: table => new
+                {
+                    RazorpayOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Receipt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AmountPaid = table.Column<int>(type: "int", nullable: false),
+                    AmountDue = table.Column<int>(type: "int", nullable: false),
+                    OfferId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Attempts = table.Column<int>(type: "int", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RazorpaySignature = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RazorpayPaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentSuccessful = table.Column<bool>(type: "bit", nullable: false),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RazorpayPayments", x => x.RazorpayOrderId);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,6 +292,9 @@ namespace Ginnis.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductLists");
+
+            migrationBuilder.DropTable(
+                name: "RazorpayPayments");
 
             migrationBuilder.DropTable(
                 name: "RefundLists");

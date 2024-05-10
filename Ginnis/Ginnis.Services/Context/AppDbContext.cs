@@ -33,6 +33,9 @@ namespace Ginnis.Services.Context
 
         public DbSet<OrderList> OrderLists { get; set; }
 
+        public DbSet<RazorpayPayment> RazorpayPayments { get; set; }
+
+
         public DbSet<RefundList> RefundLists { get; set; }
 
         public DbSet<ZipCode> ZipCodes { get; set; }
@@ -57,6 +60,8 @@ namespace Ginnis.Services.Context
             modelBuilder.Entity<WishlistItem>().ToTable("WishlistItems");
 
             modelBuilder.Entity<OrderList>().ToTable("OrderLists");
+
+            modelBuilder.Entity<RazorpayPayment>().ToTable("RazorpayPayments");
 
             modelBuilder.Entity<RefundList>().ToTable("RefundLists");
 

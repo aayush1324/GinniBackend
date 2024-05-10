@@ -5,25 +5,24 @@
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class checkout : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<bool>(
-                name: "InWishlist",
-                table: "ProductLists",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
+            migrationBuilder.AddColumn<string>(
+                name: "CheckoutOrderDTO",
+                table: "OrderLists",
+                type: "nvarchar(max)",
+                nullable: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "InWishlist",
-                table: "ProductLists");
+                name: "CheckoutOrderDTO",
+                table: "OrderLists");
         }
     }
 }

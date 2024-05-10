@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240508044333_initial")]
-    partial class initial
+    [Migration("20240510070513_order")]
+    partial class order
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -159,62 +159,35 @@ namespace Ginnis.Services.Migrations
 
             modelBuilder.Entity("Ginnis.Domains.Entities.OrderList", b =>
                 {
-                    b.Property<string>("RazorpayOrderId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Amount")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AmountDue")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AmountPaid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Attempts")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Entity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OfferId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrderId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Payload")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProductAmount")
+                        .HasColumnType("int");
 
-                    b.Property<bool>("PaymentSuccessful")
-                        .HasColumnType("bit");
+                    b.Property<int>("ProductCount")
+                        .HasColumnType("int");
 
-                    b.Property<string>("RazorpayPaymentId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RazorpaySignature")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Receipt")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RazorpayOrderId");
+                    b.Property<int>("TotalAmount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.ToTable("OrderLists", (string)null);
                 });
@@ -288,6 +261,68 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductLists", (string)null);
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.RazorpayPayment", b =>
+                {
+                    b.Property<string>("RazorpayOrderId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmountDue")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AmountPaid")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Attempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Entity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfferId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Payload")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PaymentSuccessful")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("RazorpayPaymentId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RazorpaySignature")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Receipt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("RazorpayOrderId");
+
+                    b.ToTable("RazorpayPayments", (string)null);
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.RefundList", b =>
