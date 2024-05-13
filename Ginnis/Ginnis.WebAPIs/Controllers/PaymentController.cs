@@ -32,7 +32,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("create-order")]
-        public async Task<IActionResult> CreateOrder(int amount, string orderId)
+        public async Task<IActionResult> CreateOrder(int amount, string orderId, Guid UserID)
         {
             try
             {
@@ -63,7 +63,8 @@ namespace Ginnis.WebAPIs.Controllers
                     Attempts = Convert.ToInt32(order["attempts"]),
                     Notes = ((JArray)order["notes"]).ToObject<List<object>>(), // Convert JArray to List<object>
                     CreatedAt = Convert.ToInt64(order["created_at"]),
-                    OrderId = orderId // Assign the custom order ID
+                    OrderId = orderId, // Assign the custom order ID
+                    UserId = UserID
                 };
 
                 // Save order details in the database
@@ -84,7 +85,8 @@ namespace Ginnis.WebAPIs.Controllers
                     RazorpayPaymentId = "",
                     PaymentSuccessful = false,
                     Payload = "",
-                    OrderId = orderDto.OrderId // Assign the custom order ID
+                    OrderId = orderDto.OrderId, // Assign the custom order ID
+                    UserId = orderDto.UserId
                 };
 
                 // Add the entity to the context and save changes
@@ -103,7 +105,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("confirm-payment")]
-        public async Task<IActionResult> ConfirmPayment([FromBody] JsonElement data, string OrderID)
+        public async Task<IActionResult> ConfirmPayment([FromBody] JsonElement data, string OrderID, Guid UserID)
         {
             try
             {
@@ -128,7 +130,14 @@ namespace Ginnis.WebAPIs.Controllers
                         orderListEntity.Payload = payload;
 
                         // Update the order status in the OrderList table to "Completed"
-                        var orderdata = await _authContext.OrderLists.Where(o => o.OrderId == OrderID).ToListAsync();
+                        var orderdata = await _authContext.OrderLists.Where(o => o.OrderId == OrderID && o.Status == "Pending").ToListAsync();
+                        
+                        var cartdata = await _authContext.CartLists.Where(c => c.UserId == UserID && c.isPaymentDone == false).ToListAsync();
+                        // Remove cart items for the specified user
+                        _authContext.CartLists.RemoveRange(cartdata);
+
+                        await _authContext.SaveChangesAsync();
+
 
                         if (orderdata != null)
                         {
@@ -143,6 +152,22 @@ namespace Ginnis.WebAPIs.Controllers
                             // Handle case where order with the provided orderId is not found
                             return NotFound("Order not found");
                         }
+
+                        //if(cartdata != null) 
+                        //{
+                        //    foreach (var cart in cartdata)
+                        //    {
+                        //        cart.isPaymentDone = true;
+                        //    }
+                        //    await _authContext.SaveChangesAsync();
+                        //}
+                        //else
+                        //{
+                        //    // Handle case where order with the provided orderId is not found
+                        //    return NotFound("Cart not found");
+                        //}
+
+
 
                         // Save changes to the database
                         await _authContext.SaveChangesAsync();
@@ -318,18 +343,21 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpGet("getOrder")]
-        public async Task<IActionResult> GetOrder()
-        {
-            var orderlist = await _authContext.OrderLists.ToListAsync();
 
-            if (orderlist == null || orderlist.Count == 0)
+        [HttpGet("getOrder")]
+        public async Task<IActionResult> GetOrder(Guid userId)
+        {
+            var orderlist = await _authContext.RazorpayPayments.Where(o => o.UserId == userId && o.PaymentSuccessful == true).ToListAsync(); 
+
+
+            if (orderlist == null)
             {
                 return NotFound();
             }
 
             return Ok(orderlist);
         }
+
 
 
         [HttpGet("getOrderById/{orderID}")]

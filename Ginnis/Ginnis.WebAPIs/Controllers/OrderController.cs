@@ -42,6 +42,8 @@ namespace Ginnis.WebAPIs.Controllers
                     UserId = userId,
                     ProductId = cartItem.ProductId,
                     ProductCount = cartItem.Quantity,
+                    ProductName = cartItem.ProductName,
+                    ProductImage = cartItem.ImageData,
                     ProductAmount = cartItem.Price,
                     TotalAmount = cartItem.Quantity * cartItem.Price,
                     OrderDate = DateTime.Now,
@@ -95,6 +97,100 @@ namespace Ginnis.WebAPIs.Controllers
                 await _authContext.SaveChangesAsync();
 
                 return Ok(order);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("getOrder")]
+        public async Task<IActionResult> GetOrder(Guid userId)
+        {
+            var orderlist = await _authContext.OrderLists.Where(o => o.UserId == userId && o.Status == "Completed")
+                                                        .GroupBy(o => o.OrderId) // Group by OrderId
+                                                        .Select(group => group.FirstOrDefault()) // Select the first order for each OrderId
+                                                        .ToListAsync(); 
+
+            if (orderlist == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(orderlist);
+        }
+
+
+        [HttpGet("getOrderById/{orderID}")]
+        public async Task<IActionResult> GetOrderByID(string orderID)
+        {
+            var order = await _authContext.OrderLists.Where(p => p.OrderId == orderID).ToListAsync();
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(order);
+        }
+
+
+        [HttpGet("getOrders")]
+        public async Task<IActionResult> GetOrders()
+        {
+            try
+            {
+                var orders = await _authContext.OrderLists
+                                                 .Join(_authContext.Users, // Join with the Users table
+                                                    order => order.UserId, // Join on OrderList.UserId
+                                                    user => user.Id,  // Join on User.UserId
+                                                    (order, user) => new
+                                                    {
+                                                        user.UserName,
+                                                        user.Email,
+                                                        user.Phone,
+                                                        order.OrderId,
+                                                        order.UserId,
+                                                        order.ProductId,
+                                                        order.ProductName,
+                                                        order.ProductImage,
+                                                        order.ProductCount,
+                                                        order.ProductAmount,
+                                                        order.TotalAmount,
+                                                        order.OrderDate,
+                                                        //User = user // Include User details
+                                                    }
+                                                )
+                                                .Join(
+                                                    _authContext.RazorpayPayments, // Join with the RazorpayPayments table
+                                                    order => order.OrderId, // Join on OrderLists.OrderId
+                                                    payment => payment.OrderId, // Join on RazorpayPayments.OrderId
+                                                    (order, payment) => new
+                                                    {
+                                                        order.UserName,
+                                                        order.Email,
+                                                        order.Phone,
+                                                        order.OrderId,
+                                                        order.UserId,
+                                                        order.ProductId,
+                                                        order.ProductName,
+                                                        order.ProductImage,
+                                                        order.ProductCount,
+                                                        order.ProductAmount,
+                                                        order.TotalAmount,
+                                                        order.OrderDate,
+                                                        payment.Receipt, // Include RazorpayPayments.PaymentId
+                                                        // User = order.User // Include User details from previous join
+                                                    }
+                                                ).ToListAsync();
+
+                if (orders == null || orders.Count == 0)
+                {
+                    return NotFound();
+                }
+
+                return Ok(orders);
             }
             catch (Exception ex)
             {

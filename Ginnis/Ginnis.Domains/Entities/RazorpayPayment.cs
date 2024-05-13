@@ -53,5 +53,8 @@ namespace Ginnis.Domains.Entities
 
         // New property for custom order ID
         public string OrderId { get; set; }
+
+        public Guid UserId { get; set; }
+
     }
 }
