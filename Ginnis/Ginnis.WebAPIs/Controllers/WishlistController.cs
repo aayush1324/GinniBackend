@@ -21,20 +21,13 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("addWishlist")]
-        public async Task<IActionResult> AddWishlist([FromBody] WishlistItem wishlist)
+        public async Task<IActionResult> AddWishlists([FromBody] WishlistItem wishlist)
         {
             if (wishlist == null)
                 return BadRequest("Wishlist item cannot be null.");
 
             try
             {
-                // Check if the product exists in the product list
-                var existingProduct = await _authContext.ProductLists
-                    .FirstOrDefaultAsync(p => p.Id == wishlist.ProductId);
-
-                if (existingProduct == null)
-                    return BadRequest("Product does not exist.");
-
                 // Check if the product already exists in the wishlist
                 var existingWishlistItem = await _authContext.WishlistItems
                     .FirstOrDefaultAsync(c => c.ProductId == wishlist.ProductId && c.UserId == wishlist.UserId);
@@ -48,30 +41,8 @@ namespace Ginnis.WebAPIs.Controllers
                 wishlist.WishlistStatus = true;
                 wishlist.Created_at = DateTime.Now;
 
-                // Begin transaction
-                using (var transaction = await _authContext.Database.BeginTransactionAsync())
-                {
-                    try
-                    {
-                        // Add wishlist item
-                        await _authContext.WishlistItems.AddAsync(wishlist);
-
-                        // Update InWishlist property in the product list
-                        existingProduct.InWishlist = true;
-
-                        // Save changes
-                        await _authContext.SaveChangesAsync();
-
-                        // Commit transaction
-                        await transaction.CommitAsync();
-                    }
-                    catch (Exception)
-                    {
-                        // Rollback transaction in case of an error
-                        await transaction.RollbackAsync();
-                        throw; // Rethrow the exception to be handled at a higher level
-                    }
-                }
+                await _authContext.WishlistItems.AddAsync(wishlist);
+                await _authContext.SaveChangesAsync();
 
                 return Ok(new { Message = "Item added to Wishlist successfully" });
             }
@@ -80,7 +51,6 @@ namespace Ginnis.WebAPIs.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
 
 
         [HttpGet("getWishlists/{userId}")]
@@ -209,5 +179,11 @@ namespace Ginnis.WebAPIs.Controllers
             return NoContent();
         }
 
+
+
+    
+
     }
 }
+
+

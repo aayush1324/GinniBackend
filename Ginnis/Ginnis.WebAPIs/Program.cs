@@ -2,6 +2,7 @@ using Ginnis.Domains.DTOs;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Repos.Repositories;
 using Ginnis.Services.Context;
+using Google.Api;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -32,6 +33,12 @@ builder.Services.AddSingleton(emailSettingss);
 
 builder.Services.AddScoped<IEmailRepo, EmailRepo>();
 builder.Services.AddScoped<IConfirmEmailRepo, ConfirmEmailRepo>();
+builder.Services.AddScoped<IZipCodeRepository, ZipCodeRepository>();
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
+
 
 
 builder.Services.AddControllers();
