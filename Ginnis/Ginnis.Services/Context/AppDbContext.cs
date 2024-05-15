@@ -28,6 +28,9 @@ namespace Ginnis.Services.Context
 
         public DbSet<CartList> CartLists { get; set; }
 
+        public DbSet<Cart> Carts { get; set; }
+
+
 
         public DbSet<WishlistItem> WishlistItems { get; set; }
 

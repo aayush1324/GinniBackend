@@ -1,4 +1,5 @@
-﻿using Ginnis.Domains.Entities;
+﻿using Ginnis.Domains.DTOs;
+using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,17 +17,69 @@ namespace Ginnis.WebAPIs.Controllers
             _cartRepository = cartRepository;
         }
 
+
+        
+        [HttpPost("addToCarts/{userId}/{productId}")]
+        public async Task<IActionResult> AddToCart(Guid userId, Guid productId)
+        {
+            return await _cartRepository.AddToCart(userId, productId);
+        }
+
+
+
+        [HttpGet("getCarts/{userId}")]
+        public async Task<IActionResult> GetCart(Guid userId)
+        {
+            try
+            {
+                var cartDTOs = await _cartRepository.GetCart(userId);
+                return Ok(cartDTOs);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+        [HttpDelete("deleteItem/{userId}/{itemId}")]
+        public async Task<IActionResult> RemoveCartItem(Guid userId, Guid itemId)
+        {
+            return await _cartRepository.RemoveCartItem(userId, itemId);
+        }
+
+
+
+        [HttpDelete("deleteAllItem/{userId}")]
+        public async Task<IActionResult> EmptyCart(Guid userId)
+        {
+            return await _cartRepository.EmptyCart(userId);
+        }
+
+
+
+        [HttpPut("updateCartQuantity")]
+        public async Task<IActionResult> UpdateCartQuantity([FromBody] CartDTO cart)
+        {
+            return await _cartRepository.UpdateCartQuantity(cart);
+        }
+
+
+
+
+
+
+
+
+
         [HttpPost("addCart")]
         public async Task<IActionResult> AddCart([FromBody] CartList cart)
         {
             return await _cartRepository.AddCart(cart);
         }
 
-        [HttpPost("addToCart")]
-        public async Task<IActionResult> AddToCart([FromBody] CartList cart)
-        {
-            return await _cartRepository.AddToCart(cart);
-        }
+  
 
         [HttpGet("getCart")]
         public async Task<IActionResult> GetCart()
@@ -34,29 +87,6 @@ namespace Ginnis.WebAPIs.Controllers
             return await _cartRepository.GetCart();
         }
 
-        [HttpGet("getCarts/{userId}")]
-        public async Task<IActionResult> GetCart(Guid userId)
-        {
-            return await _cartRepository.GetCart(userId);
-        }
-
-        [HttpPut("updateCartQuantity/{id}")]
-        public async Task<IActionResult> UpdateCartQuantity(Guid id, [FromBody] CartList cart)
-        {
-            return await _cartRepository.UpdateCartQuantity(id, cart);
-        }
-
-        [HttpDelete("deleteItem/{id}")]
-        public async Task<IActionResult> RemoveCartItem(Guid id)
-        {
-            return await _cartRepository.RemoveCartItem(id);
-        }
-
-        [HttpDelete("deleteAllItem/{userId}")]
-        public async Task<IActionResult> EmptyCart(Guid userId)
-        {
-            return await _cartRepository.EmptyCart(userId);
-        }
 
         [HttpPost("addToWishlist")]
         public async Task<IActionResult> AddToWishlist([FromBody] CartList item)

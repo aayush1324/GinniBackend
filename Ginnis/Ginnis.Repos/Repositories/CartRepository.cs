@@ -1,6 +1,9 @@
-﻿using Ginnis.Domains.Entities;
+﻿using Ginnis.Domains.DTOs;
+using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Services.Context;
+using Ginnis.Services.Migrations;
+using Google.Api;
 using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,27 +25,38 @@ namespace Ginnis.Repos.Repositories
         }
 
 
-        public async Task<IActionResult> AddCart(CartList cart)
-        {
-            if (cart == null)
-                return new BadRequestResult();
 
+        public async Task<IActionResult> AddToCart(Guid userId, Guid productId)
+        {
             try
             {
-                var existingCartItem = await _authContext.CartLists.FirstOrDefaultAsync(c => c.ProductName == cart.ProductName);
+                var existingCartItem = await _authContext.Carts.FirstOrDefaultAsync(c => c.ProductId == productId && c.UserId == userId);
+               
+                // Find the product in the ProductLists table by productId
+                var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == productId);
 
+                // Assuming you have a property named 'Price' in the ProductLists table
+                var itemPrice = product.Price;
+                
                 if (existingCartItem != null)
                 {
-                    existingCartItem.Quantity += 1;
-                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
+                    existingCartItem.ItemQuantity += 1;
+                    existingCartItem.ItemTotalPrice = existingCartItem.ItemQuantity * itemPrice;
                 }
                 else
                 {
-                    cart.Quantity = 1;
-                    cart.TotalPrice = cart.Price;
-                    await _authContext.CartLists.AddAsync(cart);
-                }
+                    var cartItem = new Cart
+                    {
+                        UserId = userId,
+                        ProductId = productId,
+                        ItemQuantity = 1, // Assuming default quantity
+                        ItemTotalPrice = itemPrice * 1,
+                        Created_at = DateTime.Now
+                    };
 
+                    await _authContext.Carts.AddAsync(cartItem);
+
+                }
                 await _authContext.SaveChangesAsync();
 
                 return new OkObjectResult(new { Message = "Item added to cart successfully" });
@@ -54,31 +68,84 @@ namespace Ginnis.Repos.Repositories
         }
 
 
-        public async Task<IActionResult> AddToCart(CartList cart)
+
+        public async Task<IEnumerable<CartDTO>> GetCart(Guid userId)
         {
-            if (cart == null)
-                return new BadRequestObjectResult("Invalid cart data.");
+            return await _authContext.Carts
+                                    .Where(c => c.UserId == userId)
+                                    .Join(
+                                            _authContext.ProductLists,
+                                            cart => cart.ProductId,
+                                            product => product.Id,
+                                            (cart, product) => new CartDTO
+                                            {
+                                                CartId = cart.Id,
+                                                ItemQuantity = cart.ItemQuantity,
+                                                ItemTotalPrice = cart.ItemTotalPrice,
+                                                ProductId = product.Id,
+                                                ProductName = product.ProductName,
+                                                ItemPrice = product.Price,
+                                                ProfileImage = product.ProfileImage,
+                                                ImageData = product.ImageData
+                                            })
+                                    .ToListAsync();
+        }
+
+
+
+        public async Task<IActionResult> RemoveCartItem(Guid userId, Guid itemId)
+        {
+            var cartItem = await _authContext.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.Id == itemId);
+
+            if (cartItem == null)
+                return new NotFoundResult();
+
+            _authContext.Carts.Remove(cartItem);
+            await _authContext.SaveChangesAsync();
+
+            return new NoContentResult();
+        }
+
+
+
+        public async Task<IActionResult> EmptyCart(Guid userId)
+        {
+            var cartItems = await _authContext.Carts
+                                            .Where(item => item.UserId == userId)
+                                            .ToListAsync();
+
+            _authContext.Carts.RemoveRange(cartItems);
+            await _authContext.SaveChangesAsync();
+
+            return new NoContentResult();
+        }
+
+
+
+        public async Task<IActionResult> UpdateCartQuantity(CartDTO cart)
+        {
+            var existingCartItem = await _authContext.Carts.FindAsync(cart.CartId);
+
+            if (existingCartItem == null)
+                return new NotFoundResult();
+
+            // Find the product in the ProductLists table by productId
+            var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == cart.ProductId);
+
+            // Assuming you have a property named 'Price' in the ProductLists table
+            var itemPrice = product.Price;
+
+            existingCartItem.ItemQuantity = cart.ItemQuantity;
+            existingCartItem.ItemTotalPrice = existingCartItem.ItemQuantity * itemPrice;
+
+            _authContext.Entry(existingCartItem).State = EntityState.Modified;
 
             try
             {
-                var existingCartItem = await _authContext.CartLists.FirstOrDefaultAsync(c => c.ProductId == cart.ProductId && c.UserId == cart.UserId);
-
-                if (existingCartItem != null)
-                {
-                    existingCartItem.Quantity += cart.Quantity;
-                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
-                }
-                else
-                {
-                    await _authContext.CartLists.AddAsync(cart);
-                }
-
-                cart.Created_at = DateTime.Now;
                 await _authContext.SaveChangesAsync();
-
-                return new OkObjectResult(new { Message = "Item added to cart successfully" });
+                return new NoContentResult();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new StatusCodeResult(500);
             }
@@ -120,24 +187,44 @@ namespace Ginnis.Repos.Repositories
                 return new StatusCodeResult(500);
             }
         }
-    
 
 
 
 
-        public async Task<IActionResult> EmptyCart(Guid userId)
+
+
+
+        public async Task<IActionResult> AddCart(CartList cart)
+        {
+            if (cart == null)
+                return new BadRequestResult();
+
+            try
             {
-                var cartItems = await _authContext.CartLists
-                    .Where(item => item.UserId == userId)
-                    .ToListAsync();
+                var existingCartItem = await _authContext.CartLists.FirstOrDefaultAsync(c => c.ProductName == cart.ProductName);
 
-                _authContext.CartLists.RemoveRange(cartItems);
+                if (existingCartItem != null)
+                {
+                    existingCartItem.Quantity += 1;
+                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
+                }
+                else
+                {
+                    cart.Quantity = 1;
+                    cart.TotalPrice = cart.Price;
+                    await _authContext.CartLists.AddAsync(cart);
+                }
+
                 await _authContext.SaveChangesAsync();
 
-                return new NoContentResult();
+                return new OkObjectResult(new { Message = "Item added to cart successfully" });
             }
-
-
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(500);
+            }
+        }
+        
 
         public async Task<IActionResult> GetCart()
         {
@@ -155,66 +242,6 @@ namespace Ginnis.Repos.Repositories
                 return new StatusCodeResult(500);
             }
         }
-
-
-
-        public async Task<IActionResult> GetCart(Guid userId)
-        {
-            try
-            {
-                var cartList = await _authContext.CartLists
-                    .Where(c => c.UserId == userId)
-                    .ToListAsync();
-
-                return new OkObjectResult(cartList);
-            }
-            catch (Exception ex)
-            {
-                return new StatusCodeResult(500);
-            }
-        }
-
-
-
-        public async Task<IActionResult> RemoveCartItem(Guid id)
-        {
-            var cartItem = await _authContext.CartLists.FindAsync(id);
-
-            if (cartItem == null)
-                return new NotFoundResult();
-
-            _authContext.CartLists.Remove(cartItem);
-            await _authContext.SaveChangesAsync();
-
-            return new NoContentResult();
-        }
-
-
-
-        public async Task<IActionResult> UpdateCartQuantity(Guid id, CartList cart)
-        {
-            if (id != cart.Id)
-                return new BadRequestResult();
-
-            var existingCartItem = await _authContext.CartLists.FindAsync(id);
-
-            if (existingCartItem == null)
-                return new NotFoundResult();
-
-            existingCartItem.Quantity = cart.Quantity;
-            existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
-
-            _authContext.Entry(existingCartItem).State = EntityState.Modified;
-
-            try
-            {
-                await _authContext.SaveChangesAsync();
-                return new NoContentResult();
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult(500);
-            }
-        }
+      
     }
 }

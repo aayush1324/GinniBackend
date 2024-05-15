@@ -21,47 +21,6 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        // POST: api/cart/addCart
-        [HttpPost("addCart")]
-        public async Task<IActionResult> AddCart([FromBody] CartList cart)
-        {
-            if (cart == null)
-                return BadRequest();
-
-            try
-            {
-                // Check if the product already exists in the cart
-                var existingCartItem = await _authContext.CartLists
-                    .FirstOrDefaultAsync(c => c.ProductName == cart.ProductName);
-
-                if (existingCartItem != null)
-                {
-                    // If the product already exists, increment its quantity
-                    existingCartItem.Quantity += 1;
-                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
-                }
-                else
-                {
-                    // If the product doesn't exist, add it to the cart with a default quantity of 1
-                    cart.Quantity = 1;
-                    cart.TotalPrice = cart.Price;
-                    await _authContext.CartLists.AddAsync(cart);
-                }
-
-                await _authContext.SaveChangesAsync();
-
-                return Ok(new
-                {
-                    Message = "Item added to cart successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
-
         [HttpPost("addToCart")]
         public async Task<IActionResult> addToCart([FromBody] CartList cart)
         {
@@ -103,6 +62,51 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
+
+
+
+        // POST: api/cart/addCart
+        [HttpPost("addCart")]
+        public async Task<IActionResult> AddCart([FromBody] CartList cart)
+        {
+            if (cart == null)
+                return BadRequest();
+
+            try
+            {
+                // Check if the product already exists in the cart
+                var existingCartItem = await _authContext.CartLists
+                    .FirstOrDefaultAsync(c => c.ProductName == cart.ProductName);
+
+                if (existingCartItem != null)
+                {
+                    // If the product already exists, increment its quantity
+                    existingCartItem.Quantity += 1;
+                    existingCartItem.TotalPrice = existingCartItem.Quantity * existingCartItem.Price;
+                }
+                else
+                {
+                    // If the product doesn't exist, add it to the cart with a default quantity of 1
+                    cart.Quantity = 1;
+                    cart.TotalPrice = cart.Price;
+                    await _authContext.CartLists.AddAsync(cart);
+                }
+
+                await _authContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Item added to cart successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+  
 
         // GET: api/cart/getCart
         [HttpGet("getCart")]

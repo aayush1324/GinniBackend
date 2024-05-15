@@ -1,4 +1,5 @@
-﻿using Ginnis.Domains.Entities;
+﻿using Ginnis.Domains.DTOs;
+using Ginnis.Domains.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,22 @@ namespace Ginnis.Repos.Interfaces
 {
     public interface ICartRepository
     {
-        Task<IActionResult> AddCart(CartList cart);
-        Task<IActionResult> AddToCart(CartList cart);
-        Task<IActionResult> GetCart();
-        Task<IActionResult> GetCart(Guid userId);
-        Task<IActionResult> UpdateCartQuantity(Guid id, CartList cart);
-        Task<IActionResult> RemoveCartItem(Guid id);
+        Task<IActionResult> AddToCart(Guid userId, Guid productId);
+
+        Task<IEnumerable<CartDTO>> GetCart(Guid userId);
+
+        Task<IActionResult> RemoveCartItem(Guid userId, Guid itemId);
+
         Task<IActionResult> EmptyCart(Guid userId);
+
+        Task<IActionResult> UpdateCartQuantity(CartDTO cart);
+
+
+
+
+
+        Task<IActionResult> AddCart(CartList cart);
+        Task<IActionResult> GetCart();
         Task<IActionResult> AddToWishlist(CartList item);
     }
 }

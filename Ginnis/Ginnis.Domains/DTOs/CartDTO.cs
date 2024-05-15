@@ -8,10 +8,18 @@ namespace Ginnis.Domains.DTOs
 {
     public class CartDTO
     {
-        public Guid Id { get; set; }
-        public int CartQuantity { get; set; }
-        public int TotalPrice { get; set; }
+
+        // Properties from Cart table
+        public Guid CartId { get; set; }
+        public int ItemQuantity { get; set; }
+        public int ItemTotalPrice { get; set; }
+
+        // Properties from ProductList table
+        public Guid ProductId { get; set; }
         public string ProductName { get; set; }
+        public decimal ItemPrice { get; set; }
+        public byte[] ProfileImage { get; set; }
         public string ImageData { get; set; }
+        
     }
 }
