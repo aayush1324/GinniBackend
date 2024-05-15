@@ -34,6 +34,9 @@ namespace Ginnis.Services.Context
 
         public DbSet<WishlistItem> WishlistItems { get; set; }
 
+        public DbSet<Wishlist> Wishlists { get; set; }
+
+
         public DbSet<OrderList> OrderLists { get; set; }
 
         public DbSet<RazorpayPayment> RazorpayPayments { get; set; }

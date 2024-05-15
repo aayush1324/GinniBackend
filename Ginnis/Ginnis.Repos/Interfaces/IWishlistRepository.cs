@@ -1,4 +1,5 @@
-﻿using Ginnis.Domains.Entities;
+﻿using Ginnis.Domains.DTOs;
+using Ginnis.Domains.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -10,18 +11,20 @@ namespace Ginnis.Repos.Interfaces
 {
     public interface IWishlistRepository
     {
-        Task<IActionResult> AddWishlistItem(WishlistItem wishlist);
+        Task<IActionResult> AddWishlistItem(Guid userId, Guid productId);
 
-        Task<List<WishlistItem>> GetWishlistItems(Guid userId);
+        Task<IEnumerable<WishlistDTO>> GetWishlistItems(Guid userId);
 
-        Task RemoveWishlistItem(Guid userId, Guid productId);
+        Task<IActionResult> RemoveWishlistItem(Guid userId, Guid productId);
 
-        Task EmptyWishlist(Guid userId);
+        Task<IActionResult> EmptyWishlist(Guid userId);
+
+        Task<IActionResult> UpdateWishlistQuantity(WishlistDTO wishlist);
+
+
+
 
         Task UpdateWishlistStatus(WishlistItem wishlist);
 
-        Task UpdateWishlistQuantity(Guid id, int quantity);
-
- 
     }
 }
