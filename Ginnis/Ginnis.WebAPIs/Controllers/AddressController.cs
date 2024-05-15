@@ -21,7 +21,8 @@ namespace Ginnis.WebAPIs.Controllers
             _configuration = configuration;
         }
 
-        // POST api/<AddressController>
+
+
         [HttpPost("addAddress")]
         public async Task<IActionResult> AddAddress([FromBody] Address address)
         {

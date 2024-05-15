@@ -37,6 +37,5 @@ namespace Ginnis.Domains.Entities
         public DateTime? Modified_at { get; set; }
 
         public DateTime? Deleted_at { get; set; }
-
     }
 }

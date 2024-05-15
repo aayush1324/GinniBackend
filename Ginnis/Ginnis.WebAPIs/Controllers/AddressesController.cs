@@ -1,4 +1,5 @@
-﻿using Ginnis.Domains.Entities;
+﻿using Ginnis.Domains.DTOs;
+using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,33 +19,40 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [HttpPost("addAddress")]
-        public async Task<IActionResult> AddAddress([FromBody] Address address)
+        public async Task<IActionResult> AddAddress(Guid userId, [FromBody] Address address)
         {
-            return await _addressRepository.AddAddress(address);
+            // Pass userId along with the address to the repository method
+            return await _addressRepository.AddAddress(userId, address);
         }
 
 
 
-        [HttpGet("getAddress")]
-        public async Task<IActionResult> GetAddresses()
+        [HttpGet("getAddress/{userId}")]
+        public async Task<IActionResult> GetAddresses(Guid userId)
         {
-            return await _addressRepository.GetAddresses();
-        }
-
-
-
-        [HttpDelete("deleteAddress/{addressId}")]
-        public async Task<IActionResult> DeleteAddress(Guid addressId)
-        {
-            return await _addressRepository.DeleteAddress(addressId);
+            return await _addressRepository.GetAddresses(userId);
         }
 
 
 
         [HttpPut("editAddress/{addressId}")]
-        public async Task<IActionResult> EditAddress(Guid addressId, [FromBody] Address updatedAddress)
+        public async Task<IActionResult> EditAddress(Guid userId, Guid addressId, [FromBody] AddressDTO updatedAddress)
         {
-            return await _addressRepository.EditAddress(addressId, updatedAddress);
+            if (updatedAddress == null)
+                return BadRequest();
+
+            // Call the repository method to edit the address
+            return await _addressRepository.EditAddress(userId, addressId, updatedAddress);
         }
+
+
+
+        [HttpDelete("deleteAddress/{addressId}")]
+        public async Task<IActionResult> DeleteAddress(Guid userId, Guid addressId)
+        {
+            return await _addressRepository.DeleteAddress(userId, addressId);        
+        }
+
+
     }
 }
