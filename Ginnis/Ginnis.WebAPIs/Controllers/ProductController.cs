@@ -127,13 +127,13 @@ namespace Ginnis.WebAPIs.Controllers
       
 
             // Query the cart to check if each product is in the cart for the current user
-            var cartItems = await _authContext.CartLists
+            var cartItems = await _authContext.Carts
                 .Where(item => item.UserId == userID && item.isDeleted == false)
                 .Select(item => item.ProductId)
                 .ToListAsync();
 
             // Query the wishlist to check if each product is in the wishlist for the current user
-            var wishlistItems = await _authContext.WishlistItems
+            var wishlistItems = await _authContext.Wishlists
                 .Where(item => item.UserId == userID && item.isDeleted == false)
                 .Select(item => item.ProductId)
                 .ToListAsync();

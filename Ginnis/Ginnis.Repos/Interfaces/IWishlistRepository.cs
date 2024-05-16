@@ -21,10 +21,5 @@ namespace Ginnis.Repos.Interfaces
 
         Task<IActionResult> UpdateWishlistQuantity(WishlistDTO wishlist);
 
-
-
-
-        Task UpdateWishlistStatus(WishlistItem wishlist);
-
     }
 }

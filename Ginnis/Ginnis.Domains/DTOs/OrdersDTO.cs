@@ -6,24 +6,12 @@ using System.Threading.Tasks;
 
 namespace Ginnis.Domains.DTOs
 {
-    public class OrderListDTO
+    public class OrdersDTO
     {
-
-        public string Name { get; set; }
-
-        public string Email { get; set; }
-
-        public string Mobile { get; set; }
-
-        public string TransactionId { get; set; }
-
         public string OrderId { get; set; }
 
         public int TotalAmount { get; set; }
-
+        
         public DateTime OrderDate { get; set; }
-
-
-
     }
 }

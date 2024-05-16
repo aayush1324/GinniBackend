@@ -16,6 +16,8 @@ namespace Ginnis.WebAPIs.Controllers
             _zipcodeRepository = zipcodeRepository;
         }
 
+
+
         [HttpPost("addZipCode")]
         public async Task<IActionResult> AddZipCode([FromBody] ZipCode zipCode)
         {
@@ -26,6 +28,7 @@ namespace Ginnis.WebAPIs.Controllers
 
             return Ok(new { Message = "Add ZipCode Success!" });
         }
+
 
 
         [HttpGet("getAllZipCode")]
@@ -42,6 +45,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+
         [HttpPost("checkZipCode")]
         public async Task<IActionResult> CheckZipcode([FromBody] ZipCode request)
         {
@@ -51,6 +55,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+
         [HttpDelete("deleteZipCode/{zipcodeId}")]
         public async Task<IActionResult> DeleteZipCode(Guid zipcodeId)
         {
@@ -58,6 +63,7 @@ namespace Ginnis.WebAPIs.Controllers
 
             return Ok(new { Message = "Delete Zipcode Success!" });
         }
+
 
 
         [HttpPut("editZipCode/{zipcodeId}")]

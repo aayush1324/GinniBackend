@@ -37,6 +37,12 @@ builder.Services.AddScoped<IZipCodeRepository, ZipCodeRepository>();
 builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IImageRepository, ImageRepository>();
+builder.Services.AddScoped<ITwilioRepository, TwilioRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+
+
+
 
 
 

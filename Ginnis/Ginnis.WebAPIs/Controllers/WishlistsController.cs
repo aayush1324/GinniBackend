@@ -63,34 +63,12 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
-        [HttpPut("updateWishlistQuantity/{id}")]
+        [HttpPut("updateWishlistQuantity")]
         public async Task<IActionResult> UpdateWishlistQuantity([FromBody] WishlistDTO wishlist)
         {
             return await _wishlistRepository.UpdateWishlistQuantity(wishlist);
 
         }
-
-
-
-
-
-
-
-
-        [HttpPost("updateWishlistStatus")]
-        public async Task<IActionResult> UpdateWishlistStatus([FromBody] WishlistItem wishlist)
-        {
-            try
-            {
-                await _wishlistRepository.UpdateWishlistStatus(wishlist);
-                return Ok(new { Message = "Wishlist status updated successfully" });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-
       
     }
 }

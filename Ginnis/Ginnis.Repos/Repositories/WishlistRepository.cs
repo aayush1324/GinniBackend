@@ -151,21 +151,6 @@ namespace Ginnis.Repos.Repositories
             }
         }
 
-
-
-
-
-
-        public async Task UpdateWishlistStatus(WishlistItem wishlist)
-        {
-            var existingWishlist = await _authContext.WishlistItems.FindAsync(wishlist.Id);
-            if (existingWishlist != null)
-            {
-                existingWishlist.WishlistStatus = wishlist.WishlistStatus;
-                await _authContext.SaveChangesAsync();
-            }
-        }
-
         
     }
 }
