@@ -86,7 +86,7 @@ namespace Ginnis.Services.Context
 
             modelBuilder.Entity<TwilioVerify>().ToTable("TwilioVerifys");
 
-
+            modelBuilder.UserDataSeed();
         }
     }
 }

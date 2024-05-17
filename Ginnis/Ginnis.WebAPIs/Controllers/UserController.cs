@@ -42,6 +42,8 @@ namespace Ginnis.WebAPIs.Controllers
             _confirmEmailRepo = confirmEmailRepo;
         }
 
+
+
         [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] User userObj)
         {
@@ -159,6 +161,54 @@ namespace Ginnis.WebAPIs.Controllers
                 Token = userObj.Token // Include the generated token in the response
             });;
         }
+
+
+
+        [HttpPost("verifyOtps")]
+        public async Task<IActionResult> VerifyOtp([FromBody] OtpVerify request)
+        {
+            if (request == null)
+            {
+                return BadRequest();
+            }
+            // Retrieve the user from the database based on the provided email
+            //var user = await _authContext.Users.FirstOrDefaultAsync(u => (u.PhoneOTP == request.PhoneOtp && u.EmailOTP == request.EmailOtp));
+
+            var user = await _authContext.Users.FirstOrDefaultAsync(u =>
+                                        u.PhoneOTP == request.PhoneOtp &&
+                                        u.EmailOTP == request.EmailOtp);
+
+            if (user == null)
+            {
+                // User not found or OTPs expired, return a BadRequest response
+                return BadRequest(new { Message = "Incorrect OTP" });
+            }
+
+            var userexpiry = await _authContext.Users.FirstOrDefaultAsync(u =>
+                                        u.EmailOTPExpiry >= DateTime.Now &&
+                                        u.PhoneOTPExpiry >= DateTime.Now);
+
+            if (userexpiry == null)
+            {
+                return BadRequest(new { Message = "OTP expired" });
+
+            }
+
+            user.EmailConfirmed = true;
+            user.PhoneConfirmed = true;
+
+            //user.EmailOTP = "Done";
+            //user.PhoneOTP = "Done";
+
+            // Save changes to the database
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+
+            return Ok(new { Message = "OTP verification successful" });
+
+
+        }
+
 
 
         private async Task SendRegistrationConfirmationEmail(string email)
@@ -303,66 +353,45 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [HttpPost("verifyOtps")]
-        public async Task<IActionResult> VerifyOtp([FromBody] OtpVerify request)
+        private Task<bool> CheckEmailExistAsync(string email)
+           => _authContext.Users.AnyAsync(x => x.Email == email);
+
+        private static string CheckPasswordStrength(string pass)
         {
-            if (request == null)
+            StringBuilder sb = new StringBuilder();
+            if (pass.Length < 9)
+                sb.Append("Minimum password length should be 8" + Environment.NewLine);
+            if (!(Regex.IsMatch(pass, "[a-z]") && Regex.IsMatch(pass, "[A-Z]") && Regex.IsMatch(pass, "[0-9]")))
+                sb.Append("Password should be AlphaNumeric" + Environment.NewLine);
+            if (!Regex.IsMatch(pass, "[<,>,@,!,#,$,%,^,&,*,(,),_,+,\\[,\\],{,},?,:,;,|,',\\,.,/,~,`,-,=]"))
+                sb.Append("Password should contain special character" + Environment.NewLine);
+            return sb.ToString();
+        }
+
+        private string CreateJwt(User user)
+        {
+            var jwtTokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("veryveryveryveryveryverysceret.....");
+
+            var identity = new ClaimsIdentity(new Claim[]
             {
-                return BadRequest();
-            }
-            // Retrieve the user from the database based on the provided email
-            //var user = await _authContext.Users.FirstOrDefaultAsync(u => (u.PhoneOTP == request.PhoneOtp && u.EmailOTP == request.EmailOtp));
+                new Claim("UserID", user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.Role),
+                new Claim(ClaimTypes.Name, $"{user.UserName}"),
+                new Claim("Email", user.Email), // Include user email in the token payload
+                                                // Add more claims as needed
+            });
 
-            var user = await _authContext.Users.FirstOrDefaultAsync(u =>
-                                        u.PhoneOTP == request.PhoneOtp &&
-                                        u.EmailOTP == request.EmailOtp);
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
 
-            if (user == null)
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                // User not found or OTPs expired, return a BadRequest response
-                return BadRequest(new { Message = "Incorrect OTP" });
-            }
-
-            var userexpiry = await _authContext.Users.FirstOrDefaultAsync(u => 
-                                        u.EmailOTPExpiry >= DateTime.Now &&
-                                        u.PhoneOTPExpiry >= DateTime.Now);
-
-            if (userexpiry == null)
-            {
-                return BadRequest(new { Message = "OTP expired" });
-
-            }
-
-            user.EmailConfirmed = true;
-            user.PhoneConfirmed = true;
-
-            //user.EmailOTP = "Done";
-            //user.PhoneOTP = "Done";
-
-            // Save changes to the database
-            _authContext.Entry(user).State = EntityState.Modified;
-            await _authContext.SaveChangesAsync();
-
-            return Ok(new { Message = "OTP verification successful" });
-
-            // Verify email OTP
-            //if (user.EmailOTP != request.EmailOtp || user.EmailOTPExpiry < DateTime.Now)
-            //{
-            //    // Email OTP verification failed, return a BadRequest response
-            //    return BadRequest(new { Message = "Invalid Email OTP" });
-            //}
-
-            // Verify mobile OTP
-            //if (user.PhoneOTP != request.MobileOtp || user.PhoneOTPExpiry < DateTime.Now)
-            //{
-            //    // Mobile OTP verification failed, return a BadRequest response
-            //    return BadRequest(new { Message = "Invalid Mobile OTP" });
-            //}
-
-            // Both OTPs are valid, update user status or perform any necessary actions
-            // For example, you can mark the user as verified in the database
-
-
+                Subject = identity,
+                Expires = DateTime.Now.AddMinutes(10),
+                SigningCredentials = credentials
+            };
+            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+            return jwtTokenHandler.WriteToken(token);
         }
 
 
@@ -393,49 +422,6 @@ namespace Ginnis.WebAPIs.Controllers
                 StatusCode = 200,
                 Message = "Email Verified!"
             });
-        }
-
-
-        private Task<bool> CheckEmailExistAsync(string email)
-           => _authContext.Users.AnyAsync(x => x.Email == email);
-
-        private static string CheckPasswordStrength(string pass)
-        {
-            StringBuilder sb = new StringBuilder();
-            if (pass.Length < 9)
-                sb.Append("Minimum password length should be 8" + Environment.NewLine);
-            if (!(Regex.IsMatch(pass, "[a-z]") && Regex.IsMatch(pass, "[A-Z]") && Regex.IsMatch(pass, "[0-9]")))
-                sb.Append("Password should be AlphaNumeric" + Environment.NewLine);
-            if (!Regex.IsMatch(pass, "[<,>,@,!,#,$,%,^,&,*,(,),_,+,\\[,\\],{,},?,:,;,|,',\\,.,/,~,`,-,=]"))
-                sb.Append("Password should contain special character" + Environment.NewLine);
-            return sb.ToString();
-        }
-
-
-        private string CreateJwt(User user)
-        {
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("veryveryveryveryveryverysceret.....");
-
-            var identity = new ClaimsIdentity(new Claim[]
-            {
-                new Claim("UserID", user.Id.ToString()),
-                new Claim(ClaimTypes.Role, user.Role),
-                new Claim(ClaimTypes.Name, $"{user.UserName}"),
-                new Claim("Email", user.Email), // Include user email in the token payload
-                                                // Add more claims as needed
-            });
-
-            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = identity,
-                Expires = DateTime.Now.AddMinutes(10),
-                SigningCredentials = credentials
-            };
-            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-            return jwtTokenHandler.WriteToken(token);
         }
 
 
@@ -518,6 +504,9 @@ namespace Ginnis.WebAPIs.Controllers
                 Message = "Password Reset Successfully"
             });
         }
+
+
+
 
 
 
@@ -615,6 +604,9 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+
+
+
         [HttpPut("editProduct/{productId}")]
         public async Task<IActionResult> EditProduct(Guid productId, [FromBody] ProductList updatedProduct)
         {
@@ -657,4 +649,6 @@ namespace Ginnis.WebAPIs.Controllers
 
 
     }
+
+
 }

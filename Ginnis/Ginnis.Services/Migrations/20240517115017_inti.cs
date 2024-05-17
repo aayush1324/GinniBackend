@@ -50,6 +50,7 @@ namespace Ginnis.Services.Migrations
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -57,6 +58,26 @@ namespace Ginnis.Services.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CartLists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemQuantity = table.Column<int>(type: "int", nullable: false),
+                    ItemTotalPrice = table.Column<int>(type: "int", nullable: false),
+                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,18 +103,38 @@ namespace Ginnis.Services.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductCount = table.Column<int>(type: "int", nullable: false),
                     ProductAmount = table.Column<int>(type: "int", nullable: false),
                     TotalAmount = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderLists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orderss",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductCount = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orderss", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -105,6 +146,7 @@ namespace Ginnis.Services.Migrations
                     Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<int>(type: "int", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
+                    DiscountedPrice = table.Column<int>(type: "int", nullable: false),
                     DiscountCoupon = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryPrice = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
@@ -113,14 +155,12 @@ namespace Ginnis.Services.Migrations
                     Subcategory = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Weight = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isDeleted = table.Column<bool>(type: "bit", nullable: false),
                     Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    InWishlist = table.Column<bool>(type: "bit", nullable: false)
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -147,7 +187,8 @@ namespace Ginnis.Services.Migrations
                     RazorpayPaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PaymentSuccessful = table.Column<bool>(type: "bit", nullable: false),
                     Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -252,6 +293,26 @@ namespace Ginnis.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Wishlists",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemQuantity = table.Column<int>(type: "int", nullable: false),
+                    ItemTotalPrice = table.Column<int>(type: "int", nullable: false),
+                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wishlists", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ZipCodes",
                 columns: table => new
                 {
@@ -273,6 +334,11 @@ namespace Ginnis.Services.Migrations
                 {
                     table.PrimaryKey("PK_ZipCodes", x => x.Id);
                 });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "ConfirmPassword", "ConfirmationExpiry", "ConfirmationToken", "Created_at", "Deleted_at", "Email", "EmailConfirmed", "EmailOTP", "EmailOTPExpiry", "LoginTime", "LogoutTime", "Modified_at", "Password", "Phone", "PhoneConfirmed", "PhoneOTP", "PhoneOTPExpiry", "ResetPasswordExpiry", "ResetPasswordToken", "Role", "Status", "Token", "UserName", "isDeleted" },
+                values: new object[] { new Guid("6d2542d5-99b8-467e-8161-12a06c034e5f"), "password123", new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4729), "confirmationtoken123", new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4731), null, "user1@example.com", true, "emailotp123", new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4709), new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730), new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730), new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4732), "password123", "1234567890", true, "phoneotp123", new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4727), new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4728), "resettoken123", "User", true, "token123", "user1", false });
         }
 
         /// <inheritdoc />
@@ -285,10 +351,16 @@ namespace Ginnis.Services.Migrations
                 name: "CartLists");
 
             migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
                 name: "Images");
 
             migrationBuilder.DropTable(
                 name: "OrderLists");
+
+            migrationBuilder.DropTable(
+                name: "Orderss");
 
             migrationBuilder.DropTable(
                 name: "ProductLists");
@@ -307,6 +379,9 @@ namespace Ginnis.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "WishlistItems");
+
+            migrationBuilder.DropTable(
+                name: "Wishlists");
 
             migrationBuilder.DropTable(
                 name: "ZipCodes");

@@ -2,7 +2,6 @@
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Repos.Repositories;
-using Ginnis.Services.Migrations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;

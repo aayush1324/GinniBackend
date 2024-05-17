@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240515111001_wishlist")]
-    partial class wishlist
+    [Migration("20240517115017_inti")]
+    partial class inti
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -113,7 +113,7 @@ namespace Ginnis.Services.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Carts");
+                    b.ToTable("Carts", (string)null);
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.CartList", b =>
@@ -239,6 +239,38 @@ namespace Ginnis.Services.Migrations
                     b.ToTable("OrderLists", (string)null);
                 });
 
+            modelBuilder.Entity("Ginnis.Domains.Entities.Orders", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("OrderId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalAmount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Orderss", (string)null);
+                });
+
             modelBuilder.Entity("Ginnis.Domains.Entities.ProductList", b =>
                 {
                     b.Property<Guid>("Id")
@@ -266,14 +298,11 @@ namespace Ginnis.Services.Migrations
                     b.Property<string>("DiscountCoupon")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DiscountedPrice")
+                        .HasColumnType("int");
 
                     b.Property<string>("ImageData")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("InWishlist")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("Modified_at")
                         .HasColumnType("datetime2");
@@ -525,6 +554,73 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6d2542d5-99b8-467e-8161-12a06c034e5f"),
+                            ConfirmPassword = "password123",
+                            ConfirmationExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4729),
+                            ConfirmationToken = "confirmationtoken123",
+                            Created_at = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4731),
+                            Email = "user1@example.com",
+                            EmailConfirmed = true,
+                            EmailOTP = "emailotp123",
+                            EmailOTPExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4709),
+                            LoginTime = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730),
+                            LogoutTime = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730),
+                            Modified_at = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4732),
+                            Password = "password123",
+                            Phone = "1234567890",
+                            PhoneConfirmed = true,
+                            PhoneOTP = "phoneotp123",
+                            PhoneOTPExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4727),
+                            ResetPasswordExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4728),
+                            ResetPasswordToken = "resettoken123",
+                            Role = "User",
+                            Status = true,
+                            Token = "token123",
+                            UserName = "user1",
+                            isDeleted = false
+                        });
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.Wishlist", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("Created_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Deleted_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ItemQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ItemTotalPrice")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("Modified_at")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("isPaymentDone")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Wishlists", (string)null);
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.WishlistItem", b =>

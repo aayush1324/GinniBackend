@@ -2,7 +2,6 @@
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Services.Context;
-using Ginnis.Services.Migrations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

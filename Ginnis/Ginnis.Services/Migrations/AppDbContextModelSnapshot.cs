@@ -551,6 +551,35 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("6d2542d5-99b8-467e-8161-12a06c034e5f"),
+                            ConfirmPassword = "password123",
+                            ConfirmationExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4729),
+                            ConfirmationToken = "confirmationtoken123",
+                            Created_at = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4731),
+                            Email = "user1@example.com",
+                            EmailConfirmed = true,
+                            EmailOTP = "emailotp123",
+                            EmailOTPExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4709),
+                            LoginTime = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730),
+                            LogoutTime = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730),
+                            Modified_at = new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4732),
+                            Password = "password123",
+                            Phone = "1234567890",
+                            PhoneConfirmed = true,
+                            PhoneOTP = "phoneotp123",
+                            PhoneOTPExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4727),
+                            ResetPasswordExpiry = new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4728),
+                            ResetPasswordToken = "resettoken123",
+                            Role = "User",
+                            Status = true,
+                            Token = "token123",
+                            UserName = "user1",
+                            isDeleted = false
+                        });
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.Wishlist", b =>

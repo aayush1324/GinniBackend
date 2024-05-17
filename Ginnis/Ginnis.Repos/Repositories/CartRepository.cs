@@ -2,7 +2,6 @@
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Services.Context;
-using Ginnis.Services.Migrations;
 using Google.Api;
 using Grpc.Core;
 using Microsoft.AspNetCore.Mvc;
