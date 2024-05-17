@@ -91,16 +91,16 @@ namespace Ginnis.WebAPIs.Controllers
                     Discount = product.Discount,
                     DiscountCoupon = product.DiscountCoupon,
                     DeliveryPrice = product.DeliveryPrice,
-                    Quantity = product.Quantity,
+                    //Quantity = product.Quantity,
                     Description = product.Description,
                     Category = product.Category,
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
                     Status = product.Status,
-                    Image = product.Image,
+                    //Image = product.Image,
                     ProfileImage = product.ProfileImage,
                     ImageData = product.ImageData,
-                    isDeleted = product.isDeleted,
+                    //isDeleted = product.isDeleted,
                     InCart = false, 
                     InWishlist = false 
                 };
@@ -153,16 +153,16 @@ namespace Ginnis.WebAPIs.Controllers
                     Discount = product.Discount,
                     DiscountCoupon = product.DiscountCoupon,
                     DeliveryPrice = product.DeliveryPrice,
-                    Quantity = product.Quantity,
+                    //Quantity = product.Quantity,
                     Description = product.Description,
                     Category = product.Category,
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
                     Status = product.Status,
-                    Image = product.Image,
+                    //Image = product.Image,
                     ProfileImage = product.ProfileImage,
                     ImageData = product.ImageData,
-                    isDeleted = product.isDeleted,
+                    //isDeleted = product.isDeleted,
                     InCart = cartItems.Contains(product.Id), // Check if the product is in the cart
                     InWishlist = wishlistItems.Contains(product.Id) // Check if the product is in the wishlist
                 };
@@ -331,4 +331,5 @@ namespace Ginnis.WebAPIs.Controllers
             return Ok(results);
         }
     }
+
 }

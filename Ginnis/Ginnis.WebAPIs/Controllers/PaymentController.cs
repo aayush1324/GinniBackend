@@ -235,44 +235,6 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
-        //[HttpPost("refund-payment")]
-        //public async Task<IActionResult> RefundPayment([FromBody] JsonElement data)
-        //{
-        //    try
-        //    {
-        //        var orderId = data.GetProperty("razorpay_order_id").GetString();
-        //        var paymentId = data.GetProperty("razorpay_payment_id").GetString();
-
-        //        // Logic for refunding payment goes here
-        //        // For example, you can call Razorpay API to initiate a refund
-
-        //        // Update the OrderList entity in the database
-        //        var orderListEntity = await _authContext.OrderLists.FirstOrDefaultAsync(o => o.RazorpayOrderId == orderId);
-        //        if (orderListEntity != null)
-        //        {
-        //            // Assuming refund was successful, mark the payment as failed
-        //            orderListEntity.PaymentSuccessful = false;
-
-        //            // Save changes to the database
-        //            await _authContext.SaveChangesAsync();
-
-        //            return Ok(new { message = "Payment refunded successfully" });
-        //        }
-        //        else
-        //        {
-        //            // Order not found
-        //            return NotFound("Order not found");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Error processing refund payment: {ex.Message}");
-        //    }
-        //}
-
-
-
-
         [HttpPost("refund-payment")]
         public async Task<IActionResult> RefundOrder([FromBody] JsonElement data)
         {
@@ -343,7 +305,11 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+       
 
+
+
+        
         [HttpGet("getOrder")]
         public async Task<IActionResult> GetOrder(Guid userId)
         {

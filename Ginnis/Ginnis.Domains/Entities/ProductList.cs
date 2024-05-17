@@ -19,6 +19,8 @@ namespace Ginnis.Domains.Entities
 
         public int Discount { get; set; }
 
+        public int DiscountedPrice { get; set; }
+
         public string DiscountCoupon { get; set; }
 
         public int DeliveryPrice { get; set; }
@@ -35,8 +37,6 @@ namespace Ginnis.Domains.Entities
 
         public string Status { get; set; }
 
-        public string Image { get; set; }                    //  not use
-
         public byte[] ProfileImage { get; set; }  // Property to store image data as byte array (BLOB)
 
         public string ImageData { get; set; }       // Property to store Base64-encoded image data
@@ -49,8 +49,9 @@ namespace Ginnis.Domains.Entities
 
         public DateTime? Deleted_at { get; set; }
 
-        // New property to indicate whether the product is in the wishlist
-        public bool InWishlist { get; set; }
+        // public string Image { get; set; }                    //  not use
+
+        // public bool InWishlist { get; set; }
     }
 
 }

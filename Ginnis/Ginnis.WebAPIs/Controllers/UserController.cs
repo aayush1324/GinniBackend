@@ -634,7 +634,7 @@ namespace Ginnis.WebAPIs.Controllers
                 product.Price = updatedProduct.Price;
                 product.Discount = updatedProduct.Discount;
                 product.DeliveryPrice = updatedProduct.DeliveryPrice;
-                product.Quantity = updatedProduct.Quantity;
+                //product.Quantity = updatedProduct.Quantity;
                 product.Description = updatedProduct.Description;
                 product.Category = updatedProduct.Category;
                 product.Subcategory = updatedProduct.Subcategory;
