@@ -82,6 +82,5 @@ namespace Ginnis.WebAPIs.Controllers
             return await _productRepository.GetProductImage(productId);
         }
 
-
     }
 }

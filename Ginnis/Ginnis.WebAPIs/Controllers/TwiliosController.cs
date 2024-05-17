@@ -84,6 +84,8 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
+
+
         [HttpPost("VerificationOtp")]
         public async Task<IActionResult> VerificationOtp(TwilioVerify verification)
         {
@@ -149,6 +151,8 @@ namespace Ginnis.WebAPIs.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
 
         [HttpPost("VerifyOtp")]
         public async Task<IActionResult> VerifyOtp(string mobileNumber, string verificationCode)
