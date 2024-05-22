@@ -22,6 +22,7 @@ using Ginnis.Services.Context;
 using Google.Api;
 using Microsoft.Extensions.Configuration;
 using Ginnis.WebAPIs.Helpers;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Ginnis.Repos.Repositories
 {
@@ -58,14 +59,14 @@ namespace Ginnis.Repos.Repositories
 
             // Update user with confirmation token and expiry time
             user.ConfirmationToken = confirmToken;
-            user.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
+            user.ConfirmationExpiry = DateTime.Now.AddMinutes(10);
 
             // Generate a random OTP
             var otp = GenerateRandomOtp(); // Implement this method to generate a random OTP
 
             // Update user with the OTP
             user.EmailOTP = otp;
-            user.EmailOTPExpiry = DateTime.Now.AddMinutes(5); // Set expiry time for OTP, adjust as needed
+            user.EmailOTPExpiry = DateTime.Now.AddMinutes(10); // Set expiry time for OTP, adjust as needed
 
 
             // Save changes to the database
@@ -94,7 +95,7 @@ namespace Ginnis.Repos.Repositories
 
             // Update user with the OTP
             user.PhoneOTP = otp;
-            user.PhoneOTPExpiry = DateTime.Now.AddMinutes(5); // Set expiry time for OTP, adjust as needed
+            user.PhoneOTPExpiry = DateTime.Now.AddMinutes(10); // Set expiry time for OTP, adjust as needed
 
             // Save changes to the database
             _authContext.Entry(user).State = EntityState.Modified;
@@ -179,7 +180,6 @@ namespace Ginnis.Repos.Repositories
         }
 
 
-
         private static string CheckPasswordStrength(string pass)
         {
             StringBuilder sb = new StringBuilder();
@@ -191,15 +191,55 @@ namespace Ginnis.Repos.Repositories
                 sb.Append("Password should contain special character" + Environment.NewLine);
             return sb.ToString();
         }
- 
+
 
         public async Task<bool> CheckEmailExistAsync(string email)
         {
-            return await _authContext.Users.AnyAsync(u => u.Email == email);
+            var user = await _authContext.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user != null)
+            {
+                // Assuming OtpExpire is a DateTime field and you want to check if it is expired
+                if (user.EmailOTPExpiry <= DateTime.Now && user.EmailConfirmed == false 
+                    && user.PhoneOTPExpiry <=  DateTime.Now && user.PhoneConfirmed == false )
+                {
+                    _authContext.Users.Remove(user);
+                    await _authContext.SaveChangesAsync();
+                    return false;
+
+                }
+                if (user.EmailOTPExpiry >= DateTime.Now && user.EmailConfirmed == false
+                    && user.PhoneOTPExpiry >= DateTime.Now && user.PhoneConfirmed == false)
+                {
+                    _authContext.Users.Remove(user);
+                    await _authContext.SaveChangesAsync();
+                    return false;
+
+                }
+                else
+                {
+                    return true;
+
+                }
+            }
+            return false;
         }
 
 
-       
+        //private async Task ScheduleUserRemovalIfConfirmationExpires(User user)
+        //{
+        //    await Task.Delay(1 * 60 * 1000); // Wait for 1 minute (EmailOTPExpiry PhoneOTPExpiry)
+        //    if (user.EmailOTPExpiry <= DateTime.Now || user.PhoneOTPExpiry <= DateTime.Now)
+        //    {
+        //        var userToBeRemoved = await _authContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
+        //        if (userToBeRemoved != null)
+        //        {
+        //            _authContext.Users.Remove(userToBeRemoved);
+        //            await _authContext.SaveChangesAsync();
+        //        }
+        //    }
+        //}
+
 
 
         public async Task<IActionResult> AddUser([FromBody] User userObj)
@@ -207,33 +247,33 @@ namespace Ginnis.Repos.Repositories
             if (userObj == null)
                 return new BadRequestObjectResult("Invalid user");
 
-            // check email
+            // Check if the email already exists
             if (await CheckEmailExistAsync(userObj.Email))
                 return new BadRequestObjectResult("Email Already Exist");
 
-
+            // Check password strength
             var passMessage = CheckPasswordStrength(userObj.Password);
             if (!string.IsNullOrEmpty(passMessage))
-                //return BadRequest(new { Message = passMessage.ToString() });
-            return new BadRequestObjectResult(passMessage.ToString());
+                return new BadRequestObjectResult(passMessage);
 
+            // Hash the password
             userObj.Password = PasswordHasher.HashPassword(userObj.Password);
 
-
+            // Check password confirmation strength
             var confpassMessage = CheckPasswordStrength(userObj.ConfirmPassword);
             if (!string.IsNullOrEmpty(confpassMessage))
-                //return BadRequest(new { Message = confpassMessage.ToString() });
-            return new BadRequestObjectResult(confpassMessage.ToString());
+                return new BadRequestObjectResult(confpassMessage);
 
-
+            // Hash the confirmation password
             userObj.ConfirmPassword = PasswordHasher.HashPassword(userObj.ConfirmPassword);
 
-
+            // Set user role and generate JWT token
             userObj.Role = "User";
-            userObj.Token = CreateJwt(userObj); // Generate JWT token
-            userObj.ConfirmationExpiry = DateTime.Now.AddMinutes(15);
+            userObj.Token = CreateJwt(userObj);
+            userObj.ConfirmationExpiry = DateTime.Now.AddMinutes(5);
             userObj.Created_at = DateTime.Now;
 
+            // Add the user to the database
             await _authContext.Users.AddAsync(userObj);
             await _authContext.SaveChangesAsync();
 
@@ -243,19 +283,26 @@ namespace Ginnis.Repos.Repositories
             // Send registration confirmation phone
             await SendRegistrationConfirmationPhone(userObj.Phone);
 
+            // Schedule task to remove user if confirmation expires
+            //ScheduleUserRemovalIfConfirmationExpires(userObj);
+
             return new OkObjectResult(new
             {
                 Status = 200,
                 Message = "User Added!",
                 Token = userObj.Token // Include the generated token in the response
-            }); ;
+            });
         }
-
+  
 
 
         public async Task<string> VerifyOtp([FromBody] OtpVerify request)
         {
             var user = await _authContext.Users.FirstOrDefaultAsync(u =>
+                                      u.PhoneOTP == request.PhoneOtp &&
+                                      u.EmailOTP == request.EmailOtp);
+
+            var userExpiry = await _authContext.Users.FirstOrDefaultAsync(u =>
                                       u.PhoneOTP == request.PhoneOtp &&
                                       u.EmailOTP == request.EmailOtp &&
                                       u.EmailOTPExpiry >= DateTime.Now &&
@@ -263,16 +310,26 @@ namespace Ginnis.Repos.Repositories
 
             if (user != null)
             {
-                user.EmailConfirmed = true;
-                user.PhoneConfirmed = true;
+                if (userExpiry != null)
+                {
+                    user.EmailConfirmed = true;
+                    user.PhoneConfirmed = true;
 
-                _authContext.Entry(user).State = EntityState.Modified;
-                await _authContext.SaveChangesAsync();
+                    _authContext.Entry(user).State = EntityState.Modified;
+                    await _authContext.SaveChangesAsync();
 
-                return "OTP verification successful";
+                    return "OTP verification successful";
+                }
+                else
+                {
+                    return "Expired OTP";
+                }
+              
             }
-
-            return "Incorrect or expired OTP";
+            else 
+            {
+                return "Incorrect OTP";
+            }
         }
 
 
@@ -280,22 +337,25 @@ namespace Ginnis.Repos.Repositories
         public async Task<IActionResult> Authenticate([FromBody] User userObj)
         {
             if (userObj == null)
-                return new BadRequestObjectResult("NOt Input");
+                return new OkObjectResult(new { Message = "Not Input" });
 
             var user = await _authContext.Users.FirstOrDefaultAsync(x => x.Email == userObj.Email);
 
             if (user == null)
-                return new BadRequestObjectResult("User Not Found");
+                return new OkObjectResult(new { Message = "User Not Found" });
+
+            if (!user.EmailConfirmed && !user.PhoneConfirmed)
+            {
+                return new OkObjectResult(new { Message = "OTP is not confirmed yet" });
+            }
 
             if (!PasswordHasher.VerifyPassword(userObj.Password, user.Password))
             {
-                return new BadRequestObjectResult("Password is Incorrect");
+                return new OkObjectResult(new { Message = "Password is Incorrect" });
+
             }
 
-            if (!user.EmailConfirmed)
-            {
-                return new BadRequestObjectResult("Email is not confirmed yet");
-            }
+     
 
             user.Token = CreateJwt(user);
 
@@ -336,6 +396,62 @@ namespace Ginnis.Repos.Repositories
 
             return "Logout success" ;
         }
+
+
+        public async Task SendResetPasswordEmailAsync(string email)
+        {
+            var user = await _authContext.Users.FirstOrDefaultAsync(a => a.Email == email);
+
+            if (user == null)
+            {
+                throw new Exception("Email Doesn't Exist");
+            }
+
+            var tokenBytes = RandomNumberGenerator.GetBytes(64);
+            var emailToken = Convert.ToBase64String(tokenBytes);
+
+            user.ResetPasswordToken = emailToken;
+            user.ResetPasswordExpiry = DateTime.Now.AddMinutes(15);
+
+            string from = _configuration["EmailSettings:From"];
+            var emailModel = new Email(email, "Reset Password!!", EmailBody.EmailStringBody(email, emailToken));
+
+            _emailRepo.SendEmail(emailModel);
+
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+        }
+
+
+
+        public async Task ResetPasswordAsync(ResetPasswordDto resetPasswordDto)
+        {
+            var newToken = resetPasswordDto.EmailToken.Replace(" ", "+");
+
+            var user = await _authContext.Users.AsNoTracking().FirstOrDefaultAsync(a => a.Email == resetPasswordDto.Email);
+
+            if (user == null)
+            {
+                throw new Exception("User Doesn't Exist");
+            }
+
+            var tokenCode = user.ResetPasswordToken;
+            DateTime emailTokenExpiry = user.ResetPasswordExpiry;
+
+            if (tokenCode != newToken || emailTokenExpiry < DateTime.Now)
+            {
+                throw new Exception("Invalid Reset Link");
+            }
+
+            user.Password = PasswordHasher.HashPassword(resetPasswordDto.NewPassword);
+
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+        }
+
+
+
+
 
 
 
@@ -431,5 +547,11 @@ namespace Ginnis.Repos.Repositories
                 return new StatusCodeResult(500); // Internal server error
             }
         }
+
+
+
+
+
+
     }
 }

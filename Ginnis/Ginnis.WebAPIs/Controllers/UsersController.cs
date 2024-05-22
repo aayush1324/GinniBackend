@@ -1,6 +1,7 @@
 ﻿using Ginnis.Domains.DTOs;
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Ginnis.Services.Context;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ namespace Ginnis.WebAPIs.Controllers
         private readonly IEmailRepo _emailRepo;
         private readonly IConfirmEmailRepo _confirmEmailRepo;
         private readonly IUserRepository _userRepository;
+
 
         public UsersController(IConfiguration configuration, IEmailRepo emailRepo, IConfirmEmailRepo confirmEmailRepo,IUserRepository userRepository)
         {
@@ -79,6 +81,51 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [HttpPost("send-reset-email/{email}")]
+        public async Task<IActionResult> SendEmail(string email)
+        {
+            try
+            {
+                await _userRepository.SendResetPasswordEmailAsync(email);
+
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Email Sent!"
+                });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(new
+                {
+                    StatusCode = 404,
+                    Message = ex.Message
+                });
+            }
+        }
+
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
+        {
+            try
+            {
+                await _userRepository.ResetPasswordAsync(resetPasswordDto);
+                return Ok(new
+                {
+                    StatusCode = 200,
+                    Message = "Password Reset Successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new
+                {
+                    StatusCode = 400,
+                    Message = ex.Message
+                });
+            }
+        }
 
 
 
@@ -102,5 +149,6 @@ namespace Ginnis.WebAPIs.Controllers
         {
             return await _userRepository.DeleteCustomer(customerId);
         }
+
     }
 }

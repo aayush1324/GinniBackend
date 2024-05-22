@@ -19,6 +19,11 @@ namespace Ginnis.Repos.Interfaces
 
         Task<ActionResult<string>> LogoutUser(string token);
 
+        Task SendResetPasswordEmailAsync(string email);
+
+        Task ResetPasswordAsync(ResetPasswordDto resetPasswordDto);
+
+
         Task<IActionResult> GetCustomers();
 
         Task<IActionResult> AddCustomer(User customer);
