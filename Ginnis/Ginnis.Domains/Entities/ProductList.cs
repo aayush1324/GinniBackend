@@ -49,9 +49,15 @@ namespace Ginnis.Domains.Entities
 
         public DateTime? Deleted_at { get; set; }
 
-        // public string Image { get; set; }                    //  not use
 
-        // public bool InWishlist { get; set; }
+
+        public ICollection<Cart> Cart { get; set; }
+
+        public ICollection<Wishlist> Wishlist { get; set; }
+
+        public ICollection<Image> Image { get; set; }
+
+        public ICollection<Orders> Orders { get; set; }
     }
 
 }

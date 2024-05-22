@@ -10,7 +10,10 @@ namespace Ginnis.Domains.Entities
     {
         public Guid Id { get; set; }
 
+
         public Guid UserId { get; set; }
+        public User User { get; set; }
+
 
         public string FirstName { get; set; }
 

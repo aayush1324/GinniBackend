@@ -4,6 +4,7 @@ using Ginnis.Services.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240522054105_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -262,6 +265,9 @@ namespace Ginnis.Services.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("RazorpayPaymentRazorpayOrderId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -274,6 +280,8 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("RazorpayPaymentRazorpayOrderId");
 
                     b.HasIndex("UserId");
 
@@ -569,24 +577,24 @@ namespace Ginnis.Services.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("2071ef38-b733-4ba2-a1bb-b46a0616a06c"),
+                            Id = new Guid("09725f93-d529-4d85-af8a-a98d820b6257"),
                             ConfirmPassword = "/ywXuc5Kuq+WvCk93pUNDc2JlWkySLMxkyTd56lGibD18s/7",
-                            ConfirmationExpiry = new DateTime(2024, 5, 23, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3900),
+                            ConfirmationExpiry = new DateTime(2024, 5, 23, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2541),
                             ConfirmationToken = "MLlcspMx6qLute8YyPzed5AgBSW9/UEXU9WicE2iIDHH7UvVUNKJ5ZQDykPMgIeV5EAHJiLX/6vHCbeqDz1LVg==",
-                            Created_at = new DateTime(2024, 5, 22, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3902),
+                            Created_at = new DateTime(2024, 5, 22, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2543),
                             Email = "aayushagrawal97@gmail.com",
                             EmailConfirmed = true,
                             EmailOTP = "635212",
-                            EmailOTPExpiry = new DateTime(2024, 5, 23, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3880),
-                            LoginTime = new DateTime(2024, 5, 22, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3901),
-                            LogoutTime = new DateTime(2024, 5, 22, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3902),
-                            Modified_at = new DateTime(2024, 5, 22, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3903),
+                            EmailOTPExpiry = new DateTime(2024, 5, 23, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2523),
+                            LoginTime = new DateTime(2024, 5, 22, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2542),
+                            LogoutTime = new DateTime(2024, 5, 22, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2542),
+                            Modified_at = new DateTime(2024, 5, 22, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2544),
                             Password = "WJ+gIjhFeAGMd/z0a8eZGdJLW3Y42Swj9+k5/W5E0+gbanYc",
                             Phone = "7877976611",
                             PhoneConfirmed = true,
                             PhoneOTP = "486192",
-                            PhoneOTPExpiry = new DateTime(2024, 5, 23, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3899),
-                            ResetPasswordExpiry = new DateTime(2024, 5, 23, 11, 14, 57, 85, DateTimeKind.Local).AddTicks(3900),
+                            PhoneOTPExpiry = new DateTime(2024, 5, 23, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2539),
+                            ResetPasswordExpiry = new DateTime(2024, 5, 23, 11, 11, 5, 201, DateTimeKind.Local).AddTicks(2540),
                             ResetPasswordToken = "NULL",
                             Role = "Admin",
                             Status = true,
@@ -784,6 +792,10 @@ namespace Ginnis.Services.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Ginnis.Domains.Entities.RazorpayPayment", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("RazorpayPaymentRazorpayOrderId");
+
                     b.HasOne("Ginnis.Domains.Entities.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -834,6 +846,11 @@ namespace Ginnis.Services.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Wishlist");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.RazorpayPayment", b =>
+                {
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Ginnis.Domains.Entities.User", b =>

@@ -51,10 +51,14 @@ namespace Ginnis.Domains.Entities
 
         public string Payload { get; set; }
 
+
         // New property for custom order ID
         public string OrderId { get; set; }
+        //public Orders Orders { get; set; }
+
 
         public Guid UserId { get; set; }
+        public User User { get; set; }
 
     }
 }

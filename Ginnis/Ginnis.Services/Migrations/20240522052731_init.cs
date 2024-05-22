@@ -6,36 +6,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Ginnis.Services.Migrations
 {
     /// <inheritdoc />
-    public partial class inti : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Addresses",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Pincode = table.Column<int>(type: "int", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Default = table.Column<bool>(type: "bit", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "CartLists",
                 columns: table => new
@@ -61,44 +36,6 @@ namespace Ginnis.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Carts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ItemQuantity = table.Column<int>(type: "int", nullable: false),
-                    ItemTotalPrice = table.Column<int>(type: "int", nullable: false),
-                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Carts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderLists",
                 columns: table => new
                 {
@@ -117,24 +54,6 @@ namespace Ginnis.Services.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderLists", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Orderss",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductCount = table.Column<int>(type: "int", nullable: false),
-                    TotalAmount = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orderss", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -165,34 +84,6 @@ namespace Ginnis.Services.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ProductLists", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RazorpayPayments",
-                columns: table => new
-                {
-                    RazorpayOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Amount = table.Column<int>(type: "int", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Receipt = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AmountPaid = table.Column<int>(type: "int", nullable: false),
-                    AmountDue = table.Column<int>(type: "int", nullable: false),
-                    OfferId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Attempts = table.Column<int>(type: "int", nullable: false),
-                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RazorpaySignature = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RazorpayPaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymentSuccessful = table.Column<bool>(type: "bit", nullable: false),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RazorpayPayments", x => x.RazorpayOrderId);
                 });
 
             migrationBuilder.CreateTable(
@@ -293,26 +184,6 @@ namespace Ginnis.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Wishlists",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ItemQuantity = table.Column<int>(type: "int", nullable: false),
-                    ItemTotalPrice = table.Column<int>(type: "int", nullable: false),
-                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
-                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Wishlists", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ZipCodes",
                 columns: table => new
                 {
@@ -335,10 +206,249 @@ namespace Ginnis.Services.Migrations
                     table.PrimaryKey("PK_ZipCodes", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProfileImage = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_ProductLists_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "ProductLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Pincode = table.Column<int>(type: "int", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Default = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Carts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemQuantity = table.Column<int>(type: "int", nullable: false),
+                    ItemTotalPrice = table.Column<int>(type: "int", nullable: false),
+                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Carts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Carts_ProductLists_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "ProductLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Carts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RazorpayPayments",
+                columns: table => new
+                {
+                    RazorpayOrderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Receipt = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Entity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AmountPaid = table.Column<int>(type: "int", nullable: false),
+                    AmountDue = table.Column<int>(type: "int", nullable: false),
+                    OfferId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Attempts = table.Column<int>(type: "int", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RazorpaySignature = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RazorpayPaymentId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PaymentSuccessful = table.Column<bool>(type: "bit", nullable: false),
+                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RazorpayPayments", x => x.RazorpayOrderId);
+                    table.ForeignKey(
+                        name: "FK_RazorpayPayments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Wishlists",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ItemQuantity = table.Column<int>(type: "int", nullable: false),
+                    ItemTotalPrice = table.Column<int>(type: "int", nullable: false),
+                    isPaymentDone = table.Column<bool>(type: "bit", nullable: false),
+                    isDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    Created_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Modified_at = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted_at = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wishlists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Wishlists_ProductLists_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "ProductLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Wishlists_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orderss",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RazorpayPaymentRazorpayOrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductCount = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orderss", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orderss_ProductLists_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "ProductLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orderss_RazorpayPayments_RazorpayPaymentRazorpayOrderId",
+                        column: x => x.RazorpayPaymentRazorpayOrderId,
+                        principalTable: "RazorpayPayments",
+                        principalColumn: "RazorpayOrderId");
+                    table.ForeignKey(
+                        name: "FK_Orderss_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "ConfirmPassword", "ConfirmationExpiry", "ConfirmationToken", "Created_at", "Deleted_at", "Email", "EmailConfirmed", "EmailOTP", "EmailOTPExpiry", "LoginTime", "LogoutTime", "Modified_at", "Password", "Phone", "PhoneConfirmed", "PhoneOTP", "PhoneOTPExpiry", "ResetPasswordExpiry", "ResetPasswordToken", "Role", "Status", "Token", "UserName", "isDeleted" },
-                values: new object[] { new Guid("6d2542d5-99b8-467e-8161-12a06c034e5f"), "password123", new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4729), "confirmationtoken123", new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4731), null, "user1@example.com", true, "emailotp123", new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4709), new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730), new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4730), new DateTime(2024, 5, 17, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4732), "password123", "1234567890", true, "phoneotp123", new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4727), new DateTime(2024, 5, 18, 17, 20, 17, 95, DateTimeKind.Local).AddTicks(4728), "resettoken123", "User", true, "token123", "user1", false });
+                values: new object[] { new Guid("aabefcf9-fcd5-42d9-b767-b8e003fca43d"), "/ywXuc5Kuq+WvCk93pUNDc2JlWkySLMxkyTd56lGibD18s/7", new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5700), "MLlcspMx6qLute8YyPzed5AgBSW9/UEXU9WicE2iIDHH7UvVUNKJ5ZQDykPMgIeV5EAHJiLX/6vHCbeqDz1LVg==", new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5703), null, "aayushagrawal97@gmail.com", true, "635212", new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5681), new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5701), new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5702), new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5703), "WJ+gIjhFeAGMd/z0a8eZGdJLW3Y42Swj9+k5/W5E0+gbanYc", "7877976611", true, "486192", new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5698), new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5699), "NULL", "Admin", true, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJkZjBiZGE2Mi1iOTMxLTQ5OGUtMDU1Yy0wOGRjNzg5YjI0OTYiLCJyb2xlIjoiVXNlciIsInVuaXF1ZV9uYW1lIjoiQUFZVVNIIiwiRW1haWwiOiJhYXl1c2hhZ3Jhd2FsOTdAZ21haWwuY29tIiwibmJmIjoxNzE2MTg4NzI5LCJleHAiOjE3MTYxODkzMjksImlhdCI6MTcxNjE4ODcyOX0._Rdy6kaQSMJoH6TN0Z8anKhL6ZT2-V8hNprmakrm9R0", "AAYUSH", false });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_UserId",
+                table: "Addresses",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_ProductId",
+                table: "Carts",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Carts_UserId",
+                table: "Carts",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Images_ProductId",
+                table: "Images",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orderss_ProductId",
+                table: "Orderss",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orderss_RazorpayPaymentRazorpayOrderId",
+                table: "Orderss",
+                column: "RazorpayPaymentRazorpayOrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orderss_UserId",
+                table: "Orderss",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RazorpayPayments_UserId",
+                table: "RazorpayPayments",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wishlists_ProductId",
+                table: "Wishlists",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wishlists_UserId",
+                table: "Wishlists",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -363,19 +473,10 @@ namespace Ginnis.Services.Migrations
                 name: "Orderss");
 
             migrationBuilder.DropTable(
-                name: "ProductLists");
-
-            migrationBuilder.DropTable(
-                name: "RazorpayPayments");
-
-            migrationBuilder.DropTable(
                 name: "RefundLists");
 
             migrationBuilder.DropTable(
                 name: "TwilioVerifys");
-
-            migrationBuilder.DropTable(
-                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "WishlistItems");
@@ -385,6 +486,15 @@ namespace Ginnis.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "ZipCodes");
+
+            migrationBuilder.DropTable(
+                name: "RazorpayPayments");
+
+            migrationBuilder.DropTable(
+                name: "ProductLists");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

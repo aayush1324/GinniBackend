@@ -62,5 +62,19 @@ namespace Ginnis.Domains.Entities
 
         public DateTime? Deleted_at { get; set; }
 
+
+
+
+        public ICollection<Address> Address { get; set; }
+
+        public ICollection<Cart> Cart { get; set; }
+
+        public ICollection<Wishlist> Wishlist { get; set; }
+
+        public ICollection<Orders> Orders { get; set; }
+
+        public ICollection<RazorpayPayment> RazorpayPayment { get; set; }
+
+
     }
 }

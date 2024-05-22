@@ -12,9 +12,14 @@ namespace Ginnis.Domains.Entities
 
         public string OrderId { get; set; }
 
+
         public Guid UserId { get; set; }
+        public User User { get; set; }
+
 
         public Guid ProductId { get; set; }
+        public ProductList ProductList { get; set; }    
+
 
         public int ProductCount { get; set; }
 
@@ -23,5 +28,6 @@ namespace Ginnis.Domains.Entities
         public System.DateTime OrderDate { get; set; }
 
         public string Status { get; set; }
+
     }
 }

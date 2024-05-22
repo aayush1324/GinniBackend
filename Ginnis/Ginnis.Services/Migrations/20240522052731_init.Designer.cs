@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240520070948_intiials")]
-    partial class intiials
+    [Migration("20240522052731_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,8 @@ namespace Ginnis.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Addresses", (string)null);
                 });
 
@@ -112,6 +114,10 @@ namespace Ginnis.Services.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Carts", (string)null);
                 });
@@ -195,6 +201,8 @@ namespace Ginnis.Services.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProductId");
+
                     b.ToTable("Images", (string)null);
                 });
 
@@ -257,6 +265,9 @@ namespace Ginnis.Services.Migrations
                     b.Property<Guid>("ProductId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("RazorpayPaymentRazorpayOrderId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
@@ -267,6 +278,12 @@ namespace Ginnis.Services.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("RazorpayPaymentRazorpayOrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orderss", (string)null);
                 });
@@ -400,6 +417,8 @@ namespace Ginnis.Services.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("RazorpayOrderId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("RazorpayPayments", (string)null);
                 });
@@ -558,24 +577,24 @@ namespace Ginnis.Services.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("87f4e88f-a069-4fed-aae4-3c023ce43a7c"),
+                            Id = new Guid("aabefcf9-fcd5-42d9-b767-b8e003fca43d"),
                             ConfirmPassword = "/ywXuc5Kuq+WvCk93pUNDc2JlWkySLMxkyTd56lGibD18s/7",
-                            ConfirmationExpiry = new DateTime(2024, 5, 21, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4990),
+                            ConfirmationExpiry = new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5700),
                             ConfirmationToken = "MLlcspMx6qLute8YyPzed5AgBSW9/UEXU9WicE2iIDHH7UvVUNKJ5ZQDykPMgIeV5EAHJiLX/6vHCbeqDz1LVg==",
-                            Created_at = new DateTime(2024, 5, 20, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4993),
+                            Created_at = new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5703),
                             Email = "aayushagrawal97@gmail.com",
                             EmailConfirmed = true,
                             EmailOTP = "635212",
-                            EmailOTPExpiry = new DateTime(2024, 5, 21, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4967),
-                            LoginTime = new DateTime(2024, 5, 20, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4991),
-                            LogoutTime = new DateTime(2024, 5, 20, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4992),
-                            Modified_at = new DateTime(2024, 5, 20, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4993),
+                            EmailOTPExpiry = new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5681),
+                            LoginTime = new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5701),
+                            LogoutTime = new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5702),
+                            Modified_at = new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5703),
                             Password = "WJ+gIjhFeAGMd/z0a8eZGdJLW3Y42Swj9+k5/W5E0+gbanYc",
                             Phone = "7877976611",
                             PhoneConfirmed = true,
                             PhoneOTP = "486192",
-                            PhoneOTPExpiry = new DateTime(2024, 5, 21, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4988),
-                            ResetPasswordExpiry = new DateTime(2024, 5, 21, 12, 39, 48, 294, DateTimeKind.Local).AddTicks(4990),
+                            PhoneOTPExpiry = new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5698),
+                            ResetPasswordExpiry = new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5699),
                             ResetPasswordToken = "NULL",
                             Role = "Admin",
                             Status = true,
@@ -619,6 +638,10 @@ namespace Ginnis.Services.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Wishlists", (string)null);
                 });
@@ -718,6 +741,131 @@ namespace Ginnis.Services.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ZipCodes", (string)null);
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.Address", b =>
+                {
+                    b.HasOne("Ginnis.Domains.Entities.User", "User")
+                        .WithMany("Address")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.Cart", b =>
+                {
+                    b.HasOne("Ginnis.Domains.Entities.ProductList", "ProductList")
+                        .WithMany("Cart")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ginnis.Domains.Entities.User", "User")
+                        .WithMany("Cart")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductList");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.Image", b =>
+                {
+                    b.HasOne("Ginnis.Domains.Entities.ProductList", "ProductList")
+                        .WithMany("Image")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductList");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.Orders", b =>
+                {
+                    b.HasOne("Ginnis.Domains.Entities.ProductList", "ProductList")
+                        .WithMany("Orders")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ginnis.Domains.Entities.RazorpayPayment", "RazorpayPayment")
+                        .WithMany("Orders")
+                        .HasForeignKey("RazorpayPaymentRazorpayOrderId");
+
+                    b.HasOne("Ginnis.Domains.Entities.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductList");
+
+                    b.Navigation("RazorpayPayment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.RazorpayPayment", b =>
+                {
+                    b.HasOne("Ginnis.Domains.Entities.User", "User")
+                        .WithMany("RazorpayPayment")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.Wishlist", b =>
+                {
+                    b.HasOne("Ginnis.Domains.Entities.ProductList", "ProductList")
+                        .WithMany("Wishlist")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Ginnis.Domains.Entities.User", "User")
+                        .WithMany("Wishlist")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductList");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.ProductList", b =>
+                {
+                    b.Navigation("Cart");
+
+                    b.Navigation("Image");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Wishlist");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.RazorpayPayment", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Ginnis.Domains.Entities.User", b =>
+                {
+                    b.Navigation("Address");
+
+                    b.Navigation("Cart");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("RazorpayPayment");
+
+                    b.Navigation("Wishlist");
                 });
 #pragma warning restore 612, 618
         }

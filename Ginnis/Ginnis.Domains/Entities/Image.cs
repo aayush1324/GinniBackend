@@ -10,7 +10,10 @@ namespace Ginnis.Domains.Entities
     {
         public Guid Id { get; set; }
 
+
         public Guid ProductId { get; set; } // Add a property to store the product ID
+        public ProductList ProductList { get; set; }    
+
 
         public byte[] ProfileImage { get; set; }  // Property to store image data as byte array (BLOB)
 
