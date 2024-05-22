@@ -91,7 +91,7 @@ namespace Ginnis.WebAPIs.Controllers
                 return Ok(new
                 {
                     StatusCode = 200,
-                    Message = "Email Sent!"
+                    Message = "Email Sent Successfully!"
                 });
             }
             catch (Exception ex)
