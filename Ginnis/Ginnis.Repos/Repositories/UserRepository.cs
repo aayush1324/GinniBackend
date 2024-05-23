@@ -444,6 +444,8 @@ namespace Ginnis.Repos.Repositories
             }
 
             user.Password = PasswordHasher.HashPassword(resetPasswordDto.NewPassword);
+            user.Modified_at = DateTime.Now;
+
 
             _authContext.Entry(user).State = EntityState.Modified;
             await _authContext.SaveChangesAsync();

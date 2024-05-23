@@ -100,7 +100,8 @@ namespace Ginnis.Repos.Repositories
             _authContext.Wishlists.Remove(wishlistItem);
             await _authContext.SaveChangesAsync();
             
-            return new NoContentResult();
+            //return new NoContentResult();
+            return new OkObjectResult(new { Message = "Wishlist item Deleted successfully" });
         }
 
 
