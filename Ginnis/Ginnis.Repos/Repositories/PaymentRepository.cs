@@ -123,8 +123,6 @@ namespace Ginnis.Repos.Repositories
 
                 if (signature == generatedSignature)
                 {
-                    // Signature verified, process payment
-                    // Update the RazorpayPayment entity in the database
                     var orderEntity = await _authContext.RazorpayPayments.FirstOrDefaultAsync(o => o.RazorpayOrderId == orderId);
                     if (orderEntity != null)
                     {
@@ -135,12 +133,14 @@ namespace Ginnis.Repos.Repositories
 
                         // Update the order status in the database to "Completed"
                         var orders = await _authContext.Orderss.Where(o => o.OrderId == OrderID && o.Status == "Pending").ToListAsync();
-                        if (orders != null)
+
+                        if (orders != null && orders.Any())
                         {
                             foreach (var order in orders)
                             {
                                 order.Status = "Completed";
                             }
+
                             await _authContext.SaveChangesAsync();
                         }
                         else
@@ -149,9 +149,19 @@ namespace Ginnis.Repos.Repositories
                             return new NotFoundObjectResult("Order not found");
                         }
 
-                        // Remove cart items for the specified user
-                        var cartItems = await _authContext.Carts.Where(c => c.UserId == UserID && !c.isPaymentDone).ToListAsync();
-                        _authContext.Carts.RemoveRange(cartItems);
+                        // Remove the specific cart item for the ordered product
+                        var cartItems = await _authContext.Carts.Where(c => c.UserId == UserID && c.ProductId == orders.First().ProductId && !c.isPaymentDone).ToListAsync();
+                        if (cartItems.Any())
+                        {
+                            _authContext.Carts.RemoveRange(cartItems);
+                        }
+
+                        // Remove the specific wishlist item for the ordered product
+                        var wishlistItems = await _authContext.Wishlists.Where(w => w.UserId == UserID && w.ProductId == orders.First().ProductId).ToListAsync();
+                        if (wishlistItems.Any())
+                        {
+                            _authContext.Wishlists.RemoveRange(wishlistItems);
+                        }
 
                         // Save changes to the database
                         await _authContext.SaveChangesAsync();

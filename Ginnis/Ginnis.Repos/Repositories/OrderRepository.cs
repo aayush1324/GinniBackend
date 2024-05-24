@@ -61,10 +61,11 @@ namespace Ginnis.Repos.Repositories
             try
             {
                 var cartItem = await _authContext.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
+                var wishlistItem = await _authContext.Wishlists.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == productId);
 
-                if (cartItem == null)
+                if (cartItem == null && wishlistItem == null)
                 {
-                    throw new Exception("Cart item not found");
+                    throw new Exception("Item not found in both cart and wishlist");
                 }
 
                 string orderId = "GINNI" + DateTime.UtcNow.ToString("yyMMddHHmmss") + Guid.NewGuid().ToString("N").Substring(0, 6);
@@ -75,8 +76,8 @@ namespace Ginnis.Repos.Repositories
                     OrderId = orderId,
                     UserId = userId,
                     ProductId = productId,
-                    ProductCount = cartItem.ItemQuantity,
-                    TotalAmount = cartItem.ItemTotalPrice,
+                    ProductCount = cartItem?.ItemQuantity ?? wishlistItem.ItemQuantity,
+                    TotalAmount = cartItem?.ItemTotalPrice ?? wishlistItem.ItemTotalPrice,
                     OrderDate = DateTime.Now,
                     Status = "Pending"
                 };
@@ -88,11 +89,11 @@ namespace Ginnis.Repos.Repositories
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw new Exception("An error occurred while creating the order", ex);
             }
         }
 
-       
+
 
         public async Task<ActionResult<List<OrdersDTO>>> GetOrders(Guid userId)
         {

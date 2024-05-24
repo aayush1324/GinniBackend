@@ -94,7 +94,7 @@ namespace Ginnis.Repos.Repositories
 
         public async Task<IActionResult> RemoveCartItem(Guid userId, Guid itemId)
         {
-            var cartItem = await _authContext.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.Id == itemId);
+            var cartItem = await _authContext.Carts.FirstOrDefaultAsync(c => c.UserId == userId && c.ProductId == itemId);
 
             if (cartItem == null)
                 return new NotFoundResult();
@@ -102,7 +102,7 @@ namespace Ginnis.Repos.Repositories
             _authContext.Carts.Remove(cartItem);
             await _authContext.SaveChangesAsync();
 
-            return new NoContentResult();
+            return new OkObjectResult(new { Message = "Cart item Deleted successfully" });
         }
 
 
