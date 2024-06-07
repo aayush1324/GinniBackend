@@ -2,6 +2,7 @@
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Repos.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -21,7 +22,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
-
+        [Authorize]
         [HttpPost("addWishlist/{userId}/{productId}")]
         public async Task<IActionResult> AddWishlist(Guid userId, Guid productId)
         {
@@ -29,7 +30,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("getWishlists/{userId}")]
         public async Task<IActionResult> GetWishlist(Guid userId)
         {
@@ -45,7 +46,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpDelete("deleteItem/{userId}/{productId}")]
         public async Task<IActionResult> RemoveWishlistItem(Guid userId, Guid productId)
         {
@@ -53,7 +54,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpDelete("deleteAllItem/{userId}")]
         public async Task<IActionResult> EmptyWishlist(Guid userId)
         {
@@ -61,7 +62,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPut("updateWishlistQuantity")]
         public async Task<IActionResult> UpdateWishlistQuantity([FromBody] WishlistDTO wishlist)
         {

@@ -1,5 +1,6 @@
 ﻿using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("addZipCode")]
         public async Task<IActionResult> AddZipCode([FromBody] ZipCode zipCode)
         {
@@ -30,7 +31,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("getAllZipCode")]
         public async Task<IActionResult> GetAllZipCode()
         {
@@ -45,7 +46,6 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
         [HttpPost("checkZipCode")]
         public async Task<IActionResult> CheckZipcode([FromBody] ZipCode request)
         {
@@ -55,7 +55,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deleteZipCode/{zipcodeId}")]
         public async Task<IActionResult> DeleteZipCode(Guid zipcodeId)
         {
@@ -65,7 +65,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("editZipCode/{zipcodeId}")]
         public async Task<IActionResult> EditZipCode(Guid zipcodeId, [FromBody] ZipCode updatedZipcode)
         {

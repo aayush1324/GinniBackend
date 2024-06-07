@@ -1,4 +1,5 @@
 ﻿using Ginnis.Repos.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -17,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("create-order")]
         public async Task<IActionResult> CreateOrder(int amount, string orderId, Guid UserID)
         {
@@ -25,7 +26,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("confirm-payment")]
         public async Task<IActionResult> ConfirmPayment([FromBody] JsonElement data, string orderID, Guid userID)
         {
@@ -33,14 +34,14 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("failure-payment")]
         public async Task<IActionResult> FailurePayment([FromBody] JsonElement data)
         {
             return await _paymentRepository.FailurePayment(data);
         }
 
-
+        [Authorize]
         [HttpPost("refund-payment")]
         public async Task<IActionResult> RefundOrder([FromBody] JsonElement data)
         {

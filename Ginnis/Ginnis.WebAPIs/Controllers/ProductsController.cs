@@ -1,5 +1,6 @@
 ﻿using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("getProductsWithImage/{userID}")]
         public async Task<IActionResult> GetProductsWithImage(Guid userID)
         {
@@ -32,6 +33,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("addProductsWithImages")]
         public async Task<IActionResult> AddImageToProduct([FromForm] ProductList product, IFormFile image)
         {
@@ -39,6 +41,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("editProduct/{productId}")]
         public async Task<IActionResult> EditProduct(Guid productId, [FromForm] ProductList updatedProduct, IFormFile image)
         {
@@ -46,6 +49,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deleteProduct/{productId}")]
         public async Task<IActionResult> DeleteProduct(Guid productId)
         {

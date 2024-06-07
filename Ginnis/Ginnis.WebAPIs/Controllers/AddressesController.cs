@@ -1,6 +1,7 @@
 ﻿using Ginnis.Domains.DTOs;
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
             _addressRepository = addressRepository;
         }
 
-
+        [Authorize]
         [HttpPost("addAddress")]
         public async Task<IActionResult> AddAddress(Guid userId, [FromBody] Address address)
         {
@@ -26,7 +27,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("getAddress/{userId}")]
         public async Task<IActionResult> GetAddresses(Guid userId)
         {
@@ -34,7 +35,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPut("editAddress/{addressId}")]
         public async Task<IActionResult> EditAddress(Guid userId, Guid addressId, [FromBody] AddressDTO updatedAddress)
         {
@@ -46,7 +47,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpDelete("deleteAddress/{addressId}")]
         public async Task<IActionResult> DeleteAddress(Guid userId, Guid addressId)
         {

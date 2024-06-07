@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio;
 using Twilio.Types;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ginnis.WebAPIs.Controllers
 {
@@ -26,6 +27,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize]
         [HttpPost("VerificationCall")]
         public async Task<IActionResult> VerificationCall(TwilioVerify verification)
         {
@@ -85,7 +87,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("VerificationOtp")]
         public async Task<IActionResult> VerificationOtp(TwilioVerify verification)
         {
@@ -153,7 +155,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("VerifyOtp")]
         public async Task<IActionResult> VerifyOtp(string mobileNumber, string verificationCode)
         {

@@ -2,6 +2,7 @@
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Services.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -67,7 +68,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("logout")]
         public async Task<ActionResult<string>> Logout( string token)
         {
@@ -129,7 +130,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpGet("getCustomer")]
         public async Task<IActionResult> GetCustomer()
         {
@@ -137,6 +138,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("addCustomer")]
         public async Task<IActionResult> AddCustomer([FromBody] User customer)
         {
@@ -144,6 +146,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("deleteCustomer/{customerId}")]
         public async Task<IActionResult> DeleteCustomer(Guid customerId)
         {

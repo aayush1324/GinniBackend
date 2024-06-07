@@ -1,4 +1,6 @@
 ﻿using Ginnis.Repos.Interfaces;
+using Ginnis.Repos.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +19,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost("addMultipleImage")]
         public async Task<IActionResult> AddMultipleImages([FromForm] List<IFormFile> images, [FromForm] Guid productId)
         {

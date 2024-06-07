@@ -1,6 +1,7 @@
 ﻿using Ginnis.Domains.DTOs;
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        
+        [Authorize]
         [HttpPost("addToCarts/{userId}/{productId}")]
         public async Task<IActionResult> AddToCart(Guid userId, Guid productId)
         {
@@ -26,7 +27,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpGet("getCarts/{userId}")]
         public async Task<IActionResult> GetCart(Guid userId)
         {
@@ -42,7 +43,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpDelete("deleteItem/{userId}/{itemId}")]
         public async Task<IActionResult> RemoveCartItem(Guid userId, Guid itemId)
         {
@@ -50,7 +51,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpDelete("deleteAllItem/{userId}")]
         public async Task<IActionResult> EmptyCart(Guid userId)
         {
@@ -58,7 +59,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPut("updateCartQuantity")]
         public async Task<IActionResult> UpdateCartQuantity([FromBody] CartDTO cart)
         {

@@ -1,6 +1,7 @@
 ﻿using Ginnis.Domains.DTOs;
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
             _orderRepository = orderRepository;
         }
 
-
+        [Authorize]
         [HttpPost("createOrder/{userId}")]
         public async Task<ActionResult<string>> CreateOrder(Guid userId)
         {
@@ -33,6 +34,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize]
         [HttpPost("createOrder/{userId}/{productId}")]
         public async Task<ActionResult<string>> CreateOrder(Guid userId, Guid productId)
         {
@@ -48,6 +50,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
+        [Authorize]
         [HttpGet("getOrder/{userId}")]
         public async Task<ActionResult<List<OrdersDTO>>> GetOrder(Guid userId)
         {
@@ -62,7 +65,7 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpGet("getOrderById/{orderId}")]
         public async Task<ActionResult<List<OrderDetailDTO>>> GetOrderByID(string orderId)
         {
@@ -77,7 +80,7 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpGet("getOrders")]
         public async Task<ActionResult<List<OrderListDTO>>> GetOrders()
         {
