@@ -53,7 +53,5 @@ namespace Ginnis.WebAPIs.Controllers
         {
             return await _addressRepository.DeleteAddress(userId, addressId);        
         }
-
-
     }
 }

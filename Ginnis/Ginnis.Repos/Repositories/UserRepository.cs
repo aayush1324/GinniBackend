@@ -172,7 +172,7 @@ namespace Ginnis.Repos.Repositories
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = identity,
-                Expires = DateTime.Now.AddMinutes(10),
+                Expires = DateTime.Now.AddHours(12),
                 SigningCredentials = credentials
             };
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
@@ -224,21 +224,6 @@ namespace Ginnis.Repos.Repositories
             }
             return false;
         }
-
-
-        //private async Task ScheduleUserRemovalIfConfirmationExpires(User user)
-        //{
-        //    await Task.Delay(1 * 60 * 1000); // Wait for 1 minute (EmailOTPExpiry PhoneOTPExpiry)
-        //    if (user.EmailOTPExpiry <= DateTime.Now || user.PhoneOTPExpiry <= DateTime.Now)
-        //    {
-        //        var userToBeRemoved = await _authContext.Users.FirstOrDefaultAsync(u => u.Id == user.Id);
-        //        if (userToBeRemoved != null)
-        //        {
-        //            _authContext.Users.Remove(userToBeRemoved);
-        //            await _authContext.SaveChangesAsync();
-        //        }
-        //    }
-        //}
 
 
 

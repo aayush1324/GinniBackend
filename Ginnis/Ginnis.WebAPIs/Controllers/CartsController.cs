@@ -44,7 +44,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [Authorize]
-        [HttpDelete("deleteItem/{userId}/{itemId}")]
+        [HttpDelete("deleteCartItem/{userId}/{itemId}")]
         public async Task<IActionResult> RemoveCartItem(Guid userId, Guid itemId)
         {
             return await _cartRepository.RemoveCartItem(userId, itemId);
@@ -52,7 +52,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [Authorize]
-        [HttpDelete("deleteAllItem/{userId}")]
+        [HttpDelete("deleteAllCartItem/{userId}")]
         public async Task<IActionResult> EmptyCart(Guid userId)
         {
             return await _cartRepository.EmptyCart(userId);

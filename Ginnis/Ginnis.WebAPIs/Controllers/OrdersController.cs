@@ -80,7 +80,8 @@ namespace Ginnis.WebAPIs.Controllers
             }
         }
 
-        [Authorize]
+
+        [Authorize(Roles = "Admin")]
         [HttpGet("getOrders")]
         public async Task<ActionResult<List<OrderListDTO>>> GetOrders()
         {

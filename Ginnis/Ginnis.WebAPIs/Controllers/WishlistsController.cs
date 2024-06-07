@@ -23,7 +23,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [Authorize]
-        [HttpPost("addWishlist/{userId}/{productId}")]
+        [HttpPost("addWishlistItem/{userId}/{productId}")]
         public async Task<IActionResult> AddWishlist(Guid userId, Guid productId)
         {
             return await _wishlistRepository.AddWishlistItem(userId, productId);
@@ -31,7 +31,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [Authorize]
-        [HttpGet("getWishlists/{userId}")]
+        [HttpGet("getWishlistItem/{userId}")]
         public async Task<IActionResult> GetWishlist(Guid userId)
         {
             try
@@ -47,7 +47,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [Authorize]
-        [HttpDelete("deleteItem/{userId}/{productId}")]
+        [HttpDelete("deleteWishlistItem/{userId}/{productId}")]
         public async Task<IActionResult> RemoveWishlistItem(Guid userId, Guid productId)
         {
             return await _wishlistRepository.RemoveWishlistItem(userId, productId);
@@ -55,7 +55,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         [Authorize]
-        [HttpDelete("deleteAllItem/{userId}")]
+        [HttpDelete("deleteAllWishlistItem/{userId}")]
         public async Task<IActionResult> EmptyWishlist(Guid userId)
         {
             return await _wishlistRepository.EmptyWishlist(userId);
