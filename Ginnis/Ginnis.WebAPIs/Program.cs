@@ -1,9 +1,11 @@
 using Ginnis.Domains.DTOs;
+using Ginnis.Repos;
 using Ginnis.Repos.Interfaces;
 using Ginnis.Repos.Repositories;
 using Ginnis.Services.Context;
 using Google.Api;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder.Extensions;
