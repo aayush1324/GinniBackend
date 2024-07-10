@@ -294,6 +294,36 @@ namespace Ginnis.Services.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orderss",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductCount = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<int>(type: "int", nullable: false),
+                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orderss", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orderss_ProductLists_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "ProductLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Orderss_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RazorpayPayments",
                 columns: table => new
                 {
@@ -359,46 +389,10 @@ namespace Ginnis.Services.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Orderss",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OrderId = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RazorpayPaymentRazorpayOrderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductCount = table.Column<int>(type: "int", nullable: false),
-                    TotalAmount = table.Column<int>(type: "int", nullable: false),
-                    OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orderss", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Orderss_ProductLists_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "ProductLists",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Orderss_RazorpayPayments_RazorpayPaymentRazorpayOrderId",
-                        column: x => x.RazorpayPaymentRazorpayOrderId,
-                        principalTable: "RazorpayPayments",
-                        principalColumn: "RazorpayOrderId");
-                    table.ForeignKey(
-                        name: "FK_Orderss_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "ConfirmPassword", "ConfirmationExpiry", "ConfirmationToken", "Created_at", "Deleted_at", "Email", "EmailConfirmed", "EmailOTP", "EmailOTPExpiry", "LoginTime", "LogoutTime", "Modified_at", "Password", "Phone", "PhoneConfirmed", "PhoneOTP", "PhoneOTPExpiry", "ResetPasswordExpiry", "ResetPasswordToken", "Role", "Status", "Token", "UserName", "isDeleted" },
-                values: new object[] { new Guid("aabefcf9-fcd5-42d9-b767-b8e003fca43d"), "/ywXuc5Kuq+WvCk93pUNDc2JlWkySLMxkyTd56lGibD18s/7", new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5700), "MLlcspMx6qLute8YyPzed5AgBSW9/UEXU9WicE2iIDHH7UvVUNKJ5ZQDykPMgIeV5EAHJiLX/6vHCbeqDz1LVg==", new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5703), null, "aayushagrawal97@gmail.com", true, "635212", new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5681), new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5701), new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5702), new DateTime(2024, 5, 22, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5703), "WJ+gIjhFeAGMd/z0a8eZGdJLW3Y42Swj9+k5/W5E0+gbanYc", "7877976611", true, "486192", new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5698), new DateTime(2024, 5, 23, 10, 57, 30, 678, DateTimeKind.Local).AddTicks(5699), "NULL", "Admin", true, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJkZjBiZGE2Mi1iOTMxLTQ5OGUtMDU1Yy0wOGRjNzg5YjI0OTYiLCJyb2xlIjoiVXNlciIsInVuaXF1ZV9uYW1lIjoiQUFZVVNIIiwiRW1haWwiOiJhYXl1c2hhZ3Jhd2FsOTdAZ21haWwuY29tIiwibmJmIjoxNzE2MTg4NzI5LCJleHAiOjE3MTYxODkzMjksImlhdCI6MTcxNjE4ODcyOX0._Rdy6kaQSMJoH6TN0Z8anKhL6ZT2-V8hNprmakrm9R0", "AAYUSH", false });
+                values: new object[] { new Guid("a4825099-6d54-40c4-8c41-711ee14bd6c2"), "/ywXuc5Kuq+WvCk93pUNDc2JlWkySLMxkyTd56lGibD18s/7", new DateTime(2024, 7, 11, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9761), "MLlcspMx6qLute8YyPzed5AgBSW9/UEXU9WicE2iIDHH7UvVUNKJ5ZQDykPMgIeV5EAHJiLX/6vHCbeqDz1LVg==", new DateTime(2024, 7, 10, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9767), null, "aayushagrawal97@gmail.com", true, "635212", new DateTime(2024, 7, 11, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9736), new DateTime(2024, 7, 10, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9763), new DateTime(2024, 7, 10, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9764), new DateTime(2024, 7, 10, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9769), "WJ+gIjhFeAGMd/z0a8eZGdJLW3Y42Swj9+k5/W5E0+gbanYc", "7877976611", true, "486192", new DateTime(2024, 7, 11, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9760), new DateTime(2024, 7, 11, 10, 34, 10, 224, DateTimeKind.Local).AddTicks(9761), "NULL", "Admin", true, "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySUQiOiJkZjBiZGE2Mi1iOTMxLTQ5OGUtMDU1Yy0wOGRjNzg5YjI0OTYiLCJyb2xlIjoiVXNlciIsInVuaXF1ZV9uYW1lIjoiQUFZVVNIIiwiRW1haWwiOiJhYXl1c2hhZ3Jhd2FsOTdAZ21haWwuY29tIiwibmJmIjoxNzE2MTg4NzI5LCJleHAiOjE3MTYxODkzMjksImlhdCI6MTcxNjE4ODcyOX0._Rdy6kaQSMJoH6TN0Z8anKhL6ZT2-V8hNprmakrm9R0", "AAYUSH", false });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_UserId",
@@ -424,11 +418,6 @@ namespace Ginnis.Services.Migrations
                 name: "IX_Orderss_ProductId",
                 table: "Orderss",
                 column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Orderss_RazorpayPaymentRazorpayOrderId",
-                table: "Orderss",
-                column: "RazorpayPaymentRazorpayOrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orderss_UserId",
@@ -473,6 +462,9 @@ namespace Ginnis.Services.Migrations
                 name: "Orderss");
 
             migrationBuilder.DropTable(
+                name: "RazorpayPayments");
+
+            migrationBuilder.DropTable(
                 name: "RefundLists");
 
             migrationBuilder.DropTable(
@@ -486,9 +478,6 @@ namespace Ginnis.Services.Migrations
 
             migrationBuilder.DropTable(
                 name: "ZipCodes");
-
-            migrationBuilder.DropTable(
-                name: "RazorpayPayments");
 
             migrationBuilder.DropTable(
                 name: "ProductLists");
