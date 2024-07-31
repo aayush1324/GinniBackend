@@ -63,8 +63,8 @@ namespace Ginnis.Repos.Repositories
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
                     Status = product.Status,
-                    ProfileImage = product.ProfileImage,
-                    ImageData = product.ImageData,
+                    //ProfileImage = product.ProfileImage,
+                    //ImageData = product.ImageData,
                     InCart = cartItems.Contains(product.Id), // Check if the product is in the cart
                     InWishlist = wishlistItems.Contains(product.Id) // Check if the product is in the wishlist
                 };
@@ -78,7 +78,28 @@ namespace Ginnis.Repos.Repositories
 
         public async Task<IActionResult> GetProductsWithImages()
         {
-            var products = await _authContext.ProductLists.ToListAsync();
+            //var products = await _authContext.ProductLists.ToListAsync();
+
+            var products = await _authContext.ProductLists
+                                        .Select(product => new
+                                        {
+                                            product.Id,
+                                            product.ProductName,
+                                            product.Url,
+                                            product.Price,
+                                            product.Discount,
+                                            product.DiscountCoupon,
+                                            product.DiscountedPrice,
+                                            product.DeliveryPrice,
+                                            product.Description,
+                                            product.Category,
+                                            product.Subcategory,
+                                            product.Weight,
+                                            product.Status,
+                                            // Include other properties you want
+                                            // Exclude ProfileImage and ImageData
+                                        })
+                                        .ToListAsync();
 
             if (products == null || products.Count == 0)
             {
@@ -104,8 +125,8 @@ namespace Ginnis.Repos.Repositories
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
                     Status = product.Status,
-                    ProfileImage = product.ProfileImage,
-                    ImageData = product.ImageData,
+                    //ProfileImage = product.ProfileImage,
+                    //ImageData = product.ImageData,
                     InCart = false,
                     InWishlist = false
                 };
