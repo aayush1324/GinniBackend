@@ -26,7 +26,29 @@ namespace Ginnis.Repos.Repositories
 
         public async Task<IActionResult> GetProductsWithImage(Guid userID)
         {
-            var products = await _authContext.ProductLists.ToListAsync();
+            var products = await _authContext.ProductLists
+                                       .Select(product => new
+                                       {
+                                           product.Id,
+                                           product.ProductName,
+                                           product.Url,
+                                           product.Price,
+                                           product.Discount,
+                                           product.DiscountCoupon,
+                                           product.DiscountedPrice,
+                                           product.DeliveryPrice,
+                                           product.Description,
+                                           product.Category,
+                                           product.Subcategory,
+                                           product.Weight,
+                                           product.Status,
+                                           product.UnitSold,
+                                           product.UnitLeft,
+                                           product.Rating ,
+                                           product.UserRating,                                           // Include other properties you want
+                                           // Exclude ProfileImage and ImageData
+                                       })
+                                       .ToListAsync();
 
             if (products == null || products.Count == 0)
             {
@@ -63,6 +85,10 @@ namespace Ginnis.Repos.Repositories
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
                     Status = product.Status,
+                    UnitSold = product.UnitSold,
+                    UnitLeft = product.UnitLeft,
+                    Rating = product.Rating,
+                    UserRating = product.UserRating,
                     //ProfileImage = product.ProfileImage,
                     //ImageData = product.ImageData,
                     InCart = cartItems.Contains(product.Id), // Check if the product is in the cart
@@ -96,6 +122,10 @@ namespace Ginnis.Repos.Repositories
                                             product.Subcategory,
                                             product.Weight,
                                             product.Status,
+                                            product.UnitSold,
+                                            product.UnitLeft,
+                                            product.Rating,
+                                            product.UserRating,
                                             // Include other properties you want
                                             // Exclude ProfileImage and ImageData
                                         })
@@ -125,6 +155,10 @@ namespace Ginnis.Repos.Repositories
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
                     Status = product.Status,
+                    UnitSold = product.UnitSold,
+                    UnitLeft = product.UnitLeft,
+                    Rating = product.Rating,
+                    UserRating = product.UserRating,
                     //ProfileImage = product.ProfileImage,
                     //ImageData = product.ImageData,
                     InCart = false,
@@ -191,7 +225,11 @@ namespace Ginnis.Repos.Repositories
                 product.Subcategory = updatedProduct.Subcategory;
                 product.Weight = updatedProduct.Weight;
                 product.Status = updatedProduct.Status;
-
+                product.UnitSold = updatedProduct.UnitSold;
+                product.UnitLeft = updatedProduct.UnitLeft;
+                product.Rating = updatedProduct.Rating;
+                product.UserRating = updatedProduct.UserRating;
+             
                 product.Modified_at = DateTime.Now;
 
 
@@ -250,8 +288,8 @@ namespace Ginnis.Repos.Repositories
                                         {
                                             ProductName = p.ProductName,
                                             Price = p.Price,
-                                            ImageData = p.ImageData,
-                                            ProfileImage = p.ProfileImage,
+                                            //ImageData = p.ImageData,
+                                            //ProfileImage = p.ProfileImage,
                                         })
                                         .Take(5)
                                         .ToList();
@@ -262,7 +300,32 @@ namespace Ginnis.Repos.Repositories
 
         public async Task<IActionResult> GetProduct()
         {
-            var productlist = await _authContext.ProductLists.ToListAsync();
+            //var productlist = await _authContext.ProductLists.ToListAsync();
+
+            var productlist =  await _authContext.ProductLists
+                                        .Select(product => new
+                                        {
+                                            product.Id,
+                                            product.ProductName,
+                                            product.Url,
+                                            product.Price,
+                                            product.Discount,
+                                            product.DiscountCoupon,
+                                            product.DiscountedPrice,
+                                            product.DeliveryPrice,
+                                            product.Description,
+                                            product.Category,
+                                            product.Subcategory,
+                                            product.Weight,
+                                            product.Status,
+                                            product.UnitSold,
+                                            product.UnitLeft,
+                                            product.Rating,
+                                            product.UserRating,
+                                            // Include other properties you want
+                                            // Exclude ProfileImage and ImageData
+                                        })
+                                        .ToListAsync();
 
             if (productlist == null || productlist.Count == 0)
             {
@@ -275,7 +338,30 @@ namespace Ginnis.Repos.Repositories
 
         public async Task<IActionResult> GetProductByName(string productName)
         {
-            var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.ProductName == productName);
+            //var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.ProductName == productName);
+
+            var product = await _authContext.ProductLists
+                                            .Where(p => p.ProductName == productName)
+                                            .Select(p => new
+                                            {
+                                                p.Id,
+                                                p.ProductName,
+                                                p.Price,
+                                                p.Discount,
+                                                p.DiscountCoupon,
+                                                p.DiscountedPrice,
+                                                p.DeliveryPrice,
+                                                p.Description,
+                                                p.Category,
+                                                p.Subcategory,
+                                                p.Weight,
+                                                p.Status,
+                                                p.Rating,
+                                                p.UserRating,
+        
+                                                // Add other properties you want to include
+                                            })
+                                            .FirstOrDefaultAsync();
 
             if (product == null)
             {
@@ -287,11 +373,20 @@ namespace Ginnis.Repos.Repositories
                 Id = product.Id,
                 ProductName = product.ProductName,
                 Price = product.Price,
+                Discount = product.Discount,
+                DiscountCoupon = product.DiscountCoupon,
+                DiscountedPrice = product.DiscountedPrice,
+                DeliveryPrice = product.DeliveryPrice,
+                Weight = product.Weight,
+                Status = product.Status,
                 Description = product.Description,
                 Category = product.Category,
                 Subcategory = product.Subcategory,
-                ProfileImage = product.ProfileImage,
-                ImageData = product.ImageData
+                Rating = product.Rating,
+                UserRating = product.UserRating,
+
+                //ProfileImage = product.ProfileImage,
+                //ImageData = product.ImageData
             };
 
             return new OkObjectResult(productDTO);

@@ -37,6 +37,14 @@ namespace Ginnis.Domains.Entities
 
         public string Status { get; set; }
 
+        public int UnitSold { get; set; }
+
+        public int UnitLeft { get; set; }
+
+        public float Rating { get; set; }
+
+        public int UserRating { get; set; }
+
         public byte[] ProfileImage { get; set; }  // Property to store image data as byte array (BLOB)
 
         public string ImageData { get; set; }       // Property to store Base64-encoded image data

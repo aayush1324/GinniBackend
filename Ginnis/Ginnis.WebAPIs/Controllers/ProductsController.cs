@@ -18,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [Authorize]
+        //[Authorize]
         [HttpGet("getProductsWithImage/{userID}")]
         public async Task<IActionResult> GetProductsWithImage(Guid userID)
         {
@@ -33,7 +33,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpPost("addProductsWithImages")]
         public async Task<IActionResult> AddImageToProduct([FromForm] ProductList product, IFormFile image)
         {

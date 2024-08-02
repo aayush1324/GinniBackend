@@ -35,7 +35,7 @@ namespace Ginnis.Repos.Repositories
                 var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == productId);
 
                 // Assuming you have a property named 'Price' in the ProductLists table
-                var itemPrice = product.Price;
+                var itemPrice = product.DiscountedPrice;
                 
                 if (existingCartItem != null)
                 {
@@ -84,6 +84,13 @@ namespace Ginnis.Repos.Repositories
                                                 ProductId = product.Id,
                                                 ProductName = product.ProductName,
                                                 ItemPrice = product.Price,
+                                                ItemDiscountedPrice = product.DiscountedPrice,
+                                                ItemDiscount = product.Discount,
+                                                ItemDeliveryPrice = product.DeliveryPrice,
+                                                ItemDiscountCoupon = product.DiscountCoupon,
+                                                ItemWeight = product.Weight,
+                                                ItemRating = product.Rating,
+                                                ItemUserRating = product.UserRating,
                                                 ProfileImage = product.ProfileImage,
                                                 ImageData = product.ImageData
                                             })
@@ -132,7 +139,7 @@ namespace Ginnis.Repos.Repositories
             var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == cart.ProductId);
 
             // Assuming you have a property named 'Price' in the ProductLists table
-            var itemPrice = product.Price;
+            var itemPrice = product.DiscountedPrice;
 
             existingCartItem.ItemQuantity = cart.ItemQuantity;
             existingCartItem.ItemTotalPrice = existingCartItem.ItemQuantity * itemPrice;
