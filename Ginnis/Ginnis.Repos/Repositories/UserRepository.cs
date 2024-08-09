@@ -464,7 +464,7 @@ namespace Ginnis.Repos.Repositories
             user.ResetPasswordExpiry = DateTime.Now.AddMinutes(15);
 
             string from = _configuration["EmailSettings:From"];
-            var emailModel = new Email(email, "Reset Password!!", EmailBody.EmailStringBody(email, emailToken));
+            var emailModel = new Email(email, "Customer account password reset", EmailBody.EmailStringBody(email, emailToken));
 
             _emailRepo.SendEmail(emailModel);
 
