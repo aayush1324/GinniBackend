@@ -41,6 +41,40 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
+        [HttpPost("registerGoogle")]
+        public async Task<IActionResult> GoogleAddUser([FromBody] User userObj)
+        {
+            if (userObj == null)
+            {
+                return BadRequest("Invalid request: Email is required.");
+            }
+
+            // Add the user to the database
+            var addUserResult = await _userRepository.GoogleAddUser(userObj);
+
+            if (addUserResult.Message != "User Added!")
+            {
+                // Return a BadRequest with the result's message
+                return BadRequest(new { Message = addUserResult.Message });
+            }
+
+
+            var authResult = await _userRepository.GoogleAuthenticate(userObj.Email);
+
+            if (authResult == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(new
+            {
+                Message = addUserResult.Message,
+                Token = addUserResult.Token
+            }); 
+
+        }
+
+
         [HttpPost("verifyOtps")]
         public async Task<IActionResult> VerifyOtp([FromBody] OtpVerify request)
         {
@@ -65,6 +99,25 @@ namespace Ginnis.WebAPIs.Controllers
             }
 
             return await _userRepository.Authenticate(userObj);
+        }
+
+
+        [HttpPost("authenticateGoogle")]
+        public async Task<IActionResult> GoogleAuthenticate([FromBody] GoogleEmailDTO googleEmailDTO)
+        {
+            if (googleEmailDTO == null || string.IsNullOrEmpty(googleEmailDTO.Email))
+            {
+                return BadRequest("Invalid request: Email is required.");
+            }
+
+            var result = await _userRepository.GoogleAuthenticate(googleEmailDTO.Email);
+
+            if (result == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            return Ok(result); // Assuming result contains the necessary user data or token
         }
 
 

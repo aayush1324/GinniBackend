@@ -26,7 +26,7 @@ namespace Ginnis.Repos.Repositories
 
             var from = _configuration["EmailSettings:From"];
 
-            emailMessage.From.Add(new MailboxAddress("Lets Program", from));
+            emailMessage.From.Add(new MailboxAddress("Ginni DryDruits", from));
             emailMessage.To.Add(new MailboxAddress(email.To, email.To));
 
             emailMessage.Subject = email.Subject;

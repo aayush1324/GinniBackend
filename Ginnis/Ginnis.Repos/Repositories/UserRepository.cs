@@ -172,7 +172,7 @@ namespace Ginnis.Repos.Repositories
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = identity,
-                Expires = DateTime.Now.AddHours(12),
+                Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = credentials
             };
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
@@ -278,7 +278,39 @@ namespace Ginnis.Repos.Repositories
                 Token = userObj.Token // Include the generated token in the response
             });
         }
-  
+
+
+        public async Task<GoogleAddUserResult> GoogleAddUser([FromBody] User userObj)
+        {
+            // Check if the email already exists
+            if (await CheckEmailExistAsync(userObj.Email))
+            {
+                return new GoogleAddUserResult
+                {
+                    Message = "Email Already Exist",
+                    Status = 400
+                };
+            }
+
+            // Set user role and generate JWT token
+            userObj.Role = "User";
+            userObj.Token = CreateJwt(userObj);
+            userObj.EmailConfirmed = true;
+            userObj.PhoneConfirmed = true;
+            userObj.ConfirmationExpiry = DateTime.Now.AddMinutes(5);
+            userObj.Created_at = DateTime.Now;
+
+            // Add the user to the database
+            await _authContext.Users.AddAsync(userObj);
+            await _authContext.SaveChangesAsync();
+
+            return new GoogleAddUserResult
+            {
+                Message = "User Added!",
+                Status = 200,
+                Token = userObj.Token
+            };
+        }
 
 
         public async Task<string> VerifyOtp([FromBody] OtpVerify request)
@@ -360,6 +392,39 @@ namespace Ginnis.Repos.Repositories
             });
         }
 
+
+        public async Task<IActionResult> GoogleAuthenticate(string email)
+        {
+            if (email == null)
+                return new OkObjectResult(new { Message = "Not Input" });
+
+            var user = await _authContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+
+            if (user == null)
+                return new OkObjectResult(new { Message = "User Not Found" });
+
+            if (!user.EmailConfirmed && !user.PhoneConfirmed)
+            {
+                return new OkObjectResult(new { Message = "OTP is not confirmed yet" });
+            }
+
+            user.Token = CreateJwt(user);
+
+            // Update user status to 1 (assuming 1 means active or logged in)
+            user.Status = true;
+
+            // Set the Created_at datetime
+            user.LoginTime = DateTime.Now;
+
+            _authContext.Entry(user).State = EntityState.Modified;
+            await _authContext.SaveChangesAsync();
+
+            return new OkObjectResult(new
+            {
+                Token = user.Token,
+                Message = "Login Success!"
+            });
+        }
 
 
         public async Task<ActionResult<string>> LogoutUser( string token)

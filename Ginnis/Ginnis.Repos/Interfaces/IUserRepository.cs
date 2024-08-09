@@ -13,9 +13,15 @@ namespace Ginnis.Repos.Interfaces
     {
         Task<IActionResult> AddUser([FromBody] User userObj);
 
+        Task<GoogleAddUserResult> GoogleAddUser([FromBody] User userObj);
+
+
         Task<string> VerifyOtp(OtpVerify request);
 
         Task<IActionResult> Authenticate([FromBody] User userObj);
+
+        Task<IActionResult> GoogleAuthenticate(string email);
+
 
         Task<ActionResult<string>> LogoutUser(string token);
 
