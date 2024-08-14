@@ -16,6 +16,9 @@ namespace Ginnis.Domains.DTOs
 
         public int Price { get; set; }
 
+        public int Quantity { get; set; }
+
+
         public int Discount { get; set; }
 
         public string DiscountCoupon { get; set; }
