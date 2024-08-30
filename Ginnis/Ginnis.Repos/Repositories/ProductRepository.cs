@@ -176,22 +176,49 @@ namespace Ginnis.Repos.Repositories
         }
 
 
-        public async Task<IActionResult> AddImageToProduct(ProductList product, IFormFile image)
+        //public async Task<IActionResult> AddImageToProduct(ProductList product, IFormFile image)
+        //{
+        //    if (image == null || image.Length == 0)
+        //        return new BadRequestObjectResult("Invalid file");
+
+        //    if (product == null)
+        //        return new BadRequestResult();
+
+        //    product.Created_at = DateTime.Now;
+
+        //    using (var memoryStream = new MemoryStream())
+        //    {
+        //        await image.CopyToAsync(memoryStream);
+        //        product.ProfileImage = memoryStream.ToArray();
+        //        product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
+        //    }
+
+        //    var productAdded = _authContext.ProductLists.Add(product);
+        //    await _authContext.SaveChangesAsync();
+
+        //    return new OkObjectResult(new
+        //    {
+        //        ProductId = productAdded.Entity.Id.ToString(),
+        //        Message = "Product Added Successfully!"
+        //    });
+        //}
+
+        public async Task<IActionResult> AddImageToProduct(ProductList product)
         {
-            if (image == null || image.Length == 0)
-                return new BadRequestObjectResult("Invalid file");
+            //if (image == null || image.Length == 0)
+            //    return new BadRequestObjectResult("Invalid file");
 
             if (product == null)
                 return new BadRequestResult();
 
             product.Created_at = DateTime.Now;
 
-            using (var memoryStream = new MemoryStream())
-            {
-                await image.CopyToAsync(memoryStream);
-                product.ProfileImage = memoryStream.ToArray();
-                product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
-            }
+            //using (var memoryStream = new MemoryStream())
+            //{
+            //    await image.CopyToAsync(memoryStream);
+            //    product.ProfileImage = memoryStream.ToArray();
+            //    product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
+            //}
 
             var productAdded = _authContext.ProductLists.Add(product);
             await _authContext.SaveChangesAsync();
@@ -202,7 +229,6 @@ namespace Ginnis.Repos.Repositories
                 Message = "Product Added Successfully!"
             });
         }
-
 
         public async Task<IActionResult> EditProduct(Guid productId, ProductList updatedProduct, IFormFile image)
         {
@@ -292,6 +318,21 @@ namespace Ginnis.Repos.Repositories
                                         {
                                             ProductName = p.ProductName,
                                             Price = p.Price,
+                                            Discount = p.Discount,
+                                            Quantity = p.Quantity,
+                                            DiscountCoupon = p.DiscountCoupon,
+                                            DiscountedPrice = p.DiscountedPrice,
+                                            DeliveryPrice = p.DeliveryPrice,
+                                            Description = p.Description,
+                                            Category = p.Category,
+                                            Subcategory = p.Subcategory,
+                                            Weight = p.Weight,
+                                            Status = p.Status,
+                                            UnitSold = p.UnitSold,
+                                            UnitLeft = p.UnitLeft,
+                                            Rating = p.Rating,
+                                            UserRating = p.UserRating,
+
                                             //ImageData = p.ImageData,
                                             //ProfileImage = p.ProfileImage,
                                         })

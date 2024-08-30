@@ -34,10 +34,17 @@ namespace Ginnis.WebAPIs.Controllers
 
 
         //[Authorize(Roles = "Admin")]
+        //[HttpPost("addProductsWithImages")]
+        //public async Task<IActionResult> AddImageToProduct([FromForm] ProductList product, IFormFile image)
+        //{
+        //    return await _productRepository.AddImageToProduct(product, image);
+        //}
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("addProductsWithImages")]
-        public async Task<IActionResult> AddImageToProduct([FromForm] ProductList product, IFormFile image)
+        public async Task<IActionResult> AddImageToProduct([FromForm] ProductList product)
         {
-            return await _productRepository.AddImageToProduct(product, image);
+            return await _productRepository.AddImageToProduct(product);
         }
 
 

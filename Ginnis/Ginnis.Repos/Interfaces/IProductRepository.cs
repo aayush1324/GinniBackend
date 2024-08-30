@@ -16,7 +16,10 @@ namespace Ginnis.Repos.Interfaces
 
         Task<IActionResult> GetProductsWithImages();
 
-        Task<IActionResult> AddImageToProduct(ProductList product, IFormFile image);
+        //Task<IActionResult> AddImageToProduct(ProductList product, IFormFile image);
+
+        Task<IActionResult> AddImageToProduct(ProductList product);
+
 
         Task<IActionResult> EditProduct(Guid productId, ProductList updatedProduct, IFormFile image);
 

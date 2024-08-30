@@ -39,6 +39,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(buil
 var emailSettingss = builder.Configuration.GetSection("EmailSettings").Get<ConfirmationEmailDto>();
 builder.Services.AddSingleton(emailSettingss);
 
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IEmailRepo, EmailRepo>();
 builder.Services.AddScoped<IConfirmEmailRepo, ConfirmEmailRepo>();
 builder.Services.AddScoped<IZipCodeRepository, ZipCodeRepository>();
