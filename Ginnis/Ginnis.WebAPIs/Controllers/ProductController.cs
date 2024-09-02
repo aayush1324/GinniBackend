@@ -86,9 +86,8 @@ namespace Ginnis.WebAPIs.Controllers
                 {
                     Id = product.Id,
                     ProductName = product.ProductName,
-                    Url = product.Url,
-                    Price = product.Price,
-                    Discount = product.Discount,
+                    MRPPrice = product.MRPPrice,
+                    DiscountPercent = product.DiscountPercent,
                     DiscountCoupon = product.DiscountCoupon,
                     DeliveryPrice = product.DeliveryPrice,
                     //Quantity = product.Quantity,
@@ -96,7 +95,7 @@ namespace Ginnis.WebAPIs.Controllers
                     Category = product.Category,
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
-                    Status = product.Status,
+                    Stock = product.Stock,
                     //Image = product.Image,
                     ProfileImage = product.ProfileImage,
                     ImageData = product.ImageData,
@@ -148,9 +147,8 @@ namespace Ginnis.WebAPIs.Controllers
                 {
                     Id = product.Id,
                     ProductName = product.ProductName,
-                    Url = product.Url,
-                    Price = product.Price,
-                    Discount = product.Discount,
+                    MRPPrice = product.MRPPrice,
+                    DiscountPercent = product.DiscountPercent,
                     DiscountCoupon = product.DiscountCoupon,
                     DeliveryPrice = product.DeliveryPrice,
                     //Quantity = product.Quantity,
@@ -158,7 +156,7 @@ namespace Ginnis.WebAPIs.Controllers
                     Category = product.Category,
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
-                    Status = product.Status,
+                    Stock = product.Stock,
                     //Image = product.Image,
                     ProfileImage = product.ProfileImage,
                     ImageData = product.ImageData,
@@ -231,16 +229,15 @@ namespace Ginnis.WebAPIs.Controllers
 
                 // Update product properties with the new values
                 product.ProductName = updatedProduct.ProductName;
-                product.Url = updatedProduct.Url;
-                product.Price = updatedProduct.Price;
-                product.Discount = updatedProduct.Discount;
+                product.MRPPrice = updatedProduct.MRPPrice;
+                product.DiscountPercent = updatedProduct.DiscountPercent;
                 product.DeliveryPrice = updatedProduct.DeliveryPrice;
                 product.Quantity = updatedProduct.Quantity;
                 product.Description = updatedProduct.Description;
                 product.Category = updatedProduct.Category;
                 product.Subcategory = updatedProduct.Subcategory;
                 product.Weight = updatedProduct.Weight;
-                product.Status = updatedProduct.Status;
+                product.Stock = updatedProduct.Stock;
 
                 product.Modified_at = DateTime.Now;
 
@@ -321,7 +318,7 @@ namespace Ginnis.WebAPIs.Controllers
                  .Select(p => new
                  {
                      ProductName = p.ProductName,
-                     Price = p.Price,
+                     Price = p.MRPPrice,
                      ImageData = p.ImageData,
                      ProfileImage = p.ProfileImage,
                  })

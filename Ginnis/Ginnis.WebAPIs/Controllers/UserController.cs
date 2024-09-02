@@ -622,16 +622,15 @@ namespace Ginnis.WebAPIs.Controllers
 
                 // Update product properties with the new values
                 product.ProductName = updatedProduct.ProductName;
-                product.Url = updatedProduct.Url;
-                product.Price = updatedProduct.Price;
-                product.Discount = updatedProduct.Discount;
+                product.MRPPrice = updatedProduct.MRPPrice;
+                product.DiscountPercent = updatedProduct.DiscountPercent;
                 product.DeliveryPrice = updatedProduct.DeliveryPrice;
                 //product.Quantity = updatedProduct.Quantity;
                 product.Description = updatedProduct.Description;
                 product.Category = updatedProduct.Category;
                 product.Subcategory = updatedProduct.Subcategory;
                 product.Weight = updatedProduct.Weight;
-                product.Status = updatedProduct.Status;
+                product.Stock = updatedProduct.Stock;
 
                 // Save changes to the database
                 await _authContext.SaveChangesAsync();

@@ -12,21 +12,22 @@ namespace Ginnis.Domains.DTOs
 
         public string ProductName { get; set; }
 
-        public string Url { get; set; }
+        //public string Url { get; set; }
 
-        public int Price { get; set; }
+        public int MRPPrice { get; set; }
 
-        public int Quantity { get; set; }
+        public int DiscountPercent { get; set; }
 
-
-        public int Discount { get; set; }
+        public int DiscountRupee { get; set; }
 
         public string DiscountCoupon { get; set; }
 
-        public int DiscountedPrice { get; set; }
-
         public int DeliveryPrice { get; set; }
-       
+
+        public int OfferPrice { get; set; }
+
+        public int Quantity { get; set; }
+
         public string Description { get; set; }
 
         public string Category { get; set; }
@@ -35,7 +36,7 @@ namespace Ginnis.Domains.DTOs
 
         public string Weight { get; set; }
 
-        public string Status { get; set; }
+        public string Stock { get; set; }
 
         public int UnitSold { get; set; }
 

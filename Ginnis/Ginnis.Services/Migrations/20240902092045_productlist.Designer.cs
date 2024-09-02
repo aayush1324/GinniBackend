@@ -4,6 +4,7 @@ using Ginnis.Services.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Ginnis.Services.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240902092045_productlist")]
+    partial class productlist
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -581,24 +584,24 @@ namespace Ginnis.Services.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5a136bb9-8181-4214-8bff-07ed5cb15290"),
+                            Id = new Guid("833673e1-4752-47a9-9054-23111e6848f0"),
                             ConfirmPassword = "/ywXuc5Kuq+WvCk93pUNDc2JlWkySLMxkyTd56lGibD18s/7",
-                            ConfirmationExpiry = new DateTime(2024, 9, 3, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7553),
+                            ConfirmationExpiry = new DateTime(2024, 9, 3, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1604),
                             ConfirmationToken = "MLlcspMx6qLute8YyPzed5AgBSW9/UEXU9WicE2iIDHH7UvVUNKJ5ZQDykPMgIeV5EAHJiLX/6vHCbeqDz1LVg==",
-                            Created_at = new DateTime(2024, 9, 2, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7557),
+                            Created_at = new DateTime(2024, 9, 2, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1609),
                             Email = "aayushagrawal97@gmail.com",
                             EmailConfirmed = true,
                             EmailOTP = "635212",
-                            EmailOTPExpiry = new DateTime(2024, 9, 3, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7527),
-                            LoginTime = new DateTime(2024, 9, 2, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7554),
-                            LogoutTime = new DateTime(2024, 9, 2, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7556),
-                            Modified_at = new DateTime(2024, 9, 2, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7558),
+                            EmailOTPExpiry = new DateTime(2024, 9, 3, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1582),
+                            LoginTime = new DateTime(2024, 9, 2, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1606),
+                            LogoutTime = new DateTime(2024, 9, 2, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1607),
+                            Modified_at = new DateTime(2024, 9, 2, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1610),
                             Password = "WJ+gIjhFeAGMd/z0a8eZGdJLW3Y42Swj9+k5/W5E0+gbanYc",
                             Phone = "7877976611",
                             PhoneConfirmed = true,
                             PhoneOTP = "486192",
-                            PhoneOTPExpiry = new DateTime(2024, 9, 3, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7551),
-                            ResetPasswordExpiry = new DateTime(2024, 9, 3, 14, 51, 54, 710, DateTimeKind.Local).AddTicks(7552),
+                            PhoneOTPExpiry = new DateTime(2024, 9, 3, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1602),
+                            ResetPasswordExpiry = new DateTime(2024, 9, 3, 14, 50, 43, 790, DateTimeKind.Local).AddTicks(1603),
                             ResetPasswordToken = "NULL",
                             Role = "Admin",
                             Status = true,

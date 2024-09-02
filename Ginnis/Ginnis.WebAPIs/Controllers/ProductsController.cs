@@ -18,7 +18,7 @@ namespace Ginnis.WebAPIs.Controllers
         }
 
 
-        //[Authorize]
+        [Authorize]
         [HttpGet("getProductsWithImage/{userID}")]
         public async Task<IActionResult> GetProductsWithImage(Guid userID)
         {

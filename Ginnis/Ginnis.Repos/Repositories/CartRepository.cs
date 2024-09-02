@@ -35,7 +35,7 @@ namespace Ginnis.Repos.Repositories
                 var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == productId);
 
                 // Assuming you have a property named 'Price' in the ProductLists table
-                var itemPrice = product.DiscountedPrice;
+                var itemPrice = product.OfferPrice;
                 
                 if (existingCartItem != null)
                 {
@@ -83,9 +83,9 @@ namespace Ginnis.Repos.Repositories
                                                 ItemTotalPrice = cart.ItemTotalPrice,
                                                 ProductId = product.Id,
                                                 ProductName = product.ProductName,
-                                                ItemPrice = product.Price,
-                                                ItemDiscountedPrice = product.DiscountedPrice,
-                                                ItemDiscount = product.Discount,
+                                                ItemPrice = product.MRPPrice,
+                                                ItemDiscountedPrice = product.OfferPrice,
+                                                ItemDiscount = product.DiscountPercent,
                                                 ItemDeliveryPrice = product.DeliveryPrice,
                                                 ItemDiscountCoupon = product.DiscountCoupon,
                                                 ItemWeight = product.Weight,
@@ -139,7 +139,7 @@ namespace Ginnis.Repos.Repositories
             var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == cart.ProductId);
 
             // Assuming you have a property named 'Price' in the ProductLists table
-            var itemPrice = product.DiscountedPrice;
+            var itemPrice = product.OfferPrice;
 
             existingCartItem.ItemQuantity = cart.ItemQuantity;
             existingCartItem.ItemTotalPrice = existingCartItem.ItemQuantity * itemPrice;

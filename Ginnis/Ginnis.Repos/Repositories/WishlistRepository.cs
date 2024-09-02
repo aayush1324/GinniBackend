@@ -33,7 +33,7 @@ namespace Ginnis.Repos.Repositories
                 var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == productId);
 
                 // Assuming you have a property named 'Price' in the ProductLists table
-                var itemPrice = product.Price;
+                var itemPrice = product.MRPPrice;
 
                 if (existingWishlistItem != null)
                 {
@@ -80,7 +80,7 @@ namespace Ginnis.Repos.Repositories
                                                 ItemTotalPrice = wishlist.ItemTotalPrice,
                                                 ProductId = product.Id,
                                                 ProductName = product.ProductName,
-                                                ItemPrice = product.Price,
+                                                ItemPrice = product.MRPPrice,
                                                 ProfileImage = product.ProfileImage,
                                                 ImageData = product.ImageData
                                             })
@@ -132,7 +132,7 @@ namespace Ginnis.Repos.Repositories
             var product = await _authContext.ProductLists.FirstOrDefaultAsync(p => p.Id == wishlist.ProductId);
 
             // Assuming you have a property named 'Price' in the ProductLists table
-            var itemPrice = product.Price;
+            var itemPrice = product.MRPPrice;
 
             existingWishlistItem.ItemQuantity = wishlist.ItemQuantity;
             existingWishlistItem.ItemTotalPrice = existingWishlistItem.ItemQuantity * itemPrice;

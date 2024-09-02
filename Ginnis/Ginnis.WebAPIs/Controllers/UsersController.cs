@@ -183,7 +183,7 @@ namespace Ginnis.WebAPIs.Controllers
 
 
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet("getCustomer")]
         public async Task<IActionResult> GetCustomer()
         {

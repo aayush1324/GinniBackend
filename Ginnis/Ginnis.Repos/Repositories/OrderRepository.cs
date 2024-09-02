@@ -139,7 +139,7 @@ namespace Ginnis.Repos.Repositories
                                                         ImageData = product.ImageData,
                                                         ProfileImage = product.ProfileImage,
                                                         ProductName = product.ProductName,
-                                                        Price = product.Price
+                                                        Price = product.MRPPrice
                                                     }
                                                 )
                                                 .ToListAsync();

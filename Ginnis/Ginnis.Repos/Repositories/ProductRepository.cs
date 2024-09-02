@@ -31,18 +31,18 @@ namespace Ginnis.Repos.Repositories
                                        {
                                            product.Id,
                                            product.ProductName,
-                                           product.Url,
-                                           product.Price,
-                                           product.Discount,
+                                           product.MRPPrice,
+                                           product.DiscountPercent,
+                                           product.DiscountRupee,
                                            product.DiscountCoupon,
-                                           product.DiscountedPrice,
+                                           product.OfferPrice,
                                            product.DeliveryPrice,
                                            product.Quantity,
                                            product.Description,
                                            product.Category,
                                            product.Subcategory,
                                            product.Weight,
-                                           product.Status,
+                                           product.Stock,
                                            product.UnitSold,
                                            product.UnitLeft,
                                            product.Rating ,
@@ -75,18 +75,18 @@ namespace Ginnis.Repos.Repositories
                 {
                     Id = product.Id,
                     ProductName = product.ProductName,
-                    Url = product.Url,
-                    Price = product.Price,
-                    Discount = product.Discount,
-                    Quantity = product.Quantity,
+                    MRPPrice = product.MRPPrice,
+                    DiscountPercent = product.DiscountPercent,
+                    DiscountRupee = product.DiscountRupee,
                     DiscountCoupon = product.DiscountCoupon,
                     DeliveryPrice = product.DeliveryPrice,
-                    DiscountedPrice = product.DiscountedPrice,
+                    OfferPrice = product.OfferPrice,
+                    Quantity = product.Quantity,
                     Description = product.Description,
                     Category = product.Category,
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
-                    Status = product.Status,
+                    Stock = product.Stock,
                     UnitSold = product.UnitSold,
                     UnitLeft = product.UnitLeft,
                     Rating = product.Rating,
@@ -113,18 +113,17 @@ namespace Ginnis.Repos.Repositories
                                         {
                                             product.Id,
                                             product.ProductName,
-                                            product.Url,
-                                            product.Price,
-                                            product.Discount,
+                                            product.MRPPrice,
+                                            product.DiscountPercent,
                                             product.Quantity,
                                             product.DiscountCoupon,
-                                            product.DiscountedPrice,
+                                            product.OfferPrice,
                                             product.DeliveryPrice,
                                             product.Description,
                                             product.Category,
                                             product.Subcategory,
                                             product.Weight,
-                                            product.Status,
+                                            product.Stock,
                                             product.UnitSold,
                                             product.UnitLeft,
                                             product.Rating,
@@ -147,18 +146,17 @@ namespace Ginnis.Repos.Repositories
                 {
                     Id = product.Id,
                     ProductName = product.ProductName,
-                    Url = product.Url,
-                    Price = product.Price,
-                    Discount = product.Discount,
+                    MRPPrice = product.MRPPrice,
+                    DiscountPercent = product.DiscountPercent,
                     Quantity  = product.Quantity,
                     DiscountCoupon = product.DiscountCoupon,
-                    DiscountedPrice = product.DiscountedPrice,
+                    OfferPrice = product.OfferPrice,
                     DeliveryPrice = product.DeliveryPrice,
                     Description = product.Description,
                     Category = product.Category,
                     Subcategory = product.Subcategory,
                     Weight = product.Weight,
-                    Status = product.Status,
+                    Stock = product.Stock,
                     UnitSold = product.UnitSold,
                     UnitLeft = product.UnitLeft,
                     Rating = product.Rating,
@@ -243,18 +241,17 @@ namespace Ginnis.Repos.Repositories
 
                 // Update product properties with the new values
                 product.ProductName = updatedProduct.ProductName;
-                product.Url = updatedProduct.Url;
-                product.Price = updatedProduct.Price;
-                product.Discount = updatedProduct.Discount;
+                product.MRPPrice = updatedProduct.MRPPrice;
+                product.DiscountPercent = updatedProduct.DiscountPercent;
                 product.DeliveryPrice = updatedProduct.DeliveryPrice;
                 product.DiscountCoupon = updatedProduct.DiscountCoupon;
-                product.DiscountedPrice = updatedProduct.DiscountedPrice;
+                product.OfferPrice = updatedProduct.OfferPrice;
                 product.Quantity = updatedProduct.Quantity;
                 product.Description = updatedProduct.Description;
                 product.Category = updatedProduct.Category;
                 product.Subcategory = updatedProduct.Subcategory;
                 product.Weight = updatedProduct.Weight;
-                product.Status = updatedProduct.Status;
+                product.Stock = updatedProduct.Stock;
                 product.UnitSold = updatedProduct.UnitSold;
                 product.UnitLeft = updatedProduct.UnitLeft;
                 product.Rating = updatedProduct.Rating;
@@ -317,17 +314,17 @@ namespace Ginnis.Repos.Repositories
                                         .Select(p => new
                                         {
                                             ProductName = p.ProductName,
-                                            Price = p.Price,
-                                            Discount = p.Discount,
+                                            Price = p.MRPPrice,
+                                            Discount = p.DiscountPercent,
                                             Quantity = p.Quantity,
                                             DiscountCoupon = p.DiscountCoupon,
-                                            DiscountedPrice = p.DiscountedPrice,
+                                            DiscountedPrice = p.OfferPrice,
                                             DeliveryPrice = p.DeliveryPrice,
                                             Description = p.Description,
                                             Category = p.Category,
                                             Subcategory = p.Subcategory,
                                             Weight = p.Weight,
-                                            Status = p.Status,
+                                            Status = p.Stock,
                                             UnitSold = p.UnitSold,
                                             UnitLeft = p.UnitLeft,
                                             Rating = p.Rating,
@@ -352,17 +349,18 @@ namespace Ginnis.Repos.Repositories
                                         {
                                             product.Id,
                                             product.ProductName,
-                                            product.Url,
-                                            product.Price,
-                                            product.Discount,
+                                            product.MRPPrice,
+                                            product.DiscountPercent,
+                                            product.DiscountRupee,
                                             product.DiscountCoupon,
-                                            product.DiscountedPrice,
+                                            product.OfferPrice,
                                             product.DeliveryPrice,
+                                            product.Quantity,
                                             product.Description,
                                             product.Category,
                                             product.Subcategory,
                                             product.Weight,
-                                            product.Status,
+                                            product.Stock,
                                             product.UnitSold,
                                             product.UnitLeft,
                                             product.Rating,
@@ -391,16 +389,17 @@ namespace Ginnis.Repos.Repositories
                                             {
                                                 p.Id,
                                                 p.ProductName,
-                                                p.Price,
-                                                p.Discount,
+                                                p.MRPPrice,
+                                                p.DiscountPercent,
+                                                p.DiscountRupee,
                                                 p.DiscountCoupon,
-                                                p.DiscountedPrice,
+                                                p.OfferPrice,
                                                 p.DeliveryPrice,
                                                 p.Description,
                                                 p.Category,
                                                 p.Subcategory,
                                                 p.Weight,
-                                                p.Status,
+                                                p.Stock,
                                                 p.Rating,
                                                 p.UserRating,
         
@@ -417,13 +416,13 @@ namespace Ginnis.Repos.Repositories
             {
                 Id = product.Id,
                 ProductName = product.ProductName,
-                Price = product.Price,
-                Discount = product.Discount,
+                MRPPrice = product.MRPPrice,
+                DiscountPercent = product.DiscountPercent,
                 DiscountCoupon = product.DiscountCoupon,
-                DiscountedPrice = product.DiscountedPrice,
+                OfferPrice = product.OfferPrice,
                 DeliveryPrice = product.DeliveryPrice,
                 Weight = product.Weight,
-                Status = product.Status,
+                Stock = product.Stock,
                 Description = product.Description,
                 Category = product.Category,
                 Subcategory = product.Subcategory,
