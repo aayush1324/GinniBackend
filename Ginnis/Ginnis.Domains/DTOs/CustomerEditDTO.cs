@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Ginnis.Domains.DTOs
 {
-    public class CustomerDTO
+    public class CustomerEditDTO
     {
-        public Guid Id { get; set; }
-
         public string UserName { get; set; }
 
         public string Email { get; set; }
@@ -19,11 +16,11 @@ namespace Ginnis.Domains.DTOs
 
         public string Role { get; set; }
 
-        public bool PhoneConfirmed { get; set; }
+        public bool PhoneVerify { get; set; }
 
-        public bool EmailConfirmed{ get; set; }
+        public bool EmailVerify { get; set; }
 
-        public bool Status { get; set; }
+        public bool isLoggedIn { get; set; }
 
     }
 }

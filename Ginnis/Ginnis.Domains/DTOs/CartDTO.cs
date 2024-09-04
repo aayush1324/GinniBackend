@@ -23,6 +23,7 @@ namespace Ginnis.Domains.DTOs
         public string ItemDiscountCoupon { get; set; }
         public int ItemDiscountedPrice { get; set; }
         public int ItemDeliveryPrice { get; set; }
+        public string ItemStock { get; set; }
         public float ItemRating { get; set; }
         public int ItemUserRating { get; set; }
         public byte[] ProfileImage { get; set; }

@@ -32,9 +32,13 @@ namespace Ginnis.Repos.Interfaces
 
         Task<IActionResult> GetCustomers();
 
-        Task<IActionResult> AddCustomer(User customer);
+        Task<IActionResult> AddCustomer(CustomerAddDTO customer);
 
         Task<IActionResult> DeleteCustomer(Guid customerId);
+
+        Task<IActionResult> EditCustomer(Guid customerId, CustomerEditDTO updatedCustomer);
+
+
 
     }
 }

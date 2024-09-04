@@ -1,6 +1,7 @@
 ﻿using Ginnis.Domains.DTOs;
 using Ginnis.Domains.Entities;
 using Ginnis.Repos.Interfaces;
+using Ginnis.Repos.Repositories;
 using Ginnis.Services.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -193,7 +194,7 @@ namespace Ginnis.WebAPIs.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("addCustomer")]
-        public async Task<IActionResult> AddCustomer([FromBody] User customer)
+        public async Task<IActionResult> AddCustomer([FromForm] CustomerAddDTO customer)
         {
             return await _userRepository.AddCustomer(customer);
         }
@@ -204,6 +205,13 @@ namespace Ginnis.WebAPIs.Controllers
         public async Task<IActionResult> DeleteCustomer(Guid customerId)
         {
             return await _userRepository.DeleteCustomer(customerId);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPut("editCustomer/{customerId}")]
+        public async Task<IActionResult> EditCustomer(Guid customerId, [FromForm] CustomerEditDTO updatedCustomer)
+        {
+            return await _userRepository.EditCustomer(customerId, updatedCustomer);
         }
 
     }

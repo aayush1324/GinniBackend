@@ -19,8 +19,11 @@ namespace Ginnis.Repos.Repositories
 {
     public class PaymentRepository : IPaymentRepository
     {
-        private readonly string razorpayKeyId = "rzp_test_NHayhA8KgRDaCx";
-        private readonly string razorpayKeySecret = "GMmu5cPZbH7ryafdxLFMHF7N";
+        //private readonly string razorpayKeyId = "rzp_test_NHayhA8KgRDaCx";
+        //private readonly string razorpayKeySecret = "GMmu5cPZbH7ryafdxLFMHF7N";
+
+        private readonly string razorpayKeyId = "rzp_live_HO0cMQGQ5NHBLD";
+        private readonly string razorpayKeySecret = "Jv1g5qwPZcT0Vcdu2HBjCo2c";
 
         private readonly AppDbContext _authContext;
 
@@ -35,7 +38,8 @@ namespace Ginnis.Repos.Repositories
             try
             {
                 // Initialize Razorpay client
-                RazorpayClient client = new RazorpayClient("rzp_test_NHayhA8KgRDaCx", "GMmu5cPZbH7ryafdxLFMHF7N");
+                //RazorpayClient client = new RazorpayClient("rzp_test_NHayhA8KgRDaCx", "GMmu5cPZbH7ryafdxLFMHF7N");
+                RazorpayClient client = new RazorpayClient("rzp_live_HO0cMQGQ5NHBLD", "Jv1g5qwPZcT0Vcdu2HBjCo2c");
 
                 // Create order options
                 Dictionary<string, object> options = new Dictionary<string, object>();
@@ -117,7 +121,8 @@ namespace Ginnis.Repos.Repositories
                 var orderId = data.GetProperty("razorpay_order_id").GetString();
                 var paymentId = data.GetProperty("razorpay_payment_id").GetString();
                 var payload = orderId + "|" + paymentId;
-                var secret = "GMmu5cPZbH7ryafdxLFMHF7N"; // Replace with your actual Razorpay secret key
+                //var secret = "GMmu5cPZbH7ryafdxLFMHF7N"; // Replace with your actual Razorpay secret key
+                var secret = "Jv1g5qwPZcT0Vcdu2HBjCo2c"; // Replace with your actual Razorpay secret key
 
                 var generatedSignature = GenerateSignature(payload, secret);
 
@@ -150,18 +155,31 @@ namespace Ginnis.Repos.Repositories
                         }
 
                         // Remove the specific cart item for the ordered product
-                        var cartItems = await _authContext.Carts.Where(c => c.UserId == UserID && c.ProductId == orders.First().ProductId && !c.isPaymentDone).ToListAsync();
+                        //var cartItems = await _authContext.Carts.Where(c => c.UserId == UserID && c.ProductId == orders.First().ProductId && !c.isPaymentDone).ToListAsync();
+                        //if (cartItems.Any())
+                        //{
+                        //    _authContext.Carts.RemoveRange(cartItems);
+                        //}
+
+                        var productIds = orders.Select(o => o.ProductId).ToList();
+
+                        var cartItems = await _authContext.Carts
+                            .Where(c => c.UserId == UserID && productIds.Contains(c.ProductId) && !c.isPaymentDone)
+                            .ToListAsync();
+
                         if (cartItems.Any())
                         {
                             _authContext.Carts.RemoveRange(cartItems);
+                            await _authContext.SaveChangesAsync();
                         }
 
-                        // Remove the specific wishlist item for the ordered product
-                        var wishlistItems = await _authContext.Wishlists.Where(w => w.UserId == UserID && w.ProductId == orders.First().ProductId).ToListAsync();
-                        if (wishlistItems.Any())
-                        {
-                            _authContext.Wishlists.RemoveRange(wishlistItems);
-                        }
+
+
+                        //var wishlistItems = await _authContext.Wishlists.Where(w => w.UserId == UserID && w.ProductId == orders.First().ProductId).ToListAsync();
+                        //if (wishlistItems.Any())
+                        //{
+                        //    _authContext.Wishlists.RemoveRange(wishlistItems);
+                        //}
 
                         // Save changes to the database
                         await _authContext.SaveChangesAsync();

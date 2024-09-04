@@ -534,7 +534,7 @@ namespace Ginnis.Repos.Repositories
 
 
 
-        public async Task<IActionResult> AddCustomer(User customer)
+        public async Task<IActionResult> AddCustomers(User customer)
         {
             if (customer == null)
                 return new BadRequestResult();
@@ -576,6 +576,64 @@ namespace Ginnis.Repos.Repositories
             });
         }
 
+        public async Task<IActionResult> AddCustomer(CustomerAddDTO customerDto)
+        {
+            // Check if the input DTO is null
+            if (customerDto == null)
+                return new BadRequestResult();
+
+            // Check if email already exists
+            if (await CheckEmailExistAsync(customerDto.Email))
+                return new BadRequestObjectResult(new { Message = "Email Already Exists" });
+
+            // Check password strength
+            var passMessage = CheckPasswordStrength(customerDto.Password);
+            if (!string.IsNullOrEmpty(passMessage))
+                return new BadRequestObjectResult(new { Message = passMessage });
+
+            // Hash the password
+            customerDto.Password = PasswordHasher.HashPassword(customerDto.Password);
+
+            var confpassMessage = CheckPasswordStrength(customerDto.ConfirmPassword);
+            if (!string.IsNullOrEmpty(confpassMessage))
+                return new BadRequestObjectResult(new { Message = confpassMessage });
+
+            // Hash the confirmation password
+            customerDto.ConfirmPassword = PasswordHasher.HashPassword(customerDto.ConfirmPassword);
+
+            // Map DTO to User entity
+            var customer = new User
+            {
+                UserName = customerDto.UserName,
+                Email = customerDto.Email,
+                Phone = customerDto.Phone,
+                Password = customerDto.Password,
+                ConfirmPassword = customerDto.ConfirmPassword,
+                Role = customerDto.Role,
+                PhoneConfirmed = customerDto.PhoneVerify,
+                EmailConfirmed = customerDto.EmailVerify,
+                Status = customerDto.isLoggedIn,
+                ConfirmationExpiry = DateTime.Now.AddMinutes(15) // Set token expiry
+            };
+
+            // Generate JWT token for the User entity
+            customer.Token = CreateJwt(customer);
+
+            // Add the new user to the database
+            await _authContext.Users.AddAsync(customer);
+            await _authContext.SaveChangesAsync();
+
+            // Send registration confirmation email
+            await SendRegistrationConfirmationEmail(customer.Email);
+
+            // Return a successful response including the generated token
+            return new OkObjectResult(new
+            {
+                Status = 200,
+                Message = "User Added!",
+                Token = customer.Token // Include the generated token in the response
+            });
+        }
 
 
         public async Task<IActionResult> DeleteCustomer(Guid customerId)
@@ -601,6 +659,46 @@ namespace Ginnis.Repos.Repositories
         }
 
 
+        public async Task<IActionResult> EditCustomer(Guid customerId, CustomerEditDTO updatedCustomer)
+        {
+            try
+            {
+                var customer = await _authContext.Users.FindAsync(customerId);
+
+                if (customer == null)
+                {
+                    return new NotFoundResult();
+                }
+
+                // Check if another customer with the same email exists, excluding the current customer
+                var existingCustomer = await _authContext.Users
+                    .FirstOrDefaultAsync(u => u.Email == updatedCustomer.Email && u.Id != customerId);
+
+                if (existingCustomer != null)
+                {
+                    return new BadRequestObjectResult(new { Message = "Email Already Exists" });
+                }
+
+                // Update customer properties with the new values
+                customer.UserName = updatedCustomer.UserName;
+                customer.Email = updatedCustomer.Email;
+                customer.Phone = updatedCustomer.Phone;
+                customer.Role = updatedCustomer.Role;
+                customer.PhoneConfirmed = updatedCustomer.PhoneVerify;
+                customer.EmailConfirmed = updatedCustomer.EmailVerify;
+                customer.Status = updatedCustomer.isLoggedIn;
+
+                customer.Modified_at = DateTime.Now;
+
+                await _authContext.SaveChangesAsync();
+
+                return new OkObjectResult(new { Message = "Customer updated successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(500);
+            }
+        }
 
 
 

@@ -115,6 +115,7 @@ namespace Ginnis.Repos.Repositories
                                             product.ProductName,
                                             product.MRPPrice,
                                             product.DiscountPercent,
+                                            product.DiscountRupee,
                                             product.Quantity,
                                             product.DiscountCoupon,
                                             product.OfferPrice,
@@ -148,6 +149,7 @@ namespace Ginnis.Repos.Repositories
                     ProductName = product.ProductName,
                     MRPPrice = product.MRPPrice,
                     DiscountPercent = product.DiscountPercent,
+                    DiscountRupee = product.DiscountRupee,
                     Quantity  = product.Quantity,
                     DiscountCoupon = product.DiscountCoupon,
                     OfferPrice = product.OfferPrice,
@@ -203,30 +205,34 @@ namespace Ginnis.Repos.Repositories
 
         public async Task<IActionResult> AddImageToProduct(ProductList product)
         {
-            //if (image == null || image.Length == 0)
-            //    return new BadRequestObjectResult("Invalid file");
-
             if (product == null)
                 return new BadRequestResult();
 
+            // Check if a product with the same name already exists
+            var existingProduct = await _authContext.ProductLists
+                .FirstOrDefaultAsync(p => p.ProductName == product.ProductName);
+
+            if (existingProduct != null)
+            {
+                // Return an error message if the product name exists
+                return new BadRequestObjectResult(new { Message = "Product is already exist" });
+            }
+
+            // Set the creation timestamp
             product.Created_at = DateTime.Now;
 
-            //using (var memoryStream = new MemoryStream())
-            //{
-            //    await image.CopyToAsync(memoryStream);
-            //    product.ProfileImage = memoryStream.ToArray();
-            //    product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
-            //}
-
+            // Add the new product to the database
             var productAdded = _authContext.ProductLists.Add(product);
             await _authContext.SaveChangesAsync();
 
+            // Return a success message with the new product ID
             return new OkObjectResult(new
             {
                 ProductId = productAdded.Entity.Id.ToString(),
                 Message = "Product Added Successfully!"
             });
         }
+
 
         public async Task<IActionResult> EditProduct(Guid productId, ProductList updatedProduct, IFormFile image)
         {
@@ -239,10 +245,20 @@ namespace Ginnis.Repos.Repositories
                     return new NotFoundResult();
                 }
 
+                // Check if another product with the same name exists, excluding the current product
+                var existingProduct = await _authContext.ProductLists
+                    .FirstOrDefaultAsync(p => p.ProductName == updatedProduct.ProductName && p.Id != productId);
+
+                if (existingProduct != null)
+                {
+                    return new BadRequestObjectResult(new { Message = "Product with the same name already exists" });
+                }
+
                 // Update product properties with the new values
                 product.ProductName = updatedProduct.ProductName;
                 product.MRPPrice = updatedProduct.MRPPrice;
                 product.DiscountPercent = updatedProduct.DiscountPercent;
+                product.DiscountRupee = updatedProduct.DiscountRupee;
                 product.DeliveryPrice = updatedProduct.DeliveryPrice;
                 product.DiscountCoupon = updatedProduct.DiscountCoupon;
                 product.OfferPrice = updatedProduct.OfferPrice;
@@ -256,19 +272,18 @@ namespace Ginnis.Repos.Repositories
                 product.UnitLeft = updatedProduct.UnitLeft;
                 product.Rating = updatedProduct.Rating;
                 product.UserRating = updatedProduct.UserRating;
-             
                 product.Modified_at = DateTime.Now;
 
-
-                if (image != null)
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await image.CopyToAsync(memoryStream);
-                        product.ProfileImage = memoryStream.ToArray();
-                        product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
-                    }
-                }
+                // Handle image upload
+                //if (image != null)
+                //{
+                //    using (var memoryStream = new MemoryStream())
+                //    {
+                //        await image.CopyToAsync(memoryStream);
+                //        product.ProfileImage = memoryStream.ToArray();
+                //        product.ImageData = Convert.ToBase64String(memoryStream.ToArray());
+                //    }
+                //}
 
                 await _authContext.SaveChangesAsync();
 
@@ -279,6 +294,7 @@ namespace Ginnis.Repos.Repositories
                 return new StatusCodeResult(500);
             }
         }
+
 
 
         public async Task<IActionResult> DeleteProduct(Guid productId)
@@ -418,6 +434,7 @@ namespace Ginnis.Repos.Repositories
                 ProductName = product.ProductName,
                 MRPPrice = product.MRPPrice,
                 DiscountPercent = product.DiscountPercent,
+                DiscountRupee = product.DiscountRupee,
                 DiscountCoupon = product.DiscountCoupon,
                 OfferPrice = product.OfferPrice,
                 DeliveryPrice = product.DeliveryPrice,

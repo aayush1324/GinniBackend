@@ -89,6 +89,7 @@ namespace Ginnis.Repos.Repositories
                                                 ItemDeliveryPrice = product.DeliveryPrice,
                                                 ItemDiscountCoupon = product.DiscountCoupon,
                                                 ItemWeight = product.Weight,
+                                                ItemStock = product.Stock,
                                                 ItemRating = product.Rating,
                                                 ItemUserRating = product.UserRating,
                                                 ProfileImage = product.ProfileImage,
