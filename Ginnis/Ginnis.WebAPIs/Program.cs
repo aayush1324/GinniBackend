@@ -22,7 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("MyPolicy", builder => builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
+    options.AddPolicy("MyPolicy", builder => builder.WithOrigins("http://ginnidryfruits.com", "https://ginnidryfruits.com",
+                                                                 "http://localhost:4200", "https://localhost:4200")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials());
