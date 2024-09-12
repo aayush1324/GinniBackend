@@ -1,0 +1,37 @@
+name: Deploy ASP.NET Core Web API to IIS
+
+on:
+  push:
+    branches:
+      - main  # Adjust to the branch that triggers the deployment
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.0'  # Change to your solution’s .NET version
+
+    - name: Restore dependencies
+      run: dotnet restore Ginnis.sln  # Restore dependencies for the entire solution
+
+    - name: Build the solution
+      run: dotnet build Ginnis.sln --configuration Release  # Build all projects in the solution
+
+    - name: Publish the Web API project
+      run: dotnet publish Ginnis.WebAPIs/Ginnis.WebAPIs.csproj --configuration Release --output ./publish  # Specify the path to your Web API project
+
+    - name: Deploy to IIS
+      uses: SamKirkland/FTP-Deploy-Action@4.1.0
+      with:
+        ftp-server: ftp://ginnidryfruits.com  # Update with your server details
+        ftp-username: ${{ secrets.FTP_USERNAME }}     # Store FTP username in GitHub secrets
+        ftp-password: ${{ secrets.FTP_PASSWORD }}     # Store FTP password in GitHub secrets
+        local-dir: ./publish
+        server-dir: /path/to/your/website  # Remote path on your server where the Web API should be deployed
